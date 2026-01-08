@@ -8,7 +8,7 @@ tags: [tor, proxychains, socks5, opsec, dns-leak, threat-modeling]
 status: completed
 date: 2026-01-08
 sanitized: true
----------------
+---
 
 # TryHackMe — TOR, Proxychains & Tor Browser (Sanitized Write-up)
 
