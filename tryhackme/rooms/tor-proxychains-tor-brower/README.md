@@ -79,7 +79,7 @@ Intent:
 ```mermaid
 flowchart LR
   A[App: curl / firefox / nmap -sT] --> P[proxychains]
-  P --> S[SOCKS5 127.0.0.1:9050 (Tor)]
+  P --> S[SOCKS5 127.0.0.1:9050 Tor]
   S --> I[Internet]
 ```
 
