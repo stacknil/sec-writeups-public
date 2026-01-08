@@ -10,7 +10,7 @@ skills: ["enum", "files-perms"]  # choose 2–5 from TAGS.md Skill tags
 artifacts: ["lab-notes"]         # optional: cookbook / pattern-card / lab-notes / concept-notes
 status: "wip"                    # todo | wip | done
 date: 2026-01-08
-----------------
+---
 
 # ROOM_TITLE (TryHackMe)
 
