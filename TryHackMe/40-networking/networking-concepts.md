@@ -1,5 +1,4 @@
 ---
-
 platform: tryhackme
 room: "Networking Concepts"
 slug: networking-concepts
@@ -10,7 +9,7 @@ skills: ["osi-model", "tcp-ip", "ip-subnetting", "tcp-udp", "telnet"]
 artifacts: ["concept-notes", "cookbook"]
 status: "done"
 date: 2026-01-18
-----------------
+---
 
 # Networking Concepts (TryHackMe)
 
