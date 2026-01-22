@@ -181,14 +181,14 @@ Suggested asset names (example):
 ### DHCP DORA 
 
 ```mermaid
-diagramSequence
+sequenceDiagram
     participant C as Client
     participant S as DHCP Server
-
     C->>S: DHCPDISCOVER (broadcast)
     S-->>C: DHCPOFFER
     C->>S: DHCPREQUEST (broadcast)
     S-->>C: DHCPACK
+
 ```
 
 ### ARP resolution (LAN)
