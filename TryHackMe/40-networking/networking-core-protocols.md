@@ -212,16 +212,3 @@ For public notes: keep only minimal excerpts, redact credentials, and use placeh
 * RFC 1939 (POP3)
 * RFC 9051 (IMAP4rev2)
 
-## Appendix — Mermaid quick fix (GitHub)
-
-If you see: “No diagram type detected…”, check the first keyword.
-
-Correct sequence diagram header is `sequenceDiagram` (not `diagramSequence`).
-
-```mermaid
-sequenceDiagram
-  participant C as Client
-  participant S as Server
-  C->>S: Request
-  S-->>C: Response
-```
