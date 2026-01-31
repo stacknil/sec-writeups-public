@@ -6,10 +6,7 @@ slug: networking-secure-protocols
 path: TryHackMe/40-networking/networking-secure-protocols.md
 topic: 40-networking
 domain: REF-Security
-skills:* tls
-* wireshark
-* ssh
-* vpn
+skills: tls,wireshark,ssh,vpn
 artifacts: concept-notes
 status: wip
 date: 2026-01-31
