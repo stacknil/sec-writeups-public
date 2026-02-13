@@ -122,3 +122,211 @@ https://doc.rust-lang.org/book/ch04-02-references-and-borrowing.html
 base64 crate docs (v0.22.1):
 https://docs.rs/base64/latest/base64/
 ```
+
+---
+
+## Appendix A — Room content
+
+### A1. What is Rust (high-level framing)
+
+* Rust is a compiled, low-level language positioned as “C++-class performance” with stronger safety guarantees and modern ergonomics.
+* Stated goals: **Fast**, **Secure**, **Productive**.
+* Security angle: memory safety is enforced by the **ownership model**; unsafe operations are possible but must be explicit (`unsafe`).
+
+### A2. Core safety model: ownership, move, borrow
+
+Ownership rules (as stated in the room):
+
+* Each value has an owner.
+* Only one owner at a time.
+* When the owner goes out of scope, the value is dropped.
+* Values can be moved or borrowed, but ownership remains single.
+
+Implication for beginners coming from Python/JS:
+
+* Many “it runs but is subtly wrong” patterns become **compile-time errors**.
+* Iterators / adapters may be **consumed** (moved) by methods; reusing them can trigger “use of moved value” errors.
+
+### A3. Tooling and project workflow
+
+Install and toolchain:
+
+* `rustup` manages Rust installs (stable/nightly).
+* `cargo` is the package manager / build tool.
+* Recommended ecosystem tooling mentioned: `rust-analyzer`, `clippy`, `rustfmt`.
+
+Cargo quick commands:
+
+* `cargo init` — initialise a new project.
+* `cargo run` — build + run.
+* `cargo build` — build only.
+* `cargo build --release` — optimised build (release profile).
+* `cargo fmt` — format code.
+* `cargo install <pkg>` — install a crate binary (example in room: `cargo install rustscan`).
+
+Project structure after `cargo init`:
+
+* `Cargo.toml`
+* `src/main.rs`
+* build outputs under `target/` (debug builds under `target/debug/`, release builds under `target/release/`).
+
+### A4. Variables, mutability, constants, shadowing
+
+Key rules:
+
+* Variables are immutable by default.
+* Use `mut` to allow mutation.
+* Use **shadowing** (`let x = ...; let x = ...;`) to “rebind” and even change types while keeping immutability semantics.
+* Constants use `const` (and cannot be shadowed in the same way as variables in the room’s tasks).
+
+### A5. Data types (what the room emphasises)
+
+Integers:
+
+* Unsigned: `u8 u16 u32 u64 u128` (positive only)
+* Signed: `i8 i16 i32 i64 i128` (positive/negative)
+* Pointer-sized: `usize` / `isize`
+
+Strings:
+
+* `String` — growable, heap-allocated string.
+* `&str` — string slice (borrowed view into string data).
+
+### A6. Functions (fn, arguments, return types)
+
+* Define with `fn name(args...) -> ReturnType { ... }`.
+* Arguments must be typed.
+* Rust returns the **last expression** if it has no trailing semicolon.
+* `main` exists for binaries and typically returns `()`.
+
+### A7. Loops and iteration (what shows up in the PDF)
+
+* `loop { ... }` — infinite loop until `break`.
+* `while <cond> { ... }` — conditional loop.
+* Iterators are emphasised as **lazy**; they do nothing until consumed.
+
+### A8. “Zero-cost abstractions” and iterators
+
+Room claim:
+
+* Iterators are a “zero-cost abstraction” pattern: you write high-level iterator pipelines without paying runtime overhead compared to hand-optimised low-level code.
+
+Example pipeline style (room pattern):
+
+```rust
+let a = vec![1, 2, 3];
+let sum_sq: i32 = a.iter()
+    .map(|&i| i * i)
+    .sum();
+```
+
+### A9. Easy parallelism with Rayon (as presented)
+
+The room introduces `rayon` as a crate where you can often switch:
+
+* `iter()` → `par_iter()`
+
+Minimal pattern:
+
+```rust
+use rayon::prelude::*;
+
+fn sum_of_squares(input: &[i32]) -> i32 {
+    input.par_iter().map(|&i| i * i).sum()
+}
+```
+
+### A10. If-expressions
+
+* `if` works as expected.
+* Additionally, `if` can be used as an **expression** to assign values:
+
+```rust
+let result = if cond { 15 } else { 200 };
+```
+
+### A11. Error handling with `Result<T, E>`
+
+Room framing:
+
+* Operations that can fail often return `Result<T, E>`.
+* Three techniques shown:
+
+  1. `.unwrap()` — assume success; panic on error.
+  2. `match` — branch on `Ok` / `Err`.
+  3. `?` operator — propagate `Err` to the caller; continue on `Ok`.
+
+Pattern:
+
+```rust
+use std::fs::File;
+use std::io::{self, Read};
+
+fn read_username_from_file() -> Result<String, io::Error> {
+    let mut f = File::open("username.txt")?;
+    let mut s = String::new();
+    f.read_to_string(&mut s)?;
+    Ok(s)
+}
+```
+
+### A12. Room checkpoint answers (extracted directly from the PDF)
+
+Tooling / project:
+
+* Install manager tool: `rustup`
+* New project: `cargo init`
+* Run: `cargo run`
+* Build: `cargo build`
+* Format: `cargo fmt`
+* Dependency file: `Cargo.toml`
+* Macro call marker: `!`
+* Release binaries path format: `target/release/`
+
+Mutability / shadowing:
+
+* Make mutable: `mut`
+* Define constant: `const`
+* Change value of an immutable binding (room answer): **shadowing**
+
+Types:
+
+* Smallest signed integer (room answer): `i16`
+* String slice type: `&str`
+* Type-hint a variable `x` as a string (room answer format): `x: String`
+* Create mutable `u32 tryhackme = 9`:
+
+```rust
+let mut tryhackme: u32 = 9;
+```
+
+Error handling:
+
+* Return type from opening a file (room answer): `Result`
+* Generic Result type (room answer format): `Result<T, E>`
+* Propagate errors upwards (room answer): `?`
+* Assume always `Ok` (room answer): `unwrap`
+
+Parallel iterator:
+
+* Crate used (room answer): `rayon`
+* Make iterator parallel (room answer): `a.par_iter()`
+
+### A13. Mini-lab: reverse pipeline (your ciphertext exercise)
+
+Keep your earlier approach: store intermediates as owned values (`Vec<u8>` / `String`) and chain one transform per line. This keeps ownership/borrowing simple for a first Rust implementation.
+
+---
+
+## Glossary (CN–EN)
+
+* ownership（所有权）
+* borrowing（借用）
+* move semantics（移动语义）
+* lifetime（生命周期）
+* `Result<T, E>`（结果类型/错误处理枚举）
+* zero-cost abstractions（零成本抽象）
+* iterator（迭代器）
+* crate（Rust 包/库）
+* macro（宏）
+* release profile（发布构建配置）
