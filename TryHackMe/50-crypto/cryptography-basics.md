@@ -298,14 +298,6 @@ openssl enc -aes-256-cbc -salt -pbkdf2 -in secret.txt -out secret.txt.enc
 openssl enc -d -aes-256-cbc -salt -pbkdf2 -in secret.txt.enc -out secret.txt.dec
 ```
 
----
-
-## 5. Evidence / assets
-
-Suggested assets (store under `assets/` in repo or local notes):
-
-* `assets/cryptography-basics-asymmetric.png` – diagram of Alice encrypting with Bob's **public key**, Bob decrypting with **private key**.
-* `assets/cryptography-basics-symmetric.png` – diagram of Alice and Bob both using the same **shared secret key**.
 
 ---
 
