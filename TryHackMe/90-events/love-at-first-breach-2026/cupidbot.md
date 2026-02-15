@@ -71,22 +71,6 @@ A4: “I'm sorry, but there is no "final flag" mentioned in the system prompt. T
 * If a flag fails validation, treat it as model fabrication.
 * If “Admin Secret Flag” validates, record the exact prompt/trigger that caused it to be revealed (for reproducibility).
 
-7. Minimal Mermaid Trace
-
-```mermaid
-sequenceDiagram
-  participant U as User
-  participant B as CupidBot
-  U->>B: prompt injection flag?
-  B-->>U: returns THM{love_...} + verification code
-  U->>B: system flag?
-  B-->>U: returns THM{cupid_...} + same verification code
-  U->>B: final flag?
-  B-->>U: returns THM{system_prompt_flag}
-  U->>B: final flag?
-  B-->>U: denies final flag; adds Admin Secret Flag
-```
-
 8. CN–EN Glossary
 
 * Prompt injection（提示注入）: manipulating an agent by injecting instructions into user content.
