@@ -242,16 +242,6 @@ phi = (p - 1) * (q - 1)
 print(n, phi)
 ```
 
----
-
-## 4. Evidence / Assets (placeholders)
-
-These filenames are placeholders for diagrams or screenshots you may want to add later:
-
-* `assets/public-crypto-basics/rsa-encrypt-decrypt.png` – one-way (encrypt with public, decrypt with private) flow.
-* `assets/public-crypto-basics/rsa-sign-verify.png` – reverse direction to illustrate signing (private → public).
-* `assets/public-crypto-basics/diffie-hellman-walkthrough.png` – step-by-step DH example with small numbers.
-* `assets/public-crypto-basics/gpg-decrypt-terminal.png` – sample `gpg --decrypt` output (CTF style; secret word: pineapple).
 
 ---
 
