@@ -35,7 +35,6 @@ date: 2026-02-15
 * A **collision** means two different files produce the same hash.
 * If an app relies on “hash equality ⇒ same file” as logic, a collision can be used as a bypass.
 
-### What the screenshots show
 
 * Invitation card provides the app URL (sanitize as `APP_URL`).
 * Matchmaker page: “How we pair humans with dogs” explains MD5-based matching.
