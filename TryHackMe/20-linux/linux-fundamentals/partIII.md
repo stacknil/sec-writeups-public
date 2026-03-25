@@ -1,11 +1,29 @@
-# TryHackMe – Linux Fundamentals Part 3
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, linux, operations]
+source: TryHackMe - Linux Fundamentals Part 3
+platform: tryhackme
+room: Linux Fundamentals Part 3
+slug: linux-fundamentals-part-3
+path: TryHackMe/20-linux/linux-fundamentals/partIII.md
+topic: 20-linux
+domain: [linux]
+skills: [processes, services, logs, cron, package-management]
+artifacts: [concept-notes, lab-notes]
+sanitized: true
+---
+
+# Linux Fundamentals Part 3
 
 > Module: Linux Fundamentals (Part 3 of 3)
 > Focus: utilities, processes, automation, package management, logging
 
 ---
 
-## 1. Summary
+## Summary
 
 Linux Fundamentals Part 3 is the final room in the TryHackMe Linux Fundamentals series. It assumes you can already navigate a Linux system and focuses on “day‑2” skills you will actually use during CTFs and in real environments:
 
@@ -37,14 +55,14 @@ Tasks in the room:
 
 ---
 
-## 3. Key concepts
+## Key Concepts
 
 ### 3.1 SSH recap (Task 2)
 
 You log into the target machine with SSH:
 
 ```bash
-ssh tryhackme@MACHINE_IP
+ssh tryhackme@TARGET_IP
 # password: tryhackme
 ```
 
@@ -141,8 +159,8 @@ Pattern:
 
 ```text
 scp SOURCE DESTINATION
-scp [local_path] USER@REMOTE_HOST:[remote_path]
-scp USER@REMOTE_HOST:[remote_path] [local_path]
+scp [local_path] USER@TARGET_HOST:[remote_path]
+scp USER@TARGET_HOST:[remote_path] [local_path]
 ```
 
 #### `python3 -m http.server` – quick ad‑hoc web server
@@ -383,7 +401,7 @@ Use `/` inside `less` to search.
 
 ---
 
-## 4. Commands cheat sheet
+### 4. Commands cheat sheet
 
 | Topic              | Command / Pattern                            | Notes                                    |
 | ------------------ | -------------------------------------------- | ---------------------------------------- |
@@ -409,12 +427,12 @@ Use `/` inside `less` to search.
 
 ---
 
-## 5. Typical workflow in this room
+### 5. Typical workflow in this room
 
 1. **Deploy and connect**
 
    * Start the machine from the TryHackMe task.
-   * SSH in as `tryhackme@MACHINE_IP`.
+   * SSH in as `tryhackme@TARGET_IP`.
 
 2. **Editor practice**
 
@@ -424,7 +442,7 @@ Use `/` inside `less` to search.
 3. **File transfer practice**
 
    * On the remote box, start `python3 -m http.server` in the home directory.
-   * From the AttackBox, use `wget http://MACHINE_IP:8000/.flag.txt` (or similar) to pull a file.
+   * From the AttackBox, use `wget http://TARGET_IP:8000/.flag.txt` (or similar) to pull a file.
 
 4. **Process inspection**
 
@@ -446,7 +464,7 @@ Use `/` inside `less` to search.
 
 ---
 
-## 6. Pitfalls and tips
+### 6. Pitfalls and tips
 
 * **Forgetting you are on the remote box** – double‑check with `whoami` and `pwd` before editing or deleting files.
 * **Blocking your shell** – `python3 -m http.server` and `top` occupy the terminal; use another tab or background them.
@@ -458,7 +476,7 @@ Practical habit: when you see a new tool in a room, immediately run `man TOOL` o
 
 ---
 
-## 7. Practice ideas beyond the room
+### 7. Practice ideas beyond the room
 
 * Write a small backup script and schedule it with `crontab` (e.g. tar your notes every night).
 * Serve a directory with `http.server` and pull files from another VM via `wget`.
@@ -468,7 +486,7 @@ Practical habit: when you see a new tool in a room, immediately run `man TOOL` o
 
 ---
 
-## 8. Glossary (EN → 中文)
+### 8. Glossary (EN → 中文)
 
 Short bilingual glossary for key terms:
 
@@ -485,7 +503,7 @@ Short bilingual glossary for key terms:
 
 ---
 
-## 9. Related tools and further reading
+### 9. Related tools and further reading
 
 * TryHackMe **Linux Fundamentals Part 1 & Part 2** – foundations before this room.
 * TryHackMe **Toolbox: Vim** – deeper dive into vim usage.

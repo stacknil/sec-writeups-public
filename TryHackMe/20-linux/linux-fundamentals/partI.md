@@ -1,8 +1,26 @@
-# Linux Fundamentals Part 1 — Notes
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, linux, fundamentals]
+source: TryHackMe - Linux Fundamentals Part 1
+platform: tryhackme
+room: Linux Fundamentals Part 1
+slug: linux-fundamentals-part-1
+path: TryHackMe/20-linux/linux-fundamentals/partI.md
+topic: 20-linux
+domain: [linux]
+skills: [shell-basics, files-perms, enum]
+artifacts: [concept-notes, lab-notes]
+sanitized: true
+---
+
+# Linux Fundamentals Part 1
 
 ---
 
-## 1. Context & Goals
+## Summary
 
 **Room:** TryHackMe — *Linux Fundamentals Part 1*
 **Focus:** first contact with Linux CLI and filesystem.
@@ -17,7 +35,9 @@ By the end of this room you should be able to:
 
 ---
 
-## 2. Where Linux actually lives
+## Key Concepts
+
+### 2. Where Linux actually lives
 
 Linux is not just “hackers’ desktops”. Typical deployment targets:
 
@@ -34,7 +54,7 @@ For this room, the target is **Ubuntu**.
 
 ---
 
-## 3. Terminal, shell and process model
+### 3. Terminal, shell and process model
 
 You rarely get a full GUI on servers; you mainly interact via a **terminal**.
 
@@ -50,7 +70,7 @@ You rarely get a full GUI on servers; you mainly interact via a **terminal**.
 tryhackme@linux1:~$  # type commands here
 ```
 
-### Conceptual view
+#### Conceptual view
 
 ```mermaid
 flowchart LR
@@ -67,9 +87,9 @@ You type into the **terminal**, which passes text to the **shell**, which runs *
 
 ---
 
-## 4. First commands
+### 4. First commands
 
-### 4.1 `echo` — print text
+#### 4.1 `echo` — print text
 
 ```bash
 $ echo Hello
@@ -82,7 +102,7 @@ Hello Friend!
 * No spaces → quotes optional.
 * With spaces → wrap the whole string in quotes.
 
-### 4.2 `whoami` — identify current user
+#### 4.2 `whoami` — identify current user
 
 ```bash
 $ whoami
@@ -93,11 +113,11 @@ Useful in multi-user systems and CTFs to confirm which account you’re in.
 
 ---
 
-## 5. Interacting with the filesystem
+### 5. Interacting with the filesystem
 
 Core mental model: Linux has a **single rooted tree** (`/`), with directories and files.
 
-### 5.1 Listing contents: `ls`
+#### 5.1 Listing contents: `ls`
 
 ```bash
 $ ls
@@ -107,7 +127,7 @@ $ ls
 * `ls` with no args → list current directory.
 * `ls DIR` → list contents of `DIR` without cd’ing into it.
 
-### 5.2 Changing directory: `cd`
+#### 5.2 Changing directory: `cd`
 
 ```bash
 $ cd Pictures
@@ -121,7 +141,7 @@ Special paths:
 * `..` = parent directory
 * `~` = home directory (e.g. `/home/ubuntu`)
 
-### 5.3 Printing current path: `pwd`
+#### 5.3 Printing current path: `pwd`
 
 ```bash
 $ pwd
@@ -130,7 +150,7 @@ $ pwd
 
 Use this when you’re lost or when you want a full path you can re-use later.
 
-### 5.4 Viewing file content: `cat`
+#### 5.4 Viewing file content: `cat`
 
 ```bash
 $ ls
@@ -147,11 +167,11 @@ Here is something important for me to do later!
 
 ---
 
-## 6. Searching for files and content
+### 6. Searching for files and content
 
 At scale, manual `cd` + `ls` quickly becomes inefficient. Use `find` and `grep`.
 
-### 6.1 `find` — search by name / pattern
+#### 6.1 `find` — search by name / pattern
 
 **Basic patterns from the room:**
 
@@ -172,7 +192,7 @@ Notes:
 * You can specify a starting path: `find /var -name '*.log'`.
 * `*` is a wildcard that matches any string in the filename.
 
-### 6.2 `grep` — search inside files
+#### 6.2 `grep` — search inside files
 
 `grep` scans file contents and prints lines that match a pattern:
 
@@ -194,9 +214,9 @@ Typical use cases in security:
 
 ---
 
-## 7. Shell operators (very small but very powerful)
+### 7. Shell operators (very small but very powerful)
 
-### 7.1 Background execution: `&`
+#### 7.1 Background execution: `&`
 
 Run long operations in the background so your shell stays usable.
 
@@ -206,17 +226,17 @@ $ cp huge.iso /mnt/usb &
 $  # prompt is free again
 ```
 
-### 7.2 Command chaining: `&&`
+#### 7.2 Command chaining: `&&`
 
 Run command2 **only if** command1 succeeds (exit status 0).
 
 ```bash
-$ mkdir reports && cd reports
+mkdir reports && cd reports
 ```
 
 Good pattern for safe chained operations.
 
-### 7.3 Redirect output: `>`
+#### 7.3 Redirect output: `>`
 
 Create/overwrite a file with the output of a command.
 
@@ -228,7 +248,7 @@ hey
 
 * If `welcome` exists, it will be **overwritten**.
 
-### 7.4 Append output: `>>`
+#### 7.4 Append output: `>>`
 
 Append to a file instead of overwriting.
 
@@ -243,7 +263,7 @@ Useful for building logs, reports, or collecting findings.
 
 ---
 
-## 8. Recap — what this Part 1 gives you
+### 8. Recap — what this Part 1 gives you
 
 You now have enough to be **functional** on a basic Linux host:
 
@@ -262,7 +282,7 @@ Next steps (beyond this room):
 
 ---
 
-## 9. Glossary (EN → ZH)
+### 9. Glossary (EN → ZH)
 
 * Linux distribution (distro) → Linux 发行版
 * Terminal → 终端
