@@ -1,10 +1,30 @@
-# Advent of Cyber 2025 – Day 9
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-12
+tags: [security-writeup, tryhackme, aoc2025, passwords]
+source: TryHackMe - Advent of Cyber 2025 Day 9
+platform: tryhackme
+room: Advent of Cyber 2025 Day 09 - Passwords - A Cracking Christmas
+slug: aoc-2025-day-09-passwords-a-cracking-christmas
+path: TryHackMe/90-events/thm-aoc-2025/Day 09 - Passwords - A Cracking Christmas.md
+topic: 90-events
+domain: [crypto]
+skills: [password-cracking, hash-recognition]
+artifacts: [lab-notes]
+sanitized: true
+---
 
-## Passwords – “A Cracking Christmas” (Notes)
+# Advent of Cyber 2025 Day 09 - Passwords - A Cracking Christmas
+
+## Summary
 
 ---
 
-## 1. Story setup
+## Key Concepts
+
+### 1. Story setup
 
 * Time between **Easter** and **Christmas** is destabilised.
 * Best Festival Company (TBFC) systems show **encrypted data** traces.
@@ -14,7 +34,7 @@
 
 ---
 
-## 2. Password‑based encryption recap
+### 2. Password‑based encryption recap
 
 * Files like **PDF** and **ZIP** can be encrypted with a **password-derived key**.
 * Crypto primitives may be strong (AES, etc.), but **security ≈ password strength**.
@@ -33,9 +53,9 @@
 
 ---
 
-## 3. Common attack types
+### 3. Common attack types
 
-### 3.1 Dictionary attacks
+#### 3.1 Dictionary attacks
 
 * Use a **wordlist** (dictionary) of likely passwords and test each in turn.
 * Wordlists are often built from:
@@ -44,7 +64,7 @@
   * Common patterns (names+years, keyboard walks, simple substitutions).
 * Very effective because many users still choose weak, common passwords.
 
-### 3.2 Brute‑force & mask attacks
+#### 3.2 Brute‑force & mask attacks
 
 * **Brute force**: try all combinations in a given charset & length until success.
 
@@ -55,7 +75,7 @@
 * Mask attacks are used when we have partial knowledge of password structure,
   shrinking the search space vs pure brute force.
 
-### 3.3 Practical cracking tips (attacker mindset)
+#### 3.3 Practical cracking tips (attacker mindset)
 
 * Start with **general wordlists** (fast wins), then move to:
 
@@ -66,11 +86,11 @@
 
 ---
 
-## 4. Hands‑on: cracking the lab files
+### 4. Hands‑on: cracking the lab files
 
 Files are on the **Desktop** of the TryHackMe AttackBox.
 
-### 4.1 Recon: confirm file types
+#### 4.1 Recon: confirm file types
 
 ```bash
 cd ~/Desktop
@@ -84,13 +104,13 @@ file flag.zip
   * `flag.pdf` → encrypted PDF.
   * `flag.zip` → password‑protected ZIP archive (WinZip AES, PBKDF2‑SHA1).
 
-### 4.2 Cracking the PDF with `pdfcrack`
+#### 4.2 Cracking the PDF with `pdfcrack`
 
 1. Run dictionary attack with `rockyou.txt` wordlist:
 
-```bash
-pdfcrack -f flag.pdf -w /usr/share/wordlists/rockyou.txt
-```
+   ```bash
+   pdfcrack -f flag.pdf -w /usr/share/wordlists/rockyou.txt
+   ```
 
 2. Tool parses PDF encryption metadata (version, length, etc.), then:
 
@@ -102,7 +122,7 @@ pdfcrack -f flag.pdf -w /usr/share/wordlists/rockyou.txt
 You then open the PDF viewer (e.g. `evince flag.pdf`) and enter the
 recovered password to see the **THM flag** inside.
 
-### 4.3 Cracking the ZIP with `zip2john` + `john`
+#### 4.3 Cracking the ZIP with `zip2john` + `john`
 
 **Stage 1 – extract crackable hash**
 
@@ -132,9 +152,9 @@ cat flag.txt     # inside is the THM flag for the ZIP part
 
 ---
 
-## 5. Detection: what defenders can see
+### 5. Detection: what defenders can see
 
-### 5.1 Process & command‑line telemetry
+#### 5.1 Process & command‑line telemetry
 
 * Look for creation of cracking tools and helper binaries, e.g.:
 
@@ -146,7 +166,7 @@ cat flag.txt     # inside is the THM flag for the ZIP part
 * Windows: **Sysmon Event ID 1** for process creation with full command line.
 * Linux: `auditd` rules on `execve`, or EDR sensors tracking binaries+arguments.
 
-### 5.2 GPU & resource artefacts
+#### 5.2 GPU & resource artefacts
 
 * GPU cracking is noisy:
 
@@ -154,14 +174,14 @@ cat flag.txt     # inside is the THM flag for the ZIP part
   * High, steady GPU utilisation & power; fan curve spikes.
   * Libraries loaded: `nvcuda.dll`, `libcuda.so`, `OpenCL.dll`, etc.
 
-### 5.3 Network hints
+#### 5.3 Network hints
 
 * Offline cracking itself is network‑silent, but provisioning is not:
 
   * Large downloads named `rockyou.txt` or clones of wordlist repositories.
   * Package installs: `apt install john hashcat`, tool updates, GPU drivers.
 
-### 5.4 File access patterns
+#### 5.4 File access patterns
 
 * Repeated reads of:
 
@@ -174,7 +194,7 @@ cat flag.txt     # inside is the THM flag for the ZIP part
 
 ---
 
-## 6. Incident response playbook (defender)
+### 6. Incident response playbook (defender)
 
 1. **Triage & contain**
 
@@ -207,7 +227,7 @@ cat flag.txt     # inside is the THM flag for the ZIP part
 
 ---
 
-## 7. Takeaways
+## Takeaways
 
 * Encryption is only as strong as the **password and KDF parameters** behind it.
 * **Dictionary attacks** are devastating against weak human‑chosen passwords.

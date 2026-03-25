@@ -1,4 +1,22 @@
-# Cross-Site Scripting (XSS) — SOC Notes (TryHackMe AoC Day 11)
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-12
+tags: [security-writeup, tryhackme, aoc2025, xss]
+source: TryHackMe - Advent of Cyber 2025 Day 11
+platform: tryhackme
+room: Advent of Cyber 2025 Day 11 - XSS - Merry XSSMas
+slug: aoc-2025-day-11-xss-merry-xssmas
+path: TryHackMe/90-events/thm-aoc-2025/Day 11 - XSS - Merry XSSMas.md
+topic: 90-events
+domain: [web]
+skills: [xss, input-validation]
+artifacts: [lab-notes]
+sanitized: true
+---
+
+# Advent of Cyber 2025 Day 11 - XSS - Merry XSSMas
 
 ## Summary
 
@@ -9,7 +27,9 @@ In this lab, the “message portal” demonstrates two core variants:
 * **Reflected XSS**: payload is *immediately reflected* in the response.
 * **Stored XSS**: payload is *persisted server-side* (e.g., DB) and executed for anyone who loads the affected page.
 
-## Threat Model
+## Key Concepts
+
+### Threat Model
 
 **Attacker goal**: execute JavaScript in the victim’s browser.
 
@@ -21,9 +41,9 @@ Typical impacts (impact surface depends on app/session design):
 * Content defacement
 * Pivot into further browser-side exploitation
 
-## Types (Conceptual)
+### Types (Conceptual)
 
-### Reflected XSS
+#### Reflected XSS
 
 Request contains payload → server reflects it in HTML → browser executes.
 
@@ -36,7 +56,7 @@ User input (query string / form)
       -> JS executes immediately
 ```
 
-### Stored XSS
+#### Stored XSS
 
 Payload saved → later rendered from storage → browser executes for each visitor.
 
@@ -49,19 +69,19 @@ User input (comment/message)
       -> Browser renders & executes payload
 ```
 
-### (Bonus) DOM-Based XSS
+#### (Bonus) DOM-Based XSS
 
 No server reflection required: client-side JS reads attacker-controlled data and writes to dangerous DOM sinks.
 
-## Lab Workflow (Attack Perspective)
+### Lab Workflow (Attack Perspective)
 
-### 1) Recon: find an input that reflects
+#### 1) Recon: find an input that reflects
 
 * Use the **search bar**.
 * Submit a benign marker like `test`.
 * If the results page prints your input back, you have a candidate reflection point.
 
-### 2) Prove Reflected XSS
+#### 2) Prove Reflected XSS
 
 Test payload:
 
@@ -73,7 +93,7 @@ Expected: alert popup triggered **only** for that request.
 
 **Room behavior**: after a successful reflected execution, the page reveals the *Reflected XSS flag* (copy it from the UI).
 
-### 3) Prove Stored XSS
+#### 3) Prove Stored XSS
 
 Use the **send message** form (a persisted input path).
 
@@ -87,15 +107,15 @@ Expected: after submission, **refresh / revisit** the page → alert triggers ag
 
 **Room behavior**: after a successful stored execution, the page reveals the *Stored XSS flag* (copy it from the UI).
 
-## Blue-Team View: What to Look for in Logs
+### Blue-Team View: What to Look for in Logs
 
-### High-signal indicators
+#### High-signal indicators
 
 * Literal strings: `<script>`, `</script>`, `onerror=`, `onload=`, `javascript:`
 * Unusual encoding patterns: `%3Cscript%3E`, HTML entities (`&lt;script&gt;`), mixed/stacked encodings
 * Suspicious keywords: `document.cookie`, `fetch(`, `XMLHttpRequest`, `atob(`, `eval(`
 
-### Triage logic (SOC-style)
+#### Triage logic (SOC-style)
 
 Use a quick decision frame:
 
@@ -104,9 +124,9 @@ Use a quick decision frame:
 * **Context/Stage**: recon → exploit attempt → persistence (stored) → follow-on actions
 * **Impact**: which pages/users are affected? public vs authenticated admin pages?
 
-## Defensive Engineering (Fixes That Actually Work)
+### Defensive Engineering (Fixes That Actually Work)
 
-### Core principle: context-aware output encoding
+#### Core principle: context-aware output encoding
 
 Treat input as *data*, not *code*. Apply the correct encoding for the output context:
 
@@ -115,12 +135,12 @@ Treat input as *data*, not *code*. Apply the correct encoding for the output con
 * JS context
 * URL context
 
-### Avoid dangerous DOM sinks
+#### Avoid dangerous DOM sinks
 
 * Prefer `textContent` over `innerHTML` for inserting user-controlled content.
 * If you must render limited HTML, use a **well-maintained sanitizer** (allowlist-based).
 
-### Harden cookies/session
+#### Harden cookies/session
 
 Set cookies to reduce XSS impact:
 
@@ -128,7 +148,7 @@ Set cookies to reduce XSS impact:
 * `Secure` (HTTPS only)
 * `SameSite` (limits cross-site sending)
 
-### Add defense-in-depth
+#### Add defense-in-depth
 
 * **CSP (Content Security Policy)** to restrict script sources and reduce exploitability.
 * Rate limit / bot controls to reduce automated payload spraying.

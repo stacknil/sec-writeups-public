@@ -1,10 +1,28 @@
-# Splunk Basics – "Did you SIEM?" (TryHackMe AoC 2025 Day 3)
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-12
+tags: [security-writeup, tryhackme, aoc2025, splunk, siem]
+source: TryHackMe - Advent of Cyber 2025 Day 3
+platform: tryhackme
+room: Advent of Cyber 2025 Day 03 - Splunk Basics - Did you SIEM?
+slug: aoc-2025-day-03-splunk-basics-did-you-siem
+path: TryHackMe/90-events/thm-aoc-2025/Day 03 - Splunk Basics – _Did you SIEM__.md
+topic: 90-events
+domain: [blueteam]
+skills: [logging, triage]
+artifacts: [lab-notes]
+sanitized: true
+---
+
+# Advent of Cyber 2025 Day 03 - Splunk Basics - Did you SIEM?
 
 Study notes for the TryHackMe Advent of Cyber room **“Splunk Basics – Did you SIEM?”**. Focus: using Splunk as a lightweight SIEM to investigate a web‑server ransomware incident.
 
 ---
 
-## 0. Scenario & Goals
+## Summary
 
 **Story:**
 
@@ -28,15 +46,15 @@ Room data is in index `main` with two sourcetypes:
 
 ---
 
-## 1. Splunk Basics Refresher
+## Key Concepts
+
+### 1. Splunk Basics Refresher
 
 Key concepts:
 
 * **Index** – logical bucket of events, e.g. `index=main`.
 * **Sourcetype** – format / log type label, e.g. `sourcetype=web_traffic` or `firewall_logs`.
 * **Event** – one log line after parsing.
-
-
 * **Fields** – key–value pairs such as `client_ip`, `user_agent`, `path`, parsed from events (often auto‑extracted for web logs). citeturn0search29
 * **SPL search** – pipeline of commands separated by `|` (search → stats / timechart → sort → table, etc.).
 * **`timechart`** – aggregates over time buckets: e.g. `| timechart span=1d count` = daily event counts. citeturn0search27
@@ -54,7 +72,7 @@ Interface pieces:
 
 ---
 
-## 2. Load All Logs & Identify Sourcetypes
+### 2. Load All Logs & Identify Sourcetypes
 
 ```spl
 index=main
@@ -72,10 +90,9 @@ This tells us we’ll do:
 * Primary investigation in `web_traffic`.
 * Validation / C2 correlation in `firewall_logs`.
 
-
 ---
 
-## 3. Initial Triage on Web Logs
+### 3. Initial Triage on Web Logs
 
 Search only the web access logs:
 
@@ -99,7 +116,7 @@ These fields will drive most of the hunting.
 
 ---
 
-## 4. Visualising Daily Volume & Finding the Peak Day
+### 4. Visualising Daily Volume & Finding the Peak Day
 
 Goal: detect abnormal daily volume → candidate attack day.
 
@@ -125,11 +142,11 @@ index=main sourcetype=web_traffic
 
 ---
 
-## 5. Field‑Based Anomaly Detection
+### 5. Field‑Based Anomaly Detection
 
 Still on `index=main sourcetype=web_traffic`, switch back to **Events**.
 
-### 5.1 user_agent
+#### 5.1 user_agent
 
 1. Click **`user_agent`** under interesting fields.
 2. Splunk shows **Top 10 Values**:
@@ -139,13 +156,13 @@ Still on `index=main sourcetype=web_traffic`, switch back to **Events**.
 
 These non‑browser agents are strong **IOC candidates**.
 
-### 5.2 client_ip
+#### 5.2 client_ip
 
 1. Click **`client_ip`**.
 2. Look for an IP with **~7,8k events** – obviously higher than any other.
-3. Treat this as **ATTACKER_IP** (write it down; used later where the room text uses `<REDACTED>`).
+3. Treat this as **ATTACKER_IP** (write it down; used later where the room text uses `VALUE_REDACTED`).
 
-### 5.3 path
+#### 5.3 path
 
 1. Click **`path`** field.
 2. Observe top URLs:
@@ -160,7 +177,7 @@ We already see **SQL injection** and **path traversal** behaviour.
 
 ---
 
-## 6. Filter Out Benign User Agents
+### 6. Filter Out Benign User Agents
 
 We know King Malhare’s bunnies prefer tools, not normal browsers. Remove common browser agents to focus on scripted traffic:
 
@@ -196,11 +213,11 @@ Top row is the **primary attacker IP** used by the Bandit Bunnies.
 
 ---
 
-## 7. Tracing the Attack Chain (by ATTACKER_IP)
+### 7. Tracing the Attack Chain (by ATTACKER_IP)
 
 For the rest of the queries, always plug in the ATTACKER_IP discovered above.
 
-### 7.1 Recon / Footprinting
+#### 7.1 Recon / Footprinting
 
 Look for early probing of config files and env info:
 
@@ -214,7 +231,7 @@ sourcetype=web_traffic client_ip="ATTACKER_IP" \
 * Status codes: mostly `401`, `403`, `404` (unauthorized / forbidden / not found).
 * Interpretation: classic **reconnaissance** and **tech‑stack fingerprinting**.
 
-### 7.2 Enumeration – Path Traversal & Redirects
+#### 7.2 Enumeration – Path Traversal & Redirects
 
 Initial quick search:
 
@@ -234,7 +251,7 @@ sourcetype=web_traffic client_ip="ATTACKER_IP" \
 * Paths with `../../` show **directory traversal attempts**, e.g. trying to read `/etc/passwd` or other sensitive files.
 * The `count` column gives the answer for: *“How many path traversal attempts to access sensitive files?”*
 
-### 7.3 SQL Injection (sqlmap / Havij)
+#### 7.3 SQL Injection (sqlmap / Havij)
 
 Search for automated SQLi tools via user_agent and show relevant events:
 
@@ -248,7 +265,7 @@ sourcetype=web_traffic client_ip="ATTACKER_IP" \
 * `status=504` indicates **gateway timeout** – often evidence that a time‑based SQL injection using `SLEEP()` actually executed.
 * The **number of events with `Havij` in user_agent** answers the question: *“What is the count of Havij user_agent events?”*
 
-### 7.4 Exfiltration Attempts (backup/log archives)
+#### 7.4 Exfiltration Attempts (backup/log archives)
 
 Look for downloads of compressed archives:
 
@@ -261,7 +278,7 @@ sourcetype=web_traffic client_ip="ATTACKER_IP" \
 * Shows which archives were pulled (likely via `curl`, `wget`, `zgrab`).
 * These are **high‑value artefacts** for data theft and double‑extortion.
 
-### 7.5 Webshell & Ransomware Execution (RCE)
+#### 7.5 Webshell & Ransomware Execution (RCE)
 
 Search for indicators of webshell and ransomware binary:
 
@@ -279,7 +296,7 @@ Interpretation:
 
 ---
 
-## 8. Pivoting to Firewall Logs – C2 & Data Volume
+### 8. Pivoting to Firewall Logs – C2 & Data Volume
 
 The compromised web server’s local IP (per room text) is:
 
@@ -289,7 +306,7 @@ The compromised web server’s local IP (per room text) is:
 
 We now investigate whether it talked to ATTACKER_IP over the internet.
 
-### 8.1 Confirm C2 Connection
+#### 8.1 Confirm C2 Connection
 
 ```spl
 sourcetype=firewall_logs \
@@ -303,7 +320,7 @@ sourcetype=firewall_logs \
 * `action=ALLOWED` → firewall did **not** block the traffic.
 * `reason=C2_CONTACT` (room‑specific field) → explicit flag that this is **command‑and‑control**.
 
-### 8.2 Calculate Total Data Exfiltrated
+#### 8.2 Calculate Total Data Exfiltrated
 
 ```spl
 sourcetype=firewall_logs \
@@ -319,7 +336,7 @@ sourcetype=firewall_logs \
 
 ---
 
-## 9. Summary of the Kill Chain
+### 9. Summary of the Kill Chain
 
 High‑level reconstruction:
 
@@ -339,7 +356,7 @@ As a SOC analyst, Splunk gives you:
 
 ---
 
-## 10. Diagram – Investigation Flow
+### 10. Diagram – Investigation Flow
 
 ```mermaid
 flowchart LR
@@ -353,76 +370,38 @@ flowchart LR
 
 ---
 
-## 11. Room Questions – How To Derive Answers
-
+### 11. Room Questions – How To Derive Answers
 
 > In my own write‑up I keep the **exact values** out and only note **how to obtain them** inside Splunk.
-
-
-
 
 1. **Attacker IP**
 
    * Query: `index=main sourcetype=web_traffic user_agent!=*Mozilla* ...` (exclude common browsers).
-
-
-
-
    * Click `client_ip` → the single IP with ~7,8k events = **ATTACKER_IP**.
-
-
-
 
 2. **Peak traffic day (YYYY-MM-DD)**
 
-   * Query: `index=main sourcetype=web_traffic | timechart span=1d count | sort by count | reverse
-
-`.
-
+   * Query: `index=main sourcetype=web_traffic | timechart span=1d count | sort by count | reverse`.
    * Top `_time` row = date with highest `count`.
-
-
 
 3. **Count of Havij user_agent events**
 
    * Either click `user_agent` and read the count for `Havij/1.17 (Automated SQL Injection)`.
-
-
-
    * Or: `sourcetype=web_traffic user_agent=*Havij* | stats count`.
-
-
-
-
 
 4. **Number of path traversal attempts**
 
-
-   * Query:
-     `sourcetype=web_traffic client_ip="ATTACKER_IP" AND path="*..\/..\/*" | stats count
-
-
-`.
+   * Query: `sourcetype=web_traffic client_ip="ATTACKER_IP" AND path="*..\/..\/*" | stats count`.
    * That `count` value is the answer.
-
-
-
-
 
 5. **Total bytes transferred from web server to C2**
 
-
-   * Query:
-     `sourcetype=firewall_logs src_ip="10.10.1.5" AND dest_ip="ATTACKER_IP" AND action="ALLOWED" | stats sum(bytes_transferred) by src_ip
-
-
-`.
+   * Query: `sourcetype=firewall_logs src_ip="10.10.1.5" AND dest_ip="ATTACKER_IP" AND action="ALLOWED" | stats sum(bytes_transferred) by src_ip`.
    * `sum(bytes_transferred)` is the answer.
-
 
 ---
 
-## 12. Mini Glossary (中英术语对照)
+### 12. Mini Glossary (中英术语对照)
 
 * **SIEM (Security Information and Event Management)** – 安全信息与事件管理平台。
 * **SPL (Search Processing Language)** – Splunk 查询语言。

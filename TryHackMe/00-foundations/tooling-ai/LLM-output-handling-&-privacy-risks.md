@@ -1,10 +1,28 @@
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, llm-security, privacy]
+source: TryHackMe - LLM Output Handling and Privacy Risks
+platform: tryhackme
+room: LLM Output Handling and Privacy Risks
+slug: llm-output-handling-and-privacy-risks
+path: TryHackMe/00-foundations/tooling-ai/LLM-output-handling-&-privacy-risks.md
+topic: 00-foundations
+domain: [foundations, web]
+skills: [input-validation, xss, auth-session, threat-modeling]
+artifacts: [concept-notes, pattern-card]
+sanitized: true
+---
+
 # AI/ML Security Threats + LLM Output Handling & Privacy Risks
 
 > Scope: Intro-level notes for blue-team / appsec work on AI-enabled systems, with emphasis on **LLM output as an attack surface**.
 
 ---
 
-## 1) Mental Model: What is AI/ML/DL/GenAI/LLMs?
+## Summary
 
 ### Layer cake (taxonomy)
 
@@ -23,7 +41,9 @@ LLMs shift the trust boundary:
 
 ---
 
-## 2) ML lifecycle (where risks appear)
+## Key Concepts
+
+### 2) ML lifecycle (where risks appear)
 
 A practical cycle (iterative, not linear):
 
@@ -45,9 +65,9 @@ Security mapping (where to place controls):
 
 ---
 
-## 3) Threat landscape: two buckets
+### 3) Threat landscape: two buckets
 
-### A) “AI-model-native” vulnerabilities (new attack surface)
+#### A) “AI-model-native” vulnerabilities (new attack surface)
 
 Common examples you’ll see in LLM security discussions:
 
@@ -57,7 +77,7 @@ Common examples you’ll see in LLM security discussions:
 * **Privacy Leakage**: model reveals secrets, PII, or internal prompts/context.
 * **Model Drift**: performance shifts because reality/data changes; can be exploited to evade detection.
 
-### B) “Enhanced classic attacks” (old attacks, more scalable)
+#### B) “Enhanced classic attacks” (old attacks, more scalable)
 
 * **Phishing**: better language, personalization, multilingual fluency.
 * **Malware/code generation**: faster iteration, polymorphism assistance.
@@ -65,9 +85,9 @@ Common examples you’ll see in LLM security discussions:
 
 ---
 
-## 4) Output risks: the core idea
+### 4) Output risks: the core idea
 
-### Principle: Treat model output as **untrusted data**
+#### Principle: Treat model output as **untrusted data**
 
 LLM output can:
 
@@ -80,21 +100,21 @@ If your system assumes “the model is safe,” you’ve created a new injection
 
 ---
 
-## 5) Improper Output Handling (LLM05)
+### 5) Improper Output Handling (LLM05)
 
-### Typical failure modes
+#### Typical failure modes
 
 * **Frontend rendering**: output inserted into DOM without escaping (e.g., via HTML rendering).
 * **Server-side templates**: output placed into template context; template syntax becomes code.
 * **Automation**: output becomes commands/queries and is executed.
 
-### Why it’s easy to miss
+#### Why it’s easy to miss
 
 * People trust “internal assistants.”
 * Output feels like content, not code.
 * The attacker’s control is indirect: they shape output via prompts.
 
-### What “good” looks like
+#### What “good” looks like
 
 * Output encoding/escaping by default.
 * Strict allowlists for formats (e.g., only plaintext/limited markdown).
@@ -103,16 +123,16 @@ If your system assumes “the model is safe,” you’ve created a new injection
 
 ---
 
-## 6) Sensitive Information Disclosure (LLM02)
+### 6) Sensitive Information Disclosure (LLM02)
 
-### Main leak pathways
+#### Main leak pathways
 
 * **Training-data memorization**: rare but high impact.
 * **Context bleed**: secrets injected at runtime (system prompt, RAG, tools) appear in answers.
 * **Conversation history leaks**: multi-tenant or poor session isolation.
 * **System prompt exposure**: attacker coaxes hidden instructions.
 
-### Key misconception
+#### Key misconception
 
 > “The model won’t reveal secrets unless told to.”
 
@@ -120,7 +140,7 @@ Models don’t *understand* sensitivity; they pattern-match. If secrets exist in
 
 ---
 
-## 7) Practical lab takeaway (safe summary)
+### 7) Practical lab takeaway (safe summary)
 
 Two classic failure patterns:
 
@@ -137,7 +157,7 @@ The “root bug” is not the model — it’s the system’s **trust boundary**
 
 ---
 
-## 8) Defensive AI: where LLMs help blue teams
+### 8) Defensive AI: where LLMs help blue teams
 
 LLMs can increase defensive capacity when used safely:
 
@@ -150,9 +170,9 @@ Caveat: the model is a *copilot*, not an *autopilot*.
 
 ---
 
-## 9) Mitigation playbook (actionable)
+### 9) Mitigation playbook (actionable)
 
-### Output safety controls (LLM05)
+#### Output safety controls (LLM05)
 
 * **Render safely**
 
@@ -166,7 +186,7 @@ Caveat: the model is a *copilot*, not an *autopilot*.
   * Validate arguments; enforce policy rules; run in sandbox.
   * Require approval for destructive/high-privilege actions.
 
-### Data privacy controls (LLM02)
+#### Data privacy controls (LLM02)
 
 * **Minimize data in context** (least privilege for prompts + RAG).
 * **Secrets hygiene**
@@ -183,7 +203,7 @@ Caveat: the model is a *copilot*, not an *autopilot*.
   * Detect sensitive patterns in outputs (keys, tokens, PII markers).
   * Rate-limit suspicious queries; log with care.
 
-### Model governance
+#### Model governance
 
 * Document threats and controls (threat modeling).
 * Use adversarial testing (red teaming) before deployment.
@@ -191,9 +211,9 @@ Caveat: the model is a *copilot*, not an *autopilot*.
 
 ---
 
-## 10) Quick checklists
+### 10) Quick checklists
 
-### Builder checklist (LLM app)
+#### Builder checklist (LLM app)
 
 * [ ] Output encoded/escaped by default
 * [ ] Sanitization/allowlist for rich formats
@@ -203,7 +223,7 @@ Caveat: the model is a *copilot*, not an *autopilot*.
 * [ ] Abuse monitoring + rate limiting
 * [ ] Incident response plan includes LLM failure modes
 
-### Tester checklist (LLM appsec)
+#### Tester checklist (LLM appsec)
 
 * [ ] Can output become active HTML/JS/templates?
 * [ ] Can output reach shells/SQL/CI/CD?

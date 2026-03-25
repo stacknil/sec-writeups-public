@@ -1,6 +1,24 @@
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, blue-team, training]
+source: TryHackMe - Training Impact on Teams
+platform: tryhackme
+room: Training Impact on Teams
+slug: training-impact-on-teams
+path: TryHackMe/80-blue-team/training-impact-on-teams/training-impact-on-teams.md
+topic: 80-blue-team
+domain: [blueteam]
+skills: [awareness-training, reporting, risk-communication]
+artifacts: [concept-notes]
+sanitized: true
+---
+
 # Training Impact on Teams
 
-## 1. Overview
+## Summary
 
 This note summarises the **TryHackMe room: *Training Impact on Teams*** and the attached 1‑page business case on cyber security training.
 
@@ -8,9 +26,11 @@ Goal: understand **why structured cyber security training matters** for both ind
 
 ---
 
-## 2. Why Cyber Security Training Matters
+## Key Concepts
 
-### 2.1 For individuals
+### 2. Why Cyber Security Training Matters
+
+#### 2.1 For individuals
 
 * Cyber security is a **skill‑based discipline** – mastery requires **practice + feedback**, not just theory.
 * Safe practice usually needs an **isolated lab environment** so experiments don’t damage production systems.
@@ -20,7 +40,7 @@ Goal: understand **why structured cyber security training matters** for both ind
   * A way to **keep skills up to date** as tools, threats and techniques evolve.
   * A social layer (team CTFs, shared rooms) that **builds relationships and trust** inside the team.
 
-### 2.2 For organisations
+#### 2.2 For organisations
 
 * "An ounce of prevention is worth a pound of cure":
 
@@ -41,7 +61,7 @@ Goal: understand **why structured cyber security training matters** for both ind
 
 ---
 
-## 3. Training for Larger Organisations
+### 3. Training for Larger Organisations
 
 When teams grow (≈20+ people) or requirements are specialised, **generic off‑the‑shelf paths are not enough**.
 
@@ -59,9 +79,9 @@ Key ideas:
 
 ---
 
-## 4. Financial Impact & ROI of Training
+### 4. Financial Impact & ROI of Training
 
-### 4.1 Example calculation (from room text)
+#### 4.1 Example calculation (from room text)
 
 Assumptions:
 
@@ -88,7 +108,7 @@ Interpretation:
 * Spending $5k on training **unlocks ≈$32k worth of extra productive capacity** per year.
 * Even if the 4% assumption is optimistic, the investment still looks attractive.
 
-### 4.2 1‑page business case – core points
+#### 4.2 1‑page business case – core points
 
 From the attached “Cost savings by investing in Cyber Security training” one‑pager:
 
@@ -117,7 +137,7 @@ From the attached “Cost savings by investing in Cyber Security training” one
 
 ---
 
-## 5. Writing a Cyber Security Training Investment Proposal
+### 5. Writing a Cyber Security Training Investment Proposal
 
 When proposing training spend to management (especially CFO / HR / CISO), emphasise:
 
@@ -154,7 +174,7 @@ When proposing training spend to management (especially CFO / HR / CISO), emphas
 
 ---
 
-## 6. Vendor Selection – Key Questions
+### 6. Vendor Selection – Key Questions
 
 When selecting a training vendor, decision‑makers should ask:
 
@@ -187,7 +207,7 @@ When selecting a training vendor, decision‑makers should ask:
 
 ---
 
-## 7. Takeaways
+## Takeaways
 
 * Training is both a **technical necessity** and a **business investment**.
 * Good training platforms:

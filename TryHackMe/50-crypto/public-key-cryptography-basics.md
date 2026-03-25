@@ -1,20 +1,24 @@
 ---
-
-platform: TryHackMe
-room: Public Key Cryptography Basics
-slug: public-crypto-basics
-path: 50-crypto/public-key-cryptography-basics
-topic: 50-crypto
-domain: [CRYPTO, NETWORK-SECURITY]
-skills: [PUBLIC-KEY-CRYPTO, RSA, DIFFIE-HELLMAN, SSH, TLS-CERTS, PGP-GPG]
-artifacts: [concept-notes]
+type: resource-note
 status: done
-date: 2026-02-15
+created: 2026-02-15
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, public-key-crypto, crypto]
+source: TryHackMe - Public Key Cryptography Basics
+platform: tryhackme
+room: Public Key Cryptography Basics
+slug: public-key-cryptography-basics
+path: TryHackMe/50-crypto/public-key-cryptography-basics.md
+topic: 50-crypto
+domain: [crypto, networking]
+skills: [public-key-crypto, rsa, diffie-hellman, ssh, tls-certs, pgp-gpg]
+artifacts: [concept-notes]
+sanitized: true
 ---
 
 # Public Key Cryptography Basics
 
-## 0. Summary
+## Summary
 
 * Goal: understand how **asymmetric cryptography** solves authentication, integrity, and confidentiality problems on untrusted networks.
 * Core primitives: **RSA**, **Diffie–Hellman key exchange**, **digital signatures**, **certificates/PKI**, and **SSH / PGP key pairs**.
@@ -24,7 +28,7 @@ date: 2026-02-15
 
 ---
 
-## 1. Key Concepts
+## Key Concepts
 
 ### 1.1 Security properties
 
@@ -141,7 +145,7 @@ Basic workflow example:
 
 ---
 
-## 2. Pattern Cards
+## Pattern Cards
 
 ### 2.1 Hybrid encryption pattern ("lock + secret code")
 
@@ -187,27 +191,27 @@ Basic workflow example:
 
 ---
 
-## 3. Command Cookbook (sanitised)
+## Command Cookbook
 
-> All placeholders are generic: replace `USER`, `HOST`, `example.com`, etc. as needed.
+> All placeholders are generic: replace `USER_A`, `TARGET_HOST`, `example.com`, etc. as needed.
 
 ### 3.1 SSH keys
 
 ```bash
 # Generate an Ed25519 SSH key pair (recommended modern default)
-ssh-keygen -t ed25519 -C "USER@HOST" -f ~/.ssh/id_ed25519
+ssh-keygen -t ed25519 -C "USER_A@TARGET_HOST" -f ~/.ssh/id_ed25519
 
 # Generate an RSA SSH key pair (legacy / compatibility)
-ssh-keygen -t rsa -b 4096 -C "USER@HOST" -f ~/.ssh/id_rsa
+ssh-keygen -t rsa -b 4096 -C "USER_A@TARGET_HOST" -f ~/.ssh/id_rsa
 
 # Copy public key to a remote server (password auth required once)
-ssh-copy-id -i ~/.ssh/id_ed25519.pub USER@HOST
+ssh-copy-id -i ~/.ssh/id_ed25519.pub USER_A@TARGET_HOST
 
 # Login using a specific private key
-ssh -i ~/.ssh/id_ed25519 USER@HOST
+ssh -i ~/.ssh/id_ed25519 USER_A@TARGET_HOST
 
 # Check known_hosts entry for a host fingerprint
-grep "HOST" ~/.ssh/known_hosts
+grep "TARGET_HOST" ~/.ssh/known_hosts
 ```
 
 ### 3.2 GPG / OpenPGP
@@ -242,10 +246,9 @@ phi = (p - 1) * (q - 1)
 print(n, phi)
 ```
 
-
 ---
 
-## 5. Takeaways
+## Takeaways
 
 * Public-key crypto solves **key distribution and identity**, but is slower; symmetric crypto carries the bulk data.
 * **RSA** security rests on the difficulty of factoring large (n = p q); weak primes or reused parameters are common CTF attack surfaces.
@@ -256,7 +259,7 @@ print(n, phi)
 
 ---
 
-## 6. References / Further Reading
+## References
 
 * TryHackMe room: "Public Key Cryptography Basics".
 * OpenSSH manual pages: `ssh`, `sshd`, `ssh-keygen`.

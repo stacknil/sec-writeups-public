@@ -1,13 +1,25 @@
 ---
-title: "Linux CLI – Shells & Bells"
-source: "[https://tryhackme.com/room/adventofcyber2025day1](https://tryhackme.com/room/adventofcyber2025day1)"
-author: [stacknil]
+type: resource-note
+status: done
 created: 2025-12-04
-description: "Quick notes on basic Linux CLI usage from the Advent of Cyber room: navigation, hidden files, logs, find, shell scripts, root, and history."
-tags: ["linux", "cli", "tryhackme", "aoc2025", "basics"]
+updated: 2026-03-12
+tags: [security-writeup, tryhackme, aoc2025, linux, cli]
+source: TryHackMe - Advent of Cyber 2025 Day 1
+platform: tryhackme
+room: Advent of Cyber 2025 Day 01 - Linux CLI - Shells & Bells
+slug: aoc-2025-day-01-linux-cli-shells-and-bells
+path: TryHackMe/90-events/thm-aoc-2025/Day 01 - Linux CLI - Shells Bells.md
+topic: 90-events
+domain: [linux]
+skills: [shell-basics, logs, bash-scripting]
+artifacts: [concept-notes, lab-notes]
+sanitized: true
+description: Quick notes on basic Linux CLI usage from the Advent of Cyber room.
 ---
 
-## 1. Why CLI matters on servers
+# Advent of Cyber 2025 Day 01 - Linux CLI - Shells & Bells
+
+## Summary
 
 * Most servers expose **no GUI**; you interact via **terminal / shell (命令行终端)**.
 * CLI is enough to:
@@ -25,9 +37,11 @@ CLI   → precise, scriptable, works over SSH, easier to automate
 
 ---
 
-## 2. Basic CLI workflow
+## Key Concepts
 
-### 2.1 First commands
+### 2. Basic CLI workflow
+
+#### 2.1 First commands
 
 | Command              | Meaning                         | Notes                               |
 | -------------------- | ------------------------------- | ----------------------------------- |
@@ -38,7 +52,7 @@ CLI   → precise, scriptable, works over SSH, easier to automate
 
 Concept: **current working directory (CWD)** — most commands operate relative to this.
 
-### 2.2 Navigating with `cd`
+#### 2.2 Navigating with `cd`
 
 * `cd Guides` → move into a subdirectory `Guides`.
 * `cd /var/log` → go to an **absolute path**.
@@ -52,7 +66,7 @@ Concept: **current working directory (CWD)** — most commands operate relative 
 
 ---
 
-## 3. Hidden files & `ls -la`
+### 3. Hidden files & `ls -la`
 
 Linux hides files that start with a dot `.` (dotfiles).
 
@@ -76,14 +90,14 @@ Then read:
 
 ---
 
-## 4. Logs & `grep`
+### 4. Logs & `grep`
 
 Security-relevant logs usually live under `/var/log/`.
 
 * Example auth log: `/var/log/auth.log` (authentication events).
 * Logs can be huge → don’t scroll with `cat` → **filter** with `grep`.
 
-### 4.1 `grep` basics
+#### 4.1 `grep` basics
 
 `grep "Failed password" auth.log`
 
@@ -95,7 +109,7 @@ Security-relevant logs usually live under `/var/log/`.
 
 Concept: **string matching** — only lines containing the given text are printed.
 
-### 4.2 Pipeline pattern
+#### 4.2 Pipeline pattern
 
 For big log analysis you often chain tools:
 
@@ -117,7 +131,7 @@ ASCII structure:
 
 ---
 
-## 5. Finding files with `find`
+### 5. Finding files with `find`
 
 `find` walks directory trees and applies filters.
 
@@ -138,7 +152,7 @@ Notes:
 
 ---
 
-## 6. Shell scripts (`.sh`)
+### 6. Shell scripts (`.sh`)
 
 Files ending with `.sh` typically contain **Bash** or POSIX shell commands.
 
@@ -152,7 +166,7 @@ rm wishlist.txt && echo "Christmas is fading..."
 mv eastmas.txt wishlist.txt && echo "EASTMAS is invading!"
 ```
 
-### 6.1 Interpreting the script
+#### 6.1 Interpreting the script
 
 1. **Comments**: lines starting with `#` → ignored by the shell.
 2. `cat wishlist.txt | sort | uniq > /tmp/dump.txt`
@@ -168,7 +182,7 @@ mv eastmas.txt wishlist.txt && echo "EASTMAS is invading!"
 
 Security angle: this script **exfiltrates** data (copies wishes to `/tmp/dump.txt`) and **tamper**s with business data (replaces wishlist).
 
-### 6.2 Key shell operators cheat sheet
+#### 6.2 Key shell operators cheat sheet
 
 | Symbol | Name            | Effect                                                   |                                                |
 | ------ | --------------- | -------------------------------------------------------- | ---------------------------------------------- |
@@ -179,7 +193,7 @@ Security angle: this script **exfiltrates** data (copies wishes to `/tmp/dump.tx
 
 ---
 
-## 7. System information commands
+### 7. System information commands
 
 A few generic utilities you saw or that naturally follow:
 
@@ -194,9 +208,9 @@ These are read‑only by default and safe to use as a normal user.
 
 ---
 
-## 8. Users, root, and `/etc/shadow`
+### 8. Users, root, and `/etc/shadow`
 
-### 8.1 Normal users vs root
+#### 8.1 Normal users vs root
 
 * **Normal user** (e.g. `mcskidy`): limited permissions, cannot touch system-critical files.
 * **root user**: superuser (超级用户) with full control.
@@ -215,7 +229,7 @@ sudo su
 exit   # go back to previous user
 ```
 
-### 8.2 `/etc/shadow`
+#### 8.2 `/etc/shadow`
 
 * Contains **hashed passwords** and metadata for local accounts.
 * Only root can read it; normal user gets `Permission denied`.
@@ -233,7 +247,7 @@ Security intuition:
 
 ---
 
-## 9. Bash history
+### 9. Bash history
 
 Bash records commands to a hidden file per user:
 
@@ -249,13 +263,11 @@ cat ~/.bash_history
 
 In the room, root’s history showed suspicious `curl` commands sending data to HopSec domains — classic **post-exploitation evidence**.
 
-
-Takeaways:
+## Takeaways
 
 * History is useful for **forensics** and for your own learning.
 
 * Attackers sometimes clear or edit history to hide tracks (e.g. `history -c`).
-
 
 ---
 
@@ -277,7 +289,6 @@ Takeaways:
 
 When you land on a new Linux box, practice the following muscle‑memory sequence:
 
-
 1. `whoami` / `id` – Who am I? Which groups?
 
 2. `pwd` – Where am I?
@@ -293,6 +304,4 @@ When you land on a new Linux box, practice the following muscle‑memory sequenc
 
 8. `history | tail` – What did previous user do?
 
-
 Repeat until these become reflexes; they are the foundation for later privilege escalation & incident response work.
-

@@ -1,4 +1,22 @@
-# AoC 2025 — Day 20: Race Conditions (Toy to The World)
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-12
+tags: [security-writeup, tryhackme, aoc2025, race-conditions]
+source: TryHackMe - Advent of Cyber 2025 Day 20
+platform: tryhackme
+room: Advent of Cyber 2025 Day 20 - Race Conditions - Toy to The World
+slug: aoc-2025-day-20-race-conditions-toy-to-the-world
+path: TryHackMe/90-events/thm-aoc-2025/Day 20 - Race Conditions - Toy to The World.md
+topic: 90-events
+domain: [web]
+skills: [race-conditions, threat-modeling]
+artifacts: [lab-notes]
+sanitized: true
+---
+
+# Advent of Cyber 2025 Day 20 - Race Conditions - Toy to The World
 
 ## Summary
 
@@ -8,7 +26,7 @@ The security lesson is simple but brutal: **a correct workflow in serial executi
 
 ---
 
-## Key concepts
+## Key Concepts
 
 ### What a race condition is
 
@@ -23,24 +41,24 @@ A race condition happens when:
 
 1. **TOCTOU (Time-of-Check to Time-of-Use, 检查-使用时间差)**
 
-* The app checks `stock > 0`, then later decrements stock.
-* Another request “slips in” between check and update.
+   * The app checks `stock > 0`, then later decrements stock.
+   * Another request “slips in” between check and update.
 
 2. **Shared resource races (共享资源竞争)**
 
-* Multiple requests update the same row (inventory) without coordination.
-* “Last writer wins” can overwrite intermediate state.
+   * Multiple requests update the same row (inventory) without coordination.
+   * “Last writer wins” can overwrite intermediate state.
 
 3. **Atomicity violation (原子性破坏)**
 
-* A multi-step operation (charge → create order → decrement stock) is not executed as one indivisible unit.
-* Partial success creates inconsistent business state.
+   * A multi-step operation (charge → create order → decrement stock) is not executed as one indivisible unit.
+   * Partial success creates inconsistent business state.
 
 ---
 
-## The core bug (business logic view)
+### The core bug (business logic view)
 
-### Vulnerable logic pattern
+#### Vulnerable logic pattern
 
 Below is the *shape* of the vulnerability (not language-specific):
 
@@ -56,7 +74,7 @@ Why it breaks:
 * With concurrency, several requests can pass line 01 before any request reaches line 03.
 * Result: multiple orders succeed even when there was only 1 unit left.
 
-### Safer logic shape
+#### Safer logic shape
 
 The fix direction is: **make the check+decrement atomic**.
 
@@ -73,11 +91,11 @@ The fix direction is: **make the check+decrement atomic**.
 
 ---
 
-## Lab workflow (authorised training environment)
+### Lab workflow (authorised training environment)
 
 > Context: A demo shop (TBFC) sells a limited edition item (10 units). You first perform one legitimate checkout, then replay the same checkout request concurrently using Burp.
 
-### 1) Establish a baseline
+#### 1) Establish a baseline
 
 * Log in (lab-provided credentials).
 * Add the limited item to cart → Checkout → Confirm & Pay.
@@ -85,13 +103,13 @@ The fix direction is: **make the check+decrement atomic**.
 
 Baseline matters because you need a *known-good* request to replay.
 
-### 2) Capture the checkout request
+#### 2) Capture the checkout request
 
 * Ensure Burp **Intercept is OFF** (so your browser traffic flows).
 * In **Proxy → HTTP history**, locate the POST request that performs checkout (e.g., an endpoint like `/process_checkout`).
 * **Send to Repeater**.
 
-### 3) Force concurrency in Repeater
+#### 3) Force concurrency in Repeater
 
 Inside **Repeater**:
 
@@ -101,7 +119,7 @@ Inside **Repeater**:
 
 Why “last-byte sync” helps: it maximises overlap so requests compete for the same stock check/update window.
 
-### 4) Observe the outcome
+#### 4) Observe the outcome
 
 * Return to the shop page / orders page.
 * Typical vulnerable symptom set:
@@ -111,7 +129,7 @@ Why “last-byte sync” helps: it maximises overlap so requests compete for the
 
 ---
 
-## How to recognise you’ve found a real race condition
+### How to recognise you’ve found a real race condition
 
 Signals that are hard to explain without concurrency issues:
 
@@ -122,14 +140,14 @@ Signals that are hard to explain without concurrency issues:
 
 ---
 
-## Mitigation and defensive strategies
+### Mitigation and defensive strategies
 
-### 1) Make inventory updates atomic
+#### 1) Make inventory updates atomic
 
 * Use database transactions and row-level locking where appropriate.
 * Prefer **single-statement conditional updates** (UPDATE … WHERE stock > 0) to avoid separate check + use steps.
 
-### 2) Add idempotency to “checkout”
+#### 2) Add idempotency to “checkout”
 
 Use an **Idempotency Key (幂等键)** so the server treats repeated identical checkouts as the *same operation*.
 
@@ -137,20 +155,20 @@ Use an **Idempotency Key (幂等键)** so the server treats repeated identical c
 * Server stores key → response mapping.
 * Duplicate submissions return the original result instead of re-processing.
 
-### 3) Concurrency controls at the application layer
+#### 3) Concurrency controls at the application layer
 
 * Per-user / per-session **concurrent checkout limit**.
 * Rate limiting and burst control.
 * Queue-based checkout (serialize critical section).
 
-### 4) Validate as late as possible
+#### 4) Validate as late as possible
 
 * Perform a **final stock validation right before commit**.
 * Don’t validate only in the UI or at “add to cart”.
 
 ---
 
-## Practical impact beyond the lab
+### Practical impact beyond the lab
 
 Race conditions are not “toy” bugs. Typical real-world equivalents:
 
@@ -161,7 +179,7 @@ Race conditions are not “toy” bugs. Typical real-world equivalents:
 
 ---
 
-## Testing mindset
+### Testing mindset
 
 Race-condition testing is more like physics than syntax:
 
@@ -209,7 +227,6 @@ sequenceDiagram
 
 * Idempotency is not optional for payment/checkout-like operations.
 
-
 ---
 
 ## Chinese glossary
@@ -223,7 +240,7 @@ sequenceDiagram
 
 ---
 
-## Related tools
+## Related Tools
 
 * Burp Suite: Proxy, Repeater (group parallel send)
 
@@ -231,12 +248,10 @@ sequenceDiagram
 
 * Load generators: `hey`, `ab`, `wrk`, `k6`, `locust`
 
-
-## Further reading
+## Further Reading
 
 * OWASP Web Security Testing Guide (race condition / business logic testing)
 
 * PortSwigger Web Security Academy: Race conditions; last-byte sync technique
 
 * OWASP Business Logic Abuse Top 10 (workflow order bypass / race patterns)
-

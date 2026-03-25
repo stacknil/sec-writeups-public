@@ -1,4 +1,22 @@
-# AI/ML Security Threats — Notes 
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, ai-security, ml-security]
+source: TryHackMe - AI/ML Security Threats
+platform: tryhackme
+room: AI/ML Security Threats
+slug: ai-ml-security-threats
+path: TryHackMe/00-foundations/tooling-ai/AI-ML-security-threats.md
+topic: 00-foundations
+domain: [foundations, blueteam]
+skills: [threat-modeling, triage]
+artifacts: [concept-notes, pattern-card]
+sanitized: true
+---
+
+# AI/ML Security Threats
 
 > Scope: entry-level AI/ML concepts + how attackers/defenders use AI, with a security-first lens.
 
@@ -13,7 +31,9 @@
 
 ---
 
-## Mental model: how the terms nest
+## Key Concepts
+
+### Mental model: how the terms nest
 
 ```mermaid
 flowchart TD
@@ -23,7 +43,7 @@ flowchart TD
   GenAI --> LLM[LLMs]
 ```
 
-### Small intuition
+#### Small intuition
 
 * **ML**: “learn a rule from examples.”
 * **DL**: “learn features + rule together” (more scale, less manual feature design).
@@ -31,7 +51,7 @@ flowchart TD
 
 ---
 
-## The ML lifecycle (iterative)
+### The ML lifecycle (iterative)
 
 **Goal:** ship a model that performs in the real world, then keep it performing.
 
@@ -47,7 +67,7 @@ flowchart LR
   H --> C
 ```
 
-### What breaks in practice (security angle)
+#### What breaks in practice (security angle)
 
 * Data pipelines become an **attack surface** (poisoning, leakage).
 * Deployment adds **API** and **integration** risks (model extraction, prompt injection via tools).
@@ -55,7 +75,7 @@ flowchart LR
 
 ---
 
-## What an ML algorithm “contains”
+### What an ML algorithm “contains”
 
 A useful decomposition:
 
@@ -70,7 +90,7 @@ Practical translation:
 
 ---
 
-## Learning paradigms (4 types)
+### Learning paradigms (4 types)
 
 * **Supervised learning**: labeled data → classification/regression.
 * **Unsupervised learning**: unlabeled data → clustering, association, dimensionality reduction.
@@ -81,36 +101,36 @@ Security note: RL-like loops appear in **LLM alignment** (human feedback shaping
 
 ---
 
-## Neural networks & Deep Learning (DL)
+### Neural networks & Deep Learning (DL)
 
-### Core pieces
+#### Core pieces
 
 * **Layers**: input → hidden → output.
 * **Weights**: strength of connections.
 * **Training**: adjust weights to minimize loss (commonly via backpropagation).
 
-### Why DL “exploded”
+#### Why DL “exploded”
 
 * Massive digitized data + GPUs + better architectures.
 
 ---
 
-## LLMs in one page
+### LLMs in one page
 
-### How they work (high level)
+#### How they work (high level)
 
 * Pre-train on large corpora using **next-token prediction**.
 * Transformer architecture enables parallel processing and long-range dependencies via **attention**.
 * Post-training alignment often uses **RLHF** (reinforcement learning from human feedback) to reduce harmful/unhelpful outputs.
 
-### Practical implications
+#### Practical implications
 
 * LLMs are strong at: summarization, code assistance, pattern matching, natural language interfaces.
 * LLMs are weak at: guaranteed factuality, safe tool use without guardrails, privacy by default.
 
 ---
 
-# AI Security Threats
+### AI Security Threats
 
 A clean split:
 
@@ -128,9 +148,9 @@ flowchart TD
   E --> MW[Malware acceleration]
 ```
 
-## 1) Model-centric vulnerabilities
+#### 1) Model-centric vulnerabilities
 
-### Prompt Injection (Prompt-based control failure)
+##### Prompt Injection (Prompt-based control failure)
 
 **Idea:** attacker overrides intended instructions (system/dev policies) using crafted inputs.
 
@@ -139,7 +159,7 @@ flowchart TD
 
 **Defender mindset:** treat prompts as **untrusted input**, just like user input in web apps.
 
-### Data Poisoning (Training/inference data integrity attack)
+##### Data Poisoning (Training/inference data integrity attack)
 
 **Idea:** manipulate training data (or retrieval corpus) to bias or break outputs.
 
@@ -147,7 +167,7 @@ flowchart TD
 
 **Defender mindset:** protect data pipelines like production code: provenance, validation, versioning.
 
-### Model Theft / Extraction
+##### Model Theft / Extraction
 
 **Idea:** query an exposed model API, collect inputs/outputs, train a surrogate model.
 
@@ -155,7 +175,7 @@ flowchart TD
 
 **Defender mindset:** rate limiting, watermarking research, access control, anomaly detection on query patterns.
 
-### Privacy Leakage
+##### Privacy Leakage
 
 **Idea:** model reveals memorized sensitive information or enables inference about training data.
 
@@ -163,7 +183,7 @@ flowchart TD
 
 **Defender mindset:** minimize sensitive data exposure, apply privacy-preserving training where feasible, sanitize logs.
 
-### Model Drift (Concept drift / data shift)
+##### Model Drift (Concept drift / data shift)
 
 **Idea:** performance degrades as real-world data distribution changes.
 
@@ -173,58 +193,58 @@ flowchart TD
 
 ---
 
-## 2) AI-enhanced traditional attacks
+#### 2) AI-enhanced traditional attacks
 
-### Malware acceleration
+##### Malware acceleration
 
 * AI can reduce the skill barrier for writing/rewriting code, documentation, and lures.
 * Most real-world advantage is **speed + iteration**, not “magical zero-days.”
 
-### Deepfakes (synthetic identity)
+##### Deepfakes (synthetic identity)
 
 * Attacks target **authentication-by-familiarity** (voice/video).
 * Effective in business processes with urgent requests, weak verification, and social pressure.
 
-### Phishing upgrades
+##### Phishing upgrades
 
 * Better language fluency, personalization, and A/B testing.
 * The “broken English” heuristic becomes unreliable.
 
 ---
 
-# Defensive AI (why defenders still benefit)
+### Defensive AI (why defenders still benefit)
 
-## Where AI helps the most
+#### Where AI helps the most
 
 * **Analyze**: anomaly detection, alert enrichment, log triage.
 * **Predict**: automate classification/blocking where confidence is high.
 * **Summarize**: reduce time-to-understanding for reports and incidents.
 * **Investigate**: hypothesis generation, query suggestions, rapid troubleshooting.
 
-## The catch
+#### The catch
 
 Defensive AI is only a net win if you also build **Secure AI**.
 
 ---
 
-# Secure AI: a pragmatic checklist
+### Secure AI: a pragmatic checklist
 
-## 1) Access & identity
+#### 1) Access & identity
 
 * Enforce **RBAC** + **MFA** for model access.
 * Separate roles: training, deployment, monitoring, incident response.
 
-## 2) Data security
+#### 2) Data security
 
 * Encrypt sensitive training data (at rest + in transit).
 * Minimize PII exposure in prompts, logs, and retrieval corpora.
 
-## 3) Prompt/tooling hardening
+#### 3) Prompt/tooling hardening
 
 * Define a strict tool policy (allowlist, least privilege, sandboxing).
 * Defend against indirect prompt injection in retrieved content.
 
-## 4) Monitoring (accuracy + abuse)
+#### 4) Monitoring (accuracy + abuse)
 
 Track:
 
@@ -233,12 +253,12 @@ Track:
 * Suspicious querying patterns (model extraction attempts).
 * Safety signals (unexpected behaviors, prompt injection indicators).
 
-## 5) Explainability (XAI)
+#### 5) Explainability (XAI)
 
 * Use tools like **LIME** and **SHAP** to sanity-check drivers of predictions.
 * Caveat: explanations can be misleading if you treat them as proofs.
 
-## 6) Frameworks to anchor your thinking
+#### 6) Frameworks to anchor your thinking
 
 * MITRE **ATLAS** (AI-adversary TTP knowledge base)
 * OWASP Top 10 for **LLM Applications**
@@ -246,29 +266,29 @@ Track:
 
 ---
 
-# Practical prompt templates (defensive use)
+### Practical prompt templates (defensive use)
 
 > Keep prompts specific, supply context, and ask for *structured outputs*.
 
-## Log analysis
+#### Log analysis
 
-* “Here is a log line: <log>. Explain what happened, likely cause, severity (low/med/high), and next 3 checks.”
+* “Here is a log line: `<log>`. Explain what happened, likely cause, severity (low/med/high), and next 3 checks.”
 
-## Phishing triage
+#### Phishing triage
 
 * “Analyze this email for phishing indicators. Return: indicators, likely intent, recommended user guidance, and detection ideas.”
 
-## Threat hunting brainstorming
+#### Threat hunting brainstorming
 
 * “Suggest 3 realistic hunting hypotheses for a corporate network. For each: data sources, queries (pseudo), and expected signals.”
 
-## Regex generation (defensive)
+#### Regex generation (defensive)
 
 * “Write a regex to match failed SSH login attempts in Linux auth logs. Include 3 test cases and explain edge cases.”
 
 ---
 
-# Pitfalls (things that burn teams)
+### Pitfalls (things that burn teams)
 
 * Treating LLM output as ground truth (hallucination risk).
 * Feeding sensitive data into prompts without a data policy.
@@ -278,7 +298,7 @@ Track:
 
 ---
 
-# Takeaways
+## Takeaways
 
 * AI is not “magic”; it’s an engineering system with **inputs, optimization, and failure modes**.
 * Attackers gain **speed and scale**; defenders can regain advantage with **secure adoption**.
@@ -286,7 +306,7 @@ Track:
 
 ---
 
-## Mini Glossary (EN → 中文)
+### Mini Glossary (EN → 中文)
 
 * Artificial Intelligence (AI) → 人工智能
 * Machine Learning (ML) → 机器学习

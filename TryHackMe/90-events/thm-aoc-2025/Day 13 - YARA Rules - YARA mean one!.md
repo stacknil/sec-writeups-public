@@ -1,6 +1,24 @@
- # YARA Notes — TBFC Hidden Message Lab
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-12
+tags: [security-writeup, tryhackme, aoc2025, yara]
+source: TryHackMe - Advent of Cyber 2025 Day 13
+platform: tryhackme
+room: Advent of Cyber 2025 Day 13 - YARA Rules - YARA mean one!
+slug: aoc-2025-day-13-yara-rules-yara-mean-one
+path: TryHackMe/90-events/thm-aoc-2025/Day 13 - YARA Rules - YARA mean one!.md
+topic: 90-events
+domain: [blueteam]
+skills: [yara, detection]
+artifacts: [lab-notes]
+sanitized: true
+---
 
-## 0. Context
+# Advent of Cyber 2025 Day 13 - YARA Rules - YARA mean one
+
+## Summary
 
 McSkidy sent a folder of images that *look* benign, but some contain hidden message fragments. Your job is to write a **YARA rule** that matches:
 
@@ -11,7 +29,9 @@ Then run YARA on the target directory, collect all code words, sort by the image
 
 ---
 
-## 1. Mental model (what YARA actually does)
+## Key Concepts
+
+### 1. Mental model (what YARA actually does)
 
 A YARA rule is a **declarative detector**:
 
@@ -23,7 +43,7 @@ Think of it as: *"If these indicators appear together, treat the file as suspici
 
 ---
 
-## 2. Rule anatomy
+### 2. Rule anatomy
 
 A minimal rule:
 
@@ -58,9 +78,9 @@ Why regex here? Because the suffix is unknown, but constrained.
 
 ---
 
-## 3. Strings: choosing the right type
+### 3. Strings: choosing the right type
 
-### 3.1 Text strings ("literal")
+#### 3.1 Text strings ("literal")
 
 Use when the token is stable.
 
@@ -68,7 +88,7 @@ Use when the token is stable.
 1| $k = "TBFC:" ascii
 ```
 
-### 3.2 Hex strings
+#### 3.2 Hex strings
 
 Use when you need byte-level signatures (headers, shellcode fragments, magic bytes).
 
@@ -76,7 +96,7 @@ Use when you need byte-level signatures (headers, shellcode fragments, magic byt
 1| $mz = { 4D 5A }  // "MZ" header for PE
 ```
 
-### 3.3 Regex strings
+#### 3.3 Regex strings
 
 Use for patterns with controlled variability (URLs, command-lines, prefixes + variable payload).
 
@@ -88,7 +108,7 @@ Operational warning: regex can become expensive or noisy if too broad.
 
 ---
 
-## 4. Modifiers: hardening against trivial evasion
+### 4. Modifiers: hardening against trivial evasion
 
 Common modifiers you’ll actually use:
 
@@ -111,16 +131,16 @@ Practical note: `nocase` cannot be combined with some modifiers (e.g., `xor` / `
 
 ---
 
-## 5. Conditions: controlling precision vs recall
+### 5. Conditions: controlling precision vs recall
 
-### 5.1 Single indicator
+#### 5.1 Single indicator
 
 ```yara
 1| condition:
 2|   $tbfc_msg
 ```
 
-### 5.2 Any / all
+#### 5.2 Any / all
 
 ```yara
 1| condition:
@@ -132,14 +152,14 @@ Practical note: `nocase` cannot be combined with some modifiers (e.g., `xor` / `
 2|   all of them
 ```
 
-### 5.3 Boolean logic
+#### 5.3 Boolean logic
 
 ```yara
 1| condition:
 2|   ($s1 or $s2) and not $benign
 ```
 
-### 5.4 Add file constraints (reduce false positives)
+#### 5.4 Add file constraints (reduce false positives)
 
 ```yara
 1| condition:
@@ -148,20 +168,20 @@ Practical note: `nocase` cannot be combined with some modifiers (e.g., `xor` / `
 
 ---
 
-## 6. Running YARA (CLI workflow)
+### 6. Running YARA (CLI workflow)
 
 Assume:
 
 * rule file saved as: `/home/ubuntu/TBFC_Simple_Message_Extract.yar`
 * target directory: `/home/ubuntu/Downloads/easter`
 
-### 6.1 Scan a directory recursively
+#### 6.1 Scan a directory recursively
 
 ```bash
 1| yara -r /home/ubuntu/TBFC_Simple_Message_Extract.yar /home/ubuntu/Downloads/easter
 ```
 
-### 6.2 Also print matching strings (what you want for extraction)
+#### 6.2 Also print matching strings (what you want for extraction)
 
 ```bash
 1| yara -r -s /home/ubuntu/TBFC_Simple_Message_Extract.yar /home/ubuntu/Downloads/easter
@@ -174,9 +194,9 @@ Interpretation:
 
 ---
 
-## 7. Solving the room questions (method)
+### 7. Solving the room questions (method)
 
-### Q1: How many images contain the string TBFC?
+#### Q1: How many images contain the string TBFC?
 
 Run:
 
@@ -186,7 +206,7 @@ Run:
 
 Count unique image paths in the output.
 
-### Q2: What regex matches `TBFC:` + alnum?
+#### Q2: What regex matches `TBFC:` + alnum?
 
 Answer (regex body):
 
@@ -200,7 +220,7 @@ In YARA regex literal form:
 /TBFC:[A-Za-z0-9]+/
 ```
 
-### Q3: What message was sent?
+#### Q3: What message was sent?
 
 Workflow:
 
@@ -223,7 +243,7 @@ Message: Find me in HopSec Island
 
 ---
 
-## 8. Pitfalls (things that waste time)
+### 8. Pitfalls (things that waste time)
 
 * **Wrong CLI argument order:** `yara [options] RULES_FILE TARGET`
 * Forgetting to pass a target path after the rules file
@@ -233,7 +253,7 @@ Message: Find me in HopSec Island
 
 ---
 
-## 9. What to practice next
+### 9. What to practice next
 
 * Add `filesize` constraints to reduce noise.
 * Add a second string (e.g., filetype markers) and switch between `any of them` vs `all of them`.

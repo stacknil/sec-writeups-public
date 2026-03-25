@@ -1,6 +1,24 @@
-# Junior Security Analyst Intro – Notes
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, blue-team, soc]
+source: TryHackMe - Junior Security Analyst Intro
+platform: tryhackme
+room: Junior Security Analyst Intro
+slug: junior-security-analyst-intro
+path: TryHackMe/80-blue-team/jr-analyst-intro/jr-analyst-intro.md
+topic: 80-blue-team
+domain: [blueteam]
+skills: [triage, logging, ir-basics]
+artifacts: [concept-notes, lab-notes]
+sanitized: true
+---
 
-## 1. Room Overview
+# Junior Security Analyst Intro
+
+## Summary
 
 **Goal:** simulate a typical day of a Junior Security Analyst (SOC Level 1) and practice the basic workflow:
 
@@ -18,7 +36,9 @@ The room connects three big themes:
 
 ---
 
-## 2. Role: Junior Security Analyst (SOC L1)
+## Key Concepts
+
+### 2. Role: Junior Security Analyst (SOC L1)
 
 **Position:** first line of defence in a 24/7 Security Operations Center.
 
@@ -37,7 +57,7 @@ Mindset:
 
 ---
 
-## 3. SOC Team & Roles
+### 3. SOC Team & Roles
 
 The room introduces typical SOC roles around the junior analyst.
 
@@ -55,9 +75,9 @@ Key idea: **you never work alone** – SOC is a team sport.
 
 ---
 
-## 4. Mini‑Incident Walkthrough
+### 4. Mini‑Incident Walkthrough
 
-### 4.1 SIEM Alert Triage
+#### 4.1 SIEM Alert Triage
 
 You start on the **SIEM Dashboard**.
 
@@ -78,12 +98,12 @@ Action:
 1. Copy the suspicious IP from the alert.
 2. Move to the **IP Hunter** / reputation page.
 
-### 4.2 IP Reputation Check (IP Hunter)
+#### 4.2 IP Reputation Check (IP Hunter)
 
 On the IP reputation page you simulate using public threat‑intel sources
 (AbuseIPDB, Cisco Talos, etc.).
 
-Findings for ` IP  `:
+Findings for `IP`:
 
 * **Status:** malicious – found in database.
 * **ISP / domain:** China Mobile, `chinamobile.thm` (in room context).
@@ -95,7 +115,7 @@ Conclusion:
 * The IP is not just noisy; it has a **history of malicious activity**.
 * This justifies treating the alert as a real incident.
 
-### 4.3 Escalation
+#### 4.3 Escalation
 
 Next you go to the **Escalation** screen and must choose whom to notify.
 
@@ -111,7 +131,7 @@ Principle:
 * Escalate to the person **responsible for your team’s incident handling**, not
   to random technical staff (e.g., developers, sales, etc.).
 
-### 4.4 Containment via Firewall Block List
+#### 4.4 Containment via Firewall Block List
 
 After escalation, you get permission to **block the IP**.
 
@@ -132,7 +152,7 @@ Take‑aways:
 
 ---
 
-## 5. End‑to‑End Workflow Summary
+### 5. End‑to‑End Workflow Summary
 
 ```mermaid
 flowchart LR
@@ -153,7 +173,7 @@ This is a minimal **incident handling loop** for a junior analyst:
 
 ---
 
-## 6. Concepts Reinforced by the Room
+### 6. Concepts Reinforced by the Room
 
 * **SIEM (Security Information and Event Management)**
   Central platform that aggregates logs and generates alerts.
@@ -175,7 +195,7 @@ This is a minimal **incident handling loop** for a junior analyst:
 
 ---
 
-## 7. Personal Checklist for Future Labs
+### 7. Personal Checklist for Future Labs
 
 When doing similar SOC labs or real‑world triage:
 
@@ -185,13 +205,13 @@ When doing similar SOC labs or real‑world triage:
 * [ ] Summarize findings in 3–4 bullet points before escalating.
 * [ ] Know the names / roles of people in your escalation chain.
 * [ ] After containment, think about **detection improvements**:
-  - Can we tune alerts to fire earlier or with better context?
-  - Do we need additional logging?
+  * Can we tune alerts to fire earlier or with better context?
+  * Do we need additional logging?
 * [ ] Capture notes in your GitHub `cyber-notes` repo to build a portfolio.
 
 ---
 
-### Glossary (mini)
+#### Glossary (mini)
 
 * **SOC (Security Operations Center)** – central team that monitors and
   responds to security events.

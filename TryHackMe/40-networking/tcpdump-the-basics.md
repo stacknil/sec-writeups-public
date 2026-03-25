@@ -1,19 +1,24 @@
 ---
-
-platform: TryHackMe
+type: resource-note
+status: done
+created: 2026-02-13
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, tcpdump, networking]
+source: "TryHackMe - Tcpdump: The Basics"
+platform: tryhackme
 room: "Tcpdump: The Basics"
 slug: tcpdump-the-basics
 path: TryHackMe/40-networking/tcpdump-the-basics.md
 topic: 40-networking
-domain: Networking
-skills: tcpdump libpcap BPF/pcap-filter expressions packet capture (PCAP)
-artifacts: command-cookbook
-status: done
-date: 2026-02-13
-
+domain: [networking]
+skills: [tcpdump, pcap, pcap-filters]
+artifacts: [cookbook]
+sanitized: true
 ---
 
-## 0) Summary
+# Tcpdump: The Basics
+
+## Summary
 
 * `tcpdump` makes network “conversations” visible by capturing packets live or reading packet capture files (PCAP).
 * Core workflow: choose interface (`-i`), optionally cap count (`-c`), avoid name resolution (`-n`/`-nn`), and save (`-w`) or read (`-r`) captures.
@@ -21,7 +26,7 @@ date: 2026-02-13
 * Advanced filtering uses `pcap-filter` byte-offset syntax (e.g., `tcp[tcpflags]`) to match TCP flag patterns.
 * Output formatting options (`-q/-e/-A/-xx/-X`) control what and how data is printed.
 
-## 1) Key Concepts
+## Key Concepts
 
 ### 1.1 Why packet capture matters
 
@@ -58,7 +63,7 @@ You must decide which interface to capture from.
 * `-v` prints more IP details (TTL, identification, total length, options, etc.).
 * Increase verbosity with `-vv` and `-vvv` (see `man tcpdump`).
 
-## 2) Pattern Cards
+## Pattern Cards
 
 ### Pattern 2.1 “Capture → Save → Re-read with filters”
 
@@ -87,7 +92,7 @@ Use when you suspect connection attempts, resets, or unusual TCP behavior.
 * Has SYN: `"tcp[tcpflags] & tcp-syn != 0"`
 * Has SYN or ACK: `"tcp[tcpflags] & (tcp-syn|tcp-ack) != 0"`
 
-## 3) Command Cookbook
+## Command Cookbook
 
 All examples use safe placeholders:
 
@@ -294,13 +299,13 @@ These require the provided PCAPs (`traffic.pcap`, `TwoPackets.pcap`) and should 
 
       * `tcpdump -r traffic.pcap -e arp`
 
-## 7) Takeaways
+## Takeaways
 
 * `tcpdump` is “fast + composable”: interface selection, filter expressions, and output formatting cover most day-to-day protocol analysis needs.
 * Treat filtering as a first-class skill: without filters you drown in packets.
 * For deeper protocol mechanics, `pcap-filter` byte-level expressions (especially TCP flags) are a practical bridge between “protocol theory” and “traffic reality”.
 
-## 8) References
+## References
 
 * `man tcpdump`
 * `man pcap-filter`

@@ -1,12 +1,28 @@
-# Advent of Cyber 2025 – Day 7
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-12
+tags: [security-writeup, tryhackme, aoc2025, network-discovery]
+source: TryHackMe - Advent of Cyber 2025 Day 7
+platform: tryhackme
+room: Advent of Cyber 2025 Day 07 - Network Discovery - Scan-ta Clause
+slug: aoc-2025-day-07-network-discovery-scan-ta-clause
+path: TryHackMe/90-events/thm-aoc-2025/Day 07 - Network Discovery - Scan-ta Clause.md
+topic: 90-events
+domain: [networking]
+skills: [nmap, recon]
+artifacts: [lab-notes]
+sanitized: true
+---
 
-# Network Discovery – Scan-ta Clause
+# Advent of Cyber 2025 Day 07 - Network Discovery - Scan-ta Clause
 
 > Discover how to scan network ports and uncover what is hidden behind them.
 
 ---
 
-## 0. Scenario & Goal
+## Summary
 
 * **Story**: HopSec took over TBFC’s QA server `tbfc-devqa01` and defaced the web app. Our job is to:
 
@@ -18,9 +34,11 @@
 
 ---
 
-## 1. Network Discovery Basics
+## Key Concepts
 
-### 1.1 Ports & Services (端口 & 服务)
+### 1. Network Discovery Basics
+
+#### 1.1 Ports & Services (端口 & 服务)
 
 * A host can expose many **TCP / UDP ports** (0–65535).
 * Well‑known examples:
@@ -36,7 +54,7 @@
   * Identify what runs on it
   * Decide whether it should be exposed
 
-### 1.2 Typical workflow
+#### 1.2 Typical workflow
 
 1. Identify target IP (受害主机 IP)。
 2. **TCP scan** common ports → first view of reachable services.
@@ -47,9 +65,9 @@
 
 ---
 
-## 2. Nmap Scans (端口扫描)
+### 2. Nmap Scans (端口扫描)
 
-### 2.1 Quick TCP scan (top 1000)
+#### 2.1 Quick TCP scan (top 1000)
 
 ```bash
 nmap TARGET_IP
@@ -65,7 +83,7 @@ nmap TARGET_IP
   * We can try SSH (if credentials known).
   * We can browse `http://TARGET_IP` from the AttackBox.
 
-### 2.2 Full TCP range + banner grabbing
+#### 2.2 Full TCP range + banner grabbing
 
 ```bash
 nmap -p- --script=banner TARGET_IP
@@ -82,7 +100,7 @@ nmap -p- --script=banner TARGET_IP
 
 Key idea: **services can run on any port**, not just defaults.
 
-### 2.3 UDP scan
+#### 2.3 UDP scan
 
 ```bash
 nmap -sU TARGET_IP
@@ -95,9 +113,9 @@ nmap -sU TARGET_IP
 
 ---
 
-## 3. Service Enumeration Steps
+### 3. Service Enumeration Steps
 
-### 3.1 HTTP (port 80)
+#### 3.1 HTTP (port 80)
 
 * Browse `http://TARGET_IP` from the AttackBox.
 * Observations:
@@ -111,7 +129,7 @@ nmap -sU TARGET_IP
 
 ---
 
-### 3.2 FTP on non‑standard port (21212/tcp)
+#### 3.2 FTP on non‑standard port (21212/tcp)
 
 Anonymous FTP access to get Key 1.
 
@@ -139,7 +157,7 @@ Security takeaway:
 
 ---
 
-### 3.3 Custom TCP service (25251/tcp) via Netcat
+#### 3.3 Custom TCP service (25251/tcp) via Netcat
 
 Use `nc` as a raw TCP client to speak the protocol.
 
@@ -168,7 +186,7 @@ Security takeaway:
 
 ---
 
-### 3.4 DNS TXT record (53/udp) via `dig`
+#### 3.4 DNS TXT record (53/udp) via `dig`
 
 Use DNS query to retrieve Key 3.
 
@@ -190,9 +208,9 @@ Security takeaway:
 
 ---
 
-## 4. Combining Keys & Unlocking Admin Console
+### 4. Combining Keys & Unlocking Admin Console
 
-### 4.1 Keys collected in this run
+#### 4.1 Keys collected in this run
 
 From the exercises we get (example values):
 
@@ -210,11 +228,11 @@ Paste this into the Unlock box on the webpage → access **Secret Admin Console*
 
 ---
 
-## 5. On‑Host Service Discovery (主机内部服务发现)
+### 5. On‑Host Service Discovery (主机内部服务发现)
 
 Once inside the web admin console, we can execute commands **on the QA server itself** (as user `tbfcapp` in the room).
 
-### 5.1 List listening sockets with `ss`
+#### 5.1 List listening sockets with `ss`
 
 ```bash
 ss -tunlp
@@ -237,11 +255,11 @@ Key point:
 
 ---
 
-## 6. MySQL Enumeration for Final Flag
+### 6. MySQL Enumeration for Final Flag
 
 Since we are already local (`tbfcapp@tbfc-devqa01`), we can use `mysql` client without password (typical weak internal config).
 
-### 6.1 List tables
+#### 6.1 List tables
 
 ```bash
 mysql -D tbfcqa01 -e "SHOW TABLES;"
@@ -253,7 +271,7 @@ mysql -D tbfcqa01 -e "SHOW TABLES;"
 
   * `flags`
 
-### 6.2 Dump flags table
+#### 6.2 Dump flags table
 
 ```bash
 mysql -D tbfcqa01 -e "SELECT * FROM flags;"
@@ -269,7 +287,7 @@ Security takeaways:
 
 ---
 
-## 7. Summary Cheat‑Sheet
+### 7. Summary Cheat‑Sheet
 
 1. **Initial discovery (外部)**
 
@@ -293,7 +311,7 @@ Security takeaways:
 
 ---
 
-## 8. Concepts To Remember (术语速记)
+### 8. Concepts To Remember (术语速记)
 
 * **Port scanning**: 系统性探测主机某些端口是否开放。
 * **Banner grabbing**: 通过连接服务读取其欢迎信息/版本号。

@@ -1,4 +1,22 @@
-# TryHackMe Advent of Cyber 2025 — Day 17: **Decoding Secrets**
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-12
+tags: [security-writeup, tryhackme, aoc2025, cyberchef]
+source: TryHackMe - Advent of Cyber 2025 Day 17
+platform: tryhackme
+room: Advent of Cyber 2025 Day 17 - CyberChef - Hoperation Save McSkidy
+slug: aoc-2025-day-17-cyberchef-hoperation-save-mcskidy
+path: TryHackMe/90-events/thm-aoc-2025/Day 17 - CyberChef - Hoperation Save McSkidy.md
+topic: 90-events
+domain: [forensics]
+skills: [extractors, triage]
+artifacts: [lab-notes]
+sanitized: true
+---
+
+# Advent of Cyber 2025 Day 17 - CyberChef - Hoperation Save McSkidy
 
 > Theme: break 5 “locks” by combining **browser DevTools** (Network/Debugger) with **CyberChef** recipes. The whole room is a practical reminder that *encoding ≠ encryption*.
 
@@ -48,7 +66,7 @@ You repeatedly:
 
 ---
 
-## Tooling
+### Tooling
 
 * **Browser DevTools**
 
@@ -61,42 +79,42 @@ You repeatedly:
 
 ---
 
-## Repeatable Workflow (Lock Solver Loop)
+### Repeatable Workflow (Lock Solver Loop)
 
-### 0) Decode the Bunnygram banner (optional story clue)
+#### 0) Decode the Bunnygram banner (optional story clue)
 
 * The guard greeting / banner is Base64 → decode with `From Base64`.
 
-### 1) Build the username
+#### 1) Build the username
 
 * Take **guard name** (shown in the UI) → `To Base64` → use as **Username**.
 
-### 2) Obtain the password material
+#### 2) Obtain the password material
 
 Depending on the level:
 
 * **Locks 1–2**: find `X-Magic-Question` in headers → `To Base64` → send in chat → guard returns Base64 payload.
 * **Locks 3+**: no magic question; send a short prompt in Base64 (e.g., `Password please.`) → guard replies (slowly).
 
-### 3) Identify the login logic
+#### 3) Identify the login logic
 
 * DevTools → Debugger → `static/app.js`
 * Locate the block:
 
   * `if (level === 1) { ... } else if (level === 2) { ... } ...`
 
-### 4) Reverse the transform in CyberChef
+#### 4) Reverse the transform in CyberChef
 
 * Take guard reply → apply the **reverse recipe** to recover plaintext password.
 
-### 5) Log in
+#### 5) Log in
 
 * Username = Base64(guard name)
 * Password = plaintext (unless the JS logic requires you to input something else)
 
 ---
 
-## Mental Model: Dataflow
+### Mental Model: Dataflow
 
 ```
 [Network Headers] -----> (parameters: X-Level / X-Magic-Question / X-Recipe-*)
@@ -113,9 +131,9 @@ Depending on the level:
 
 ---
 
-## Lock-by-Lock Cheat Sheet
+### Lock-by-Lock Cheat Sheet
 
-### Lock 1 — Outer Gate
+#### Lock 1 — Outer Gate
 
 **DevTools hint**: `X-Magic-Question: What is the password for this level?`
 
@@ -129,7 +147,7 @@ Depending on the level:
 * Decode guard response in CyberChef.
 * **Input password** in the form as the *properly prepared string required by logic* (in this lock, that often ends up being Base64-related).
 
-### Lock 2 — Outer Wall
+#### Lock 2 — Outer Wall
 
 **DevTools hint**: `X-Magic-Question: Did you change the password?`
 
@@ -141,7 +159,7 @@ Depending on the level:
 
 * Same as lock 1, but **apply Base64 twice** in the correct direction when reversing.
 
-### Lock 3 — Guard House
+#### Lock 3 — Guard House
 
 **Header hint**: `X-Recipe-Key: <key>` (e.g., `cyberchef`).
 
@@ -155,7 +173,7 @@ Depending on the level:
 2. `XOR` with the key from header (same key)
 3. Interpret as `UTF-8`
 
-### Lock 4 — Inner Castle
+#### Lock 4 — Inner Castle
 
 **JS logic pattern**:
 
@@ -166,7 +184,7 @@ Depending on the level:
 * Guard replies with a hash-like string.
 * Use a hash lookup / cracking workflow (in a real engagement: *only with authorization*).
 
-### Lock 5 — Prison Tower (Recipe IDs)
+#### Lock 5 — Prison Tower (Recipe IDs)
 
 **Header hints**:
 
@@ -184,7 +202,7 @@ Depending on the level:
 
 ---
 
-## Pitfalls (Common Failure Modes)
+### Pitfalls (Common Failure Modes)
 
 * **Forgetting chat is Base64-only**: guards ignore plaintext.
 * **Wrong direction**: `To Base64` vs `From Base64` (symptom: output still “looks Base64”).
@@ -195,7 +213,7 @@ Depending on the level:
 
 ---
 
-## Security Takeaways (Real-World Mapping)
+### Security Takeaways (Real-World Mapping)
 
 * **Never do authentication purely in client-side JS**.
 

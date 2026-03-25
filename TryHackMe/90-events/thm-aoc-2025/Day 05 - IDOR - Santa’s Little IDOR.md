@@ -1,12 +1,32 @@
-# TryHackMe – Advent of Cyber 2025 Day 5
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-12
+tags: [security-writeup, tryhackme, aoc2025, idor, access-control]
+source: TryHackMe - Advent of Cyber 2025 Day 5
+platform: tryhackme
+room: Advent of Cyber 2025 Day 05 - IDOR - Santa's Little IDOR
+slug: aoc-2025-day-05-idor-santas-little-idor
+path: TryHackMe/90-events/thm-aoc-2025/Day 05 - IDOR - Santa’s Little IDOR.md
+topic: 90-events
+domain: [web]
+skills: [auth-session, reporting]
+artifacts: [lab-notes]
+sanitized: true
+---
 
-## Santa’s Little IDOR – TryPresentMe Room Notes
+# Advent of Cyber 2025 Day 05 - IDOR - Santa's Little IDOR
+
+## Summary
 
 > Focus: IDOR (Insecure Direct Object Reference) / Broken Access Control
 
 ---
 
-## 1. Room Overview
+## Key Concepts
+
+### 1. Room Overview
 
 **Target app:** `TrypresentMe` – a parent dashboard for managing children, gifts and vouchers.
 
@@ -25,9 +45,9 @@
 
 ---
 
-## 2. Core Concepts
+### 2. Core Concepts
 
-### 2.1 Authentication vs Authorization
+#### 2.1 Authentication vs Authorization
 
 * **Authentication (身份验证)** – Who are you?
 
@@ -45,7 +65,7 @@ Key point: **authorization must happen on every request, after authentication**.
 
 ---
 
-### 2.2 IDOR – Insecure Direct Object Reference
+#### 2.2 IDOR – Insecure Direct Object Reference
 
 * App uses a **direct identifier** (object reference) from user input to fetch data:
 
@@ -56,7 +76,7 @@ Key point: **authorization must happen on every request, after authentication**.
 * **Vulnerability** appears when the server **does not verify ownership/permissions** before returning the object.
 * Typical manifestation: horizontal privilege escalation.
 
-#### Classic pattern
+##### Classic pattern
 
 ```http
 GET /TrackPackage?packageID=1001 HTTP/1.1
@@ -66,7 +86,7 @@ Change `packageID` to `1002`, `1003` … and get other people’s packages becau
 
 ---
 
-### 2.3 Privilege Escalation Types
+#### 2.3 Privilege Escalation Types
 
 * **Vertical privilege escalation (垂直权限提升)**
 
@@ -82,9 +102,9 @@ Most IDORs in this room are **horizontal**.
 
 ---
 
-## 3. TryPresentMe – Endpoint Map
+### 3. TryPresentMe – Endpoint Map
 
-### 3.1 Account info
+#### 3.1 Account info
 
 Captured via Firefox DevTools → **Network**:
 
@@ -99,7 +119,7 @@ GET /api/parents/view_accountinfo?user_id=10 HTTP/1.1
   * `children` array
 * `user_id` is also stored client‑side in **Local Storage** under `auth_user`.
 
-### 3.2 Children
+#### 3.2 Children
 
 1. **View child (eye icon)** – Base64 endpoint:
 
@@ -118,7 +138,7 @@ GET /api/parents/view_accountinfo?user_id=10 HTTP/1.1
 
    * Hash is MD5 of a predictable value (e.g., child numeric ID).
 
-### 3.3 Vouchers
+#### 3.3 Vouchers
 
 * **List vouchers**:
 
@@ -139,9 +159,9 @@ GET /api/parents/view_accountinfo?user_id=10 HTTP/1.1
 
 ---
 
-## 4. Exploits Walkthrough
+### 4. Exploits Walkthrough
 
-### 4.1 Simple IDOR: `view_accountinfo` `user_id`
+#### 4.1 Simple IDOR: `view_accountinfo` `user_id`
 
 Goal question from room: *“Exploiting the IDOR found in the view_accounts parameter, what is the user_id of the parent that has 10 children?”*
 
@@ -161,11 +181,11 @@ Observation: **Changing a single number** in localStorage is enough to become a 
 
 ---
 
-### 4.2 Encoded child IDs – Base64 endpoint
+#### 4.2 Encoded child IDs – Base64 endpoint
 
 Goal bonus task: find the **`id_number`** of the child born on `2019‑04‑17` using Base64 or MD5 endpoints.
 
-#### Understanding the encoding
+##### Understanding the encoding
 
 1. Click eye icon on Bilbo → see request:
 
@@ -180,7 +200,7 @@ Goal bonus task: find the **`id_number`** of the child born on `2019‑04‑17` 
 
 > Encoding = *obfuscation only*, no authorization.
 
-#### Automating search with Burp Intruder (Base64 path)
+##### Automating search with Burp Intruder (Base64 path)
 
 1. Turn on Burp proxy (FoxyProxy → `Burp`).
 2. Click the eye icon to capture one `GET /api/child/b64/Mg==` in Burp.
@@ -203,7 +223,7 @@ Again, the server never checks that this child actually belongs to the logged‑
 
 ---
 
-### 4.3 Hashed child IDs – MD5 endpoint
+#### 4.3 Hashed child IDs – MD5 endpoint
 
 The edit‑child request uses an MD5 hash in the path.
 
@@ -220,13 +240,13 @@ Hashing **does not fix** IDOR if the server still does no **authorization check*
 
 ---
 
-### 4.4 UUIDv1 vouchers – time‑based brute force
+#### 4.4 UUIDv1 vouchers – time‑based brute force
 
 Goal bonus task: using `/parents/vouchers/claim`, find a voucher valid on **2025‑11‑20**, with insider info:
 
 * Voucher was generated **on the minute** between `20:00` and `24:00` UTC.
 
-#### 4.4.1 Why UUIDv1 is dangerous here
+##### 4.4.1 Why UUIDv1 is dangerous here
 
 * UUIDv1 encodes a **timestamp** + **node/clock** bits.
 * If an attacker knows a narrow time window, they can generate candidate UUIDs for each minute/second.
@@ -235,7 +255,7 @@ Total candidates:
 
 * 4 hours × 60 minutes = **240** possible minute timestamps.
 
-#### 4.4.2 Building the attack
+##### 4.4.2 Building the attack
 
 1. Capture a normal voucher claim request using DevTools / Burp:
 
@@ -270,9 +290,9 @@ This demonstrates how even “random‑looking” identifiers (UUIDv1) can be ex
 
 ---
 
-## 5. Mitigations / How to Fix
+### 5. Mitigations / How to Fix
 
-### 5.1 Server‑side authorization on every object access
+#### 5.1 Server‑side authorization on every object access
 
 For each request involving an object (`user`, `child`, `voucher`, etc.):
 
@@ -288,26 +308,26 @@ if object.owner_id != current_user_id:
 
 No response data should leak before this check passes.
 
-### 5.2 Do not rely on obscurity
+#### 5.2 Do not rely on obscurity
 
 * Base64, hashes, UUIDs, and long random strings **do not replace** authorization.
 * They can reduce casual guessing but not determined attackers.
 
-### 5.3 Better ID design (secondary)
+#### 5.3 Better ID design (secondary)
 
 * Use **non‑sequential IDs** for public resources (UUIDv4, random tokens), but *only together with* proper access control.
 * For highly sensitive resources, consider **indirect references**:
 
   * Map a short public token → internal object ID on the server side.
 
-### 5.4 Monitoring & rate limiting
+#### 5.4 Monitoring & rate limiting
 
 * Log failed access attempts (many `404/403` with varying IDs).
 * Apply rate limiting on sensitive endpoints to slow brute‑force attempts.
 
 ---
 
-## 6. Quick Checklist for Hunting IDORs
+### 6. Quick Checklist for Hunting IDORs
 
 1. **Identify objects**
 
@@ -335,7 +355,7 @@ Ask continuously: **“If I were another user, could I use this same request to 
 
 ---
 
-## 7. Mini Chinese Glossary (术语小表)
+### 7. Mini Chinese Glossary (术语小表)
 
 * **IDOR** – Insecure Direct Object Reference，不安全直接对象引用
 * **Authentication** – 身份验证
@@ -347,4 +367,3 @@ Ask continuously: **“If I were another user, could I use this same request to 
 * **Hash (MD5)** – 哈希（MD5）
 * **UUIDv1** – 带时间戳的 UUID 版本 1
 * **Burp Suite Intruder** – Burp 套件中的自动化枚举模块
-

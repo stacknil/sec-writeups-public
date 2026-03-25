@@ -1,11 +1,29 @@
-# Extending Your Network – Notes
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, networking, segmentation]
+source: TryHackMe - Extending Your Network
+platform: tryhackme
+room: Extending Your Network
+slug: extending-your-network
+path: TryHackMe/40-networking/network-fundamentals/05-extending-your-network.md
+topic: 40-networking
+domain: [networking]
+skills: [routing, firewalls, vpn, vlan]
+artifacts: [concept-notes]
+sanitized: true
+---
+
+# Extending Your Network
 
 > Topic: extending internal networks to the Internet and between sites
 > Focus: port forwarding, firewalls, VPN basics, routers, switches & VLANs
 
 ---
 
-## 1. Port Forwarding – exposing internal services
+## Summary
 
 ### 1.1 What problem does port forwarding solve?
 
@@ -33,9 +51,11 @@ Port forwarding is about *reachability*; firewalling is about *policy and contro
 
 ---
 
-## 2. Firewalls 101 – controlling traffic
+## Key Concepts
 
-### 2.1 Role of a firewall
+### 2. Firewalls 101 – controlling traffic
+
+#### 2.1 Role of a firewall
 
 A **firewall** is the network’s **border control**:
 
@@ -55,7 +75,7 @@ Firewalls can be:
 * Built into residential routers.
 * Software firewalls (host‑based, e.g. on a server or workstation).
 
-### 2.2 Stateful vs stateless firewalls
+#### 2.2 Stateful vs stateless firewalls
 
 **Stateful firewall**
 
@@ -73,9 +93,9 @@ Firewalls can be:
 
 ---
 
-## 3. VPN Basics – private tunnels over the Internet
+### 3. VPN Basics – private tunnels over the Internet
 
-### 3.1 What is a VPN?
+#### 3.1 What is a VPN?
 
 A **Virtual Private Network (VPN)** creates an **encrypted tunnel** over the Internet between two endpoints or networks:
 
@@ -90,7 +110,7 @@ Example scenario:
 
 Devices in Network #3 are still part of their original networks but also share a **private overlay network** where only VPN‑connected devices can communicate.
 
-### 3.2 Benefits
+#### 3.2 Benefits
 
 * **Connects distant networks**
 
@@ -110,7 +130,7 @@ Devices in Network #3 are still part of their original networks but also share a
 
   * Platforms like TryHackMe use VPNs so that users can access vulnerable machines **without exposing them directly to the Internet**.
 
-### 3.3 Example VPN technologies
+#### 3.3 Example VPN technologies
 
 * **PPP (Point‑to‑Point Protocol)**
 
@@ -130,9 +150,9 @@ Devices in Network #3 are still part of their original networks but also share a
 
 ---
 
-## 4. LAN Networking Devices – router, switch, VLAN
+### 4. LAN Networking Devices – router, switch, VLAN
 
-### 4.1 Router – connecting networks
+#### 4.1 Router – connecting networks
 
 * A **router** connects **different networks** and forwards packets between them.
 * Operates at **Layer 3 (Network layer)** of the OSI model.
@@ -150,7 +170,7 @@ Routers often provide admin interfaces (web UI or CLI) to configure:
 * Firewall rules
 * Static/dynamic routes
 
-### 4.2 Switch – connecting devices
+#### 4.2 Switch – connecting devices
 
 A **switch** provides multiple network ports for devices to plug into the same LAN.
 
@@ -164,7 +184,7 @@ A **switch** provides multiple network ports for devices to plug into the same L
   * Can do what Layer 2 switches do **and** perform some routing functions.
   * They forward frames locally and route **IP packets** between VLANs or subnets.
 
-### 4.3 VLAN – Virtual Local Area Network
+#### 4.3 VLAN – Virtual Local Area Network
 
 * A **VLAN** allows one physical switch to be split into **multiple logical networks**.
 * Devices in different VLANs can:
@@ -186,7 +206,7 @@ This segmentation improves **security and control** inside the LAN by reducing u
 
 ---
 
-## 5. Mental model – extending and protecting networks
+### 5. Mental model – extending and protecting networks
 
 * **Port forwarding** exposes specific internal services to the Internet via a router.
 * **Firewalls** decide which traffic is allowed or blocked at network boundaries.
@@ -201,9 +221,9 @@ Together, these pieces explain how an organisation can:
 
 ---
 
-## 6. Visual diagrams 
+### 6. Visual diagrams
 
-### 6.1 Port forwarding (public → private)
+#### 6.1 Port forwarding (public → private)
 
 ```mermaid
 flowchart LR
@@ -227,7 +247,7 @@ flowchart LR
 
 ```
 
-### 6.2 Firewall decision flow
+#### 6.2 Firewall decision flow
 
 ```mermaid
 flowchart TD
@@ -238,7 +258,7 @@ flowchart TD
   C -->|Deny| D
 ```
 
-### 6.3 VPN tunnel between two offices
+#### 6.3 VPN tunnel between two offices
 
 ```mermaid
 flowchart LR
@@ -262,7 +282,7 @@ flowchart LR
   GW2 -->|Local traffic| B1
 ```
 
-### 6.4 Router, switch and VLAN segmentation
+#### 6.4 Router, switch and VLAN segmentation
 
 ```mermaid
 flowchart TB

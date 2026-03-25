@@ -1,11 +1,28 @@
-# SOC Alert Triaging – Tinsel Triage (Microsoft Sentinel)
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-12
+tags: [security-writeup, tryhackme, aoc2025, sentinel, triage]
+source: TryHackMe - Advent of Cyber 2025 Day 10
+platform: tryhackme
+room: Advent of Cyber 2025 Day 10 - SOC Alert Triaging - Tinsel Triage
+slug: aoc-2025-day-10-soc-alert-triaging-tinsel-triage
+path: TryHackMe/90-events/thm-aoc-2025/Day 10 - SOC Alert Triaging - Tinsel Triage.md
+topic: 90-events
+domain: [blueteam]
+skills: [triage, logging]
+artifacts: [lab-notes]
+sanitized: true
+---
+
+# Advent of Cyber 2025 Day 10 - SOC Alert Triaging - Tinsel Triage
 
 > Notes based on the *Tinsel Triage* lab (TryHackMe Advent of Cyber) and Microsoft Sentinel documentation.
 
-
 ---
 
-## 1. Scenario & Story
+## Summary
 
 * **Company:** The Best Festival Company (TBFC) – running their workloads in an **Azure tenant**.
 * **Tooling:** **Microsoft Sentinel** as cloud‑native SIEM/SOAR, collecting telemetry from VMs, services, and apps.
@@ -19,7 +36,9 @@ Goal of the analyst (McSkidy / us):
 
 ---
 
-## 2. Learning Objectives
+## Key Concepts
+
+### 2. Learning Objectives
 
 1. **Understand alert triage & prioritisation**
    → How to decide what to look at *first* when alerts flood the SOC.
@@ -30,13 +49,11 @@ Goal of the analyst (McSkidy / us):
 3. **Correlate logs to identify real attacker activity & decide a verdict**
    → Use **KQL (Kusto Query Language)** to pivot on host/user/IP and build a timeline.
 
-
 ---
 
-## 3. Alert Triage Fundamentals
+### 3. Alert Triage Fundamentals
 
 When many alerts fire at once, we don’t click them randomly. The lab uses four core dimensions:
-
 
 | Factor       | Guiding question                   | Notes (EN / 简注)                                                |
 | ------------ | ---------------------------------- | -------------------------------------------------------------- |
@@ -46,12 +63,9 @@ When many alerts fire at once, we don’t click them randomly. The lab uses four
 
 | **Context**  | Where in the **attack lifecycle**? | Recon / Initial Access / PrivEsc / Persistence / Exfiltration… |
 
-
 | **Impact**   | Who/what is affected?              | Critical server? Domain account? Internet‑exposed host?        |
 
-
 These four questions = quick mental checklist:
-
 
 * **Severity** – is this worth waking someone up?
 
@@ -61,7 +75,6 @@ These four questions = quick mental checklist:
 
 * **Impact** – if this asset falls, what breaks?
 
-
 Triage output per alert/incident:
 
 * *Escalate now* (likely active compromise)
@@ -70,13 +83,11 @@ Triage output per alert/incident:
 
 * *Close / suppress* (false positive or accepted risk)
 
-
 ---
 
-## 4. Sentinel Objects & Navigation
+### 4. Sentinel Objects & Navigation
 
 High‑level objects inside Sentinel used in this lab:
-
 
 * **Analytics rules** – detection logic that runs on log data and raises **alerts**.
 
@@ -86,8 +97,7 @@ High‑level objects inside Sentinel used in this lab:
 
 * **Logs** – raw data in tables (here: `Syslog_CL` custom log table).
 
-
-### 4.1 Preparing the environment
+#### 4.1 Preparing the environment
 
 1. **Go to Sentinel** → select the provided workspace.
 
@@ -98,11 +108,9 @@ High‑level objects inside Sentinel used in this lab:
 
 3. Wait until notifications confirm rules are enabled and incidents start appearing.
 
-
-### 4.2 Incidents view
+#### 4.2 Incidents view
 
 Path: **Microsoft Sentinel → Threat management → Incidents**
-
 
 For each incident we see:
 
@@ -116,26 +124,21 @@ For each incident we see:
 
 * **Tactics/Techniques** (MITRE ATT&CK mapping – e.g. Privilege Escalation / T1068)
 
-
 Click **View full details** to open:
-
 
 * **Incident timeline** – ordered list of related alerts.
 
 * **Similar incidents** – other incidents that share entities (same host/user/IP).
 
-
 This is where correlation starts: multiple incidents on the same machine often mean **different stages of the same intrusion**, not random noise.
-
 
 ---
 
-## 5. Case Study – Linux PrivEsc: Kernel Module Insertion
+### 5. Case Study – Linux PrivEsc: Kernel Module Insertion
 
 We focus on the **“Linux PrivEsc – Kernel Module Insertion”** incident.
 
-
-### 5.1 What we see from the incident pane
+#### 5.1 What we see from the incident pane
 
 * **Severity:** High.
 * **Tactic:** Privilege Escalation (exploitation for higher privileges).
@@ -144,22 +147,19 @@ We focus on the **“Linux PrivEsc – Kernel Module Insertion”** incident.
 
 * **Evidence:** 3 events showing `insert_module` actions in kernel logs.
 
-
 Already from triage view we know:
 
 * Someone loaded **non‑standard kernel modules** on multiple servers.
 
 * This is rarely benign → strong PrivEsc / persistence indicator.
 
-
-### 5.2 Evidence → Events view
+#### 5.2 Evidence → Events view
 
 From **Evidence → Events**:
 
 * Table shows columns like `TimeGenerated`, `host_s`, `Message`, `program_s`.
 
 * `Message` contains kernel audit lines such as:
-
 
   * `audit: ... op=insert_module name=malicious_mod.ko ...`
   * `audit: ... op=insert_module name=netmon.ko ...`
@@ -170,11 +170,9 @@ This gives us concrete IOCs:
 
 * Exact times each host loaded them.
 
-
-### 5.3 Reconstructing the attack path around **app-02**
+#### 5.3 Reconstructing the attack path around **app-02**
 
 We pivot to raw logs to see what happened **before and after** the module insertion.
-
 
 Steps:
 
@@ -183,7 +181,6 @@ Steps:
 2. Switch from **Simple mode** to **KQL mode**.
 
 3. Start from the auto‑generated query and adapt it.
-
 
 Example query used in the lab:
 
@@ -196,9 +193,7 @@ Syslog_CL
 
 This returns all syslog messages for host `app-02` in the relevant time range.
 
-
 From the results we can see a suspicious sequence:
-
 
 1. **Backup of `/etc/shadow`** to a temporary path (e.g. `/tmp/shadow.bak`).
 
@@ -213,21 +208,17 @@ From the results we can see a suspicious sequence:
 
    → Confirms the attacker owns valid creds + has interactive access.
 
-
 Taken together, this is **not** normal admin work. It fits a classic pattern:
-
 
 * Initial access → credential access → privilege escalation → persistence.
 
-
 ---
 
-## 6. KQL Basics Used in This Lab
+### 6. KQL Basics Used in This Lab
 
 Key pieces of **Kusto Query Language** syntax that show up:
 
-
-### 6.1 Tables and `where`
+#### 6.1 Tables and `where`
 
 ```kusto
 Syslog_CL
@@ -245,8 +236,7 @@ Syslog_CL
 
 * `project` – choose which columns to output.
 
-
-### 6.2 Pivoting on a single host
+#### 6.2 Pivoting on a single host
 
 ```kusto
 Syslog_CL
@@ -257,12 +247,11 @@ Syslog_CL
 * Focuses on one host.
 * Use this pattern to pivot on any entity:
 
-
   * `host_s == "websrv-01"`
   * `Account == "alice"`
   * `IPAddress == "203.0.113.45"`
 
-### 6.3 Adding more filters
+#### 6.3 Adding more filters
 
 ```kusto
 Syslog_CL
@@ -275,13 +264,11 @@ Syslog_CL
 
 * Very common pattern: **host → user → action**.
 
-
 > Mental model: KQL pipelines are like `grep` → `grep` → `cut` in Linux, but typed and structured.
-
 
 ---
 
-## 7. Mini Sentinel Triage Playbook
+### 7. Mini Sentinel Triage Playbook
 
 A compact workflow you can reuse:
 
@@ -312,7 +299,6 @@ A compact workflow you can reuse:
 
    * Expand timeframe around the alert and look for:
 
-
      * Auth attempts, sudo usage, password changes.
 
      * File operations on sensitive paths.
@@ -333,44 +319,33 @@ A compact workflow you can reuse:
 
    * Feed back into better detections and playbooks.
 
-
 ---
 
-## 8. Suspicious Patterns from This Lab (Detection Ideas)
+### 8. Suspicious Patterns from This Lab (Detection Ideas)
 
 Things that should almost always raise eyebrows on Linux servers:
-
 
 * Copying `/etc/shadow` or `/etc/passwd` to unusual locations (e.g. `/tmp`).
 
 * Non‑maintenance changes to privileged users:
 
-
   * New user suddenly added to **`sudo`** group.
 
   * Service / backup account passwords changed by root without change ticket.
 
-
 * Loading unknown **kernel modules** (`*.ko`) on application servers.
-
 
 * Root SSH logins from **external IPs** or from unusual internal IPs.
 
-
 * Shell or command lines that initiate outbound connections to uncommon IP:port pairs
-
 
   (typical reverse‑shell behaviour using `/dev/tcp/remote_ip/port`).
 
-
-
 Each single event may be explainable; the **sequence** is what proves compromise.
-
-
 
 ---
 
-## 9. Glossary (EN–ZH)
+### 9. Glossary (EN–ZH)
 
 * **SOC (Security Operations Center)** – 安全运营中心
 * **SIEM (Security Information and Event Management)** – 安全信息与事件管理平台
@@ -386,8 +361,7 @@ Each single event may be explainable; the **sequence** is what proves compromise
 
 ---
 
-## 10. Simple Flow Diagram (Triaging → Investigation → Response)
-
+### 10. Simple Flow Diagram (Triaging → Investigation → Response)
 
 ```mermaid
 graph LR
@@ -402,4 +376,3 @@ graph LR
 ```
 
 Use this diagram as a mental map when working in Microsoft Sentinel: always move from **high‑level view → focused host/user → concrete log evidence → documented decision**.
-

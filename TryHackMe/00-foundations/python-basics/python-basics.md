@@ -1,3 +1,21 @@
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, python, scripting]
+source: TryHackMe - Python Basics
+platform: tryhackme
+room: Python Basics
+slug: python-basics
+path: TryHackMe/00-foundations/python-basics/python-basics.md
+topic: 00-foundations
+domain: [foundations]
+skills: [python-basics, control-flow, file-io, imports]
+artifacts: [concept-notes, cookbook]
+sanitized: true
+---
+
 # Python Basics
 
 > Room: **Python Basics** (TryHackMe)
@@ -5,7 +23,7 @@
 
 ---
 
-## 1. Python as a scripting tool
+## Summary
 
 Python is a **high‑level, interpreted scripting language** that is perfect for
 quick automation and security tooling.
@@ -28,9 +46,11 @@ print("Hello World")
 
 ---
 
-## 2. Operators – doing work on values
+## Key Concepts
 
-### 2.1 Arithmetic operators
+### 2. Operators – doing work on values
+
+#### 2.1 Arithmetic operators
 
 | Operation      | Operator | Example expression | Result |
 | -------------- | -------- | ------------------ | ------ |
@@ -48,7 +68,7 @@ result = 21 + 43
 print(result)  # 64
 ```
 
-### 2.2 Comparison operators
+#### 2.2 Comparison operators
 
 Used to ask yes/no questions about values, returning a Boolean (`True` / `False`).
 
@@ -63,7 +83,7 @@ Used to ask yes/no questions about values, returning a Boolean (`True` / `False`
 
 These are heavily used in `if` statements and loops.
 
-### 2.3 Logical & Boolean operators
+#### 2.3 Logical & Boolean operators
 
 Used to **combine conditions**:
 
@@ -83,7 +103,7 @@ if a == 1 or a > 10:
 
 ---
 
-## 3. Variables & data types
+### 3. Variables & data types
 
 A **variable** is a named container for a value.
 
@@ -96,7 +116,7 @@ age = age + 1            # update based on the old value
 
 Python is **dynamically typed**: you do not declare the type explicitly; it is inferred from the value.
 
-### 3.1 Core data types in this room
+#### 3.1 Core data types in this room
 
 | Type name | Purpose                      | Example literal    |
 | --------- | ---------------------------- | ------------------ |
@@ -110,7 +130,7 @@ These mirror the movie‑table example from the room: title (str), rating (float
 
 ---
 
-## 4. Control flow with `if` / `elif` / `else`
+### 4. Control flow with `if` / `elif` / `else`
 
 `if` statements let the program **branch** based on a condition.
 
@@ -160,11 +180,11 @@ else:
 
 ---
 
-## 5. Loops – repeating work
+### 5. Loops – repeating work
 
 Loops let you repeat actions without copy‑pasting code.
 
-### 5.1 `while` loops
+#### 5.1 `while` loops
 
 Repeat **while a condition remains True**.
 
@@ -183,7 +203,7 @@ Execution idea:
 4. Go back to step 2.
 5. Stop once the condition becomes False.
 
-### 5.2 `for` loops
+#### 5.2 `for` loops
 
 Great for iterating over **sequences** (lists, ranges, etc.).
 
@@ -205,7 +225,7 @@ for i in range(5):  # 0, 1, 2, 3, 4
 
 ---
 
-## 6. Functions – reusing logic
+### 6. Functions – reusing logic
 
 A **function** is a named block of reusable code.
 
@@ -225,7 +245,7 @@ Concepts:
 * A colon `:` ends the header, indentation defines the body.
 * Call the function by name with arguments: `say_hello("ben")`.
 
-### 6.1 Returning values
+#### 6.1 Returning values
 
 Functions can **return** a result with `return`:
 
@@ -247,7 +267,7 @@ print("You have spent: " + str(spent))  # 13.99
 
 ---
 
-## 7. Mini‑project – Bitcoin price alert
+### 7. Mini‑project – Bitcoin price alert
 
 Goal: write a small tool that warns you when your Bitcoin holdings drop below **$30,000**.
 
@@ -278,7 +298,7 @@ This pattern (function + threshold check) appears constantly in security tooling
 
 ---
 
-## 8. Files – reading & writing
+### 8. Files – reading & writing
 
 Python can talk to the filesystem. Basic approach from the room:
 
@@ -314,7 +334,7 @@ with open("flag.txt", "r") as f:
 
 ---
 
-## 9. Imports – using libraries
+### 9. Imports – using libraries
 
 Python ships with a large **standard library**, and you can also install third‑party packages.
 
@@ -340,7 +360,7 @@ Security‑relevant libraries (installed via `pip install <name>`):
 
 ---
 
-## 10. Takeaways for security work
+### 10. Takeaways for security work
 
 * Python syntax (indentation, `print`, comments) is the **surface**; the real power comes from **control flow + data structures**.
 * Arithmetic & comparison operators underpin **every check** you do: from password length checks to threshold‑based alerts.
@@ -353,7 +373,7 @@ Mastering these basics once pays off across every later TryHackMe / HackTheBox r
 
 ---
 
-## Appendix – Terminology (EN → ZH)
+### Appendix – Terminology (EN → ZH)
 
 * variable – 变量
 * data type – 数据类型

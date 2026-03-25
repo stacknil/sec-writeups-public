@@ -1,18 +1,24 @@
 ---
-
+type: resource-note
+status: done
+created: 2026-02-21
+updated: 2026-03-12
+tags: [security-writeup, tryhackme, security-basics, threat-modeling]
+source: TryHackMe - Security Principles
 platform: tryhackme
 room: Security Principles
 slug: security-principles
-path: notes/00-foundations/security-principles.md
+path: TryHackMe/00-foundations/security-principles.md
 topic: 00-foundations
-domain: [security-basics, governance]
-skills: [cia-triad, security-models, zero-trust, risk-basics, secure-design]
-artifacts: [concept-notes, pattern-cards]
-status: done
-date: 2026-02-21
+domain: [foundations, grc]
+skills: [cia-triad, security-models, zero-trust, risk-basics, secure-by-design]
+artifacts: [concept-notes, pattern-card]
+sanitized: true
 ---
 
-0. Summary
+# Security Principles
+
+## Summary
 
 * “Secure” is relative to an adversary model (threat model): protecting against toddlers and industrial espionage are different problems.
 * The CIA triad (Confidentiality, Integrity, Availability) is a minimal mental model for judging security goals; DAD (Disclosure, Alteration, Destruction/Denial) is a clean way to label attacks.
@@ -22,15 +28,15 @@ date: 2026-02-21
 * ISO/IEC 19249 provides a catalogue of secure architecture/design principles that can be mapped to concrete controls.
 * Risk is a function of likelihood and impact; it emerges when a threat can exploit a vulnerability.
 
-1. Key Concepts (plain language)
+## Key Concepts
 
-1.1 Start with an adversary model (Threat Modeling / 威胁建模)
+### 1.1 Start with an adversary model (Threat Modeling / 威胁建模)
 
 * Security is not absolute; it is an optimization problem under constraints (time, money, usability).
 * The right question: “Secure against whom, for what assets, under what assumptions?”
 * Practical shorthand: define assets, adversaries, trust boundaries, and success criteria.
 
-1.2 CIA triad (Confidentiality / Integrity / Availability)
+### 1.2 CIA triad (Confidentiality / Integrity / Availability)
 
 * Confidentiality: only authorized parties can access data.
 * Integrity: data cannot be changed without authorization; changes are detectable.
@@ -55,7 +61,7 @@ Applied examples (compressed)
   * I: wrong edits can cause wrong treatment (safety-critical).
   * A: doctors need access at point-of-care.
 
-1.3 Beyond CIA: Authenticity & Nonrepudiation
+### 1.3 Beyond CIA: Authenticity & Nonrepudiation
 
 * Authenticity: data/action is genuine and from the claimed source.
 * Nonrepudiation: parties cannot plausibly deny involvement after the fact.
@@ -65,7 +71,7 @@ Operational intuition:
 * Low-stakes commerce might tolerate some fake orders; high-stakes logistics ("1000 cars") cannot.
 * Digital signatures are a classic way to support nonrepudiation + integrity + origin authentication.
 
-1.4 Parkerian Hexad (Parkerian Hexad / 帕克六要素)
+### 1.4 Parkerian Hexad (Parkerian Hexad / 帕克六要素)
 
 Extends CIA into six attributes:
 
@@ -81,7 +87,7 @@ Two extra attributes worth remembering:
 * Utility: encrypted disk is “available” physically but useless without the key.
 * Possession: ransomware can keep your data in-place while you lose control over it.
 
-1.5 DAD triad (Disclosure / Alteration / Destruction-Denial)
+### 1.5 DAD triad (Disclosure / Alteration / Destruction-Denial)
 
 * Disclosure ↔ attacks confidentiality
 * Alteration ↔ attacks integrity
@@ -93,7 +99,7 @@ Fast classification examples:
 * Attacker changes bank transfer recipient → Alteration.
 * Backup + main power switched off, network down → Destruction/Denial.
 
-1.6 Fundamental security models (security policy as rules)
+### 1.6 Fundamental security models (security policy as rules)
 
 Bell–LaPadula (BLP) — confidentiality-first
 
@@ -119,7 +125,7 @@ Clark–Wilson — commercial integrity via well-formed transactions
 
 Operational idea: enforce separation of duties + only certified procedures can modify protected data.
 
-1.7 Defence-in-Depth (DiD / 纵深防御)
+### 1.7 Defence-in-Depth (DiD / 纵深防御)
 
 * Multiple layers of controls across people/process/technology.
 * Goal is not “impenetrable.” Goal is: increase attacker cost, reduce blast radius, improve detection.
@@ -133,7 +139,7 @@ Typical layers (example mapping):
 * Data: encryption, backups
 * Monitoring/Response: logs, SIEM, playbooks
 
-1.8 ISO/IEC 19249: architecture & design principles
+### 1.8 ISO/IEC 19249: architecture & design principles
 
 Architectural principles (5):
 
@@ -157,7 +163,7 @@ Room Q/A mapping (for quick recall):
 * New sales rep gets only product/price access → (1) Least Privilege.
 * ATM code handles power/network failures carefully → (5) Error/Exception Handling.
 
-1.9 Trust but Verify vs Zero Trust
+### 1.9 Trust but Verify vs Zero Trust
 
 * Trust but Verify: treat trust as practical necessity; compensate with logging/monitoring and periodic review.
 * Zero Trust (ZTA): treat implicit trust as a vulnerability; require continuous authentication/authorization.
@@ -171,7 +177,7 @@ Business constraint:
 
 * Zero Trust has a “friction budget.” Apply where value is high and workflows can tolerate controls.
 
-1.10 Vulnerability vs Threat vs Risk
+### 1.10 Vulnerability vs Threat vs Risk
 
 * Vulnerability: weakness (a condition you can fix or mitigate).
 * Threat: potential danger actor/event that could exploit a weakness.
@@ -183,7 +189,7 @@ Concrete example:
 * Threat: adversaries using published PoC.
 * Risk: probability of exploitation and the business impact (patient safety + legal exposure).
 
-1.11 Shared Responsibility Model (cloud)
+### 1.11 Shared Responsibility Model (cloud)
 
 * Cloud security responsibilities split between provider and customer.
 * Responsibilities shift by service model:
@@ -192,9 +198,9 @@ Concrete example:
   * PaaS: provider manages more runtime/platform; customer owns app config, identity, data handling.
   * SaaS: provider manages most stack; customer owns identity, access, data governance.
 
-2. Pattern Cards (generalizable)
+## Pattern Cards
 
-2.1 “Asset → CIA priorities” card
+### 2.1 “Asset → CIA priorities” card
 
 * Identify asset category: {money movement, safety-critical, PII, IP, public content}.
 * Assign weights wC, wI, wA (0–3 scale).
@@ -202,7 +208,7 @@ Concrete example:
 
 Example: patient record system → high wC + high wI + high wA.
 
-2.2 “Attack → DAD classification” card
+### 2.2 “Attack → DAD classification” card
 
 * If data leaked → Disclosure.
 * If data changed → Alteration.
@@ -210,13 +216,13 @@ Example: patient record system → high wC + high wI + high wA.
 
 Use case: incident triage narratives become consistent and less emotional.
 
-2.3 “Model selection” card
+### 2.3 “Model selection” card
 
 * Need confidentiality enforcement across levels → think BLP.
 * Need integrity enforcement across levels → think Biba.
 * Need commercial integrity + auditability + separation of duties → think Clark–Wilson.
 
-2.4 “ISO/IEC 19249 mapping” card
+### 2.4 “ISO/IEC 19249 mapping” card
 
 * Domain Separation → sandboxing, privilege rings, tenancy boundaries.
 
@@ -238,15 +244,15 @@ Use case: incident triage narratives become consistent and less emotional.
 
 * Error/Exception Handling → fail-safe defaults + non-leaky errors.
 
-2.5 “Risk math” card
+### 2.5 “Risk math” card
 
 * Risk ≈ Likelihood × Impact.
 * Reduce likelihood: patching, MFA, segmentation.
 * Reduce impact: backups, redundancy, least privilege, containment.
 
-3. Command Cookbook (placeholders only)
+## Command Cookbook
 
-3.1 Integrity checks (file hashing)
+### 3.1 Integrity checks (file hashing)
 
 ```bash
 # Generate hash
@@ -256,7 +262,7 @@ sha256sum <FILE>
 echo "<KNOWN_HASH>  <FILE>" | sha256sum -c
 ```
 
-3.2 Availability quick checks
+### 3.2 Availability quick checks
 
 ```bash
 # Is the service listening?
@@ -266,7 +272,7 @@ ss -lntp | head
 curl -I https://example.com
 ```
 
-3.3 Minimal logging sanity (Linux)
+### 3.3 Minimal logging sanity (Linux)
 
 ```bash
 # Recent auth events (system-dependent)
@@ -275,18 +281,18 @@ sudo journalctl -u ssh --since "1 hour ago" --no-pager | tail
 
 (Keep this cookbook minimal; the room is conceptual. Add tooling only when you have a real lab context.)
 
-4. Evidence (sanitized; assets/)
+## Evidence
 
 * No room-provided artifacts were attached in this message.
 * If you later add screenshots, store them under `assets/` and redact identifiers.
 
-5. Takeaways
+## Takeaways
 
 * Security language becomes useful when it is operational: classify goals (CIA/Hexad), classify attacks (DAD), then map controls.
 * Models and principles are not “theory-only.” They are vocabulary for designing systems and explaining trade-offs.
 * Risk framing prevents cargo-cult security: prioritize based on likelihood and impact.
 
-6. References (official/docs-first)
+## References
 
 * NIST Glossary: Confidentiality / Integrity / Availability / Authenticity / Non-repudiation / Defense-in-Depth / Threat / Risk.
 * NIST SP 800-207: Zero Trust Architecture.
@@ -294,7 +300,7 @@ sudo journalctl -u ssh --since "1 hour ago" --no-pager | tail
 * University lecture notes on BLP/Biba/Clark–Wilson (for formal rule statements).
 * Cloud shared responsibility documentation (AWS, Microsoft Azure).
 
-CN–EN Glossary (mini)
+## CN–EN Glossary (mini)
 
 * CIA Triad: 机密性/完整性/可用性
 * Confidentiality: 机密性

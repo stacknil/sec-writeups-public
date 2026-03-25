@@ -1,18 +1,24 @@
 ---
-
+type: resource-note
+status: wip
+created: 2026-01-27
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, networking, protocols]
+source: TryHackMe - Networking Core Protocols
 platform: tryhackme
 room: Networking Core Protocols
 slug: networking-core-protocols
 path: TryHackMe/40-networking/networking-core-protocols.md
 topic: 40-networking
 domain: [networking]
-skills: [dns, whois, http, ftp, email]
-artifacts: [lab-notes, pattern-cards, command-cookbook]
-status: wip
-date: 2026-01-27
+skills: [dns, whois, http-basics, ftp, email]
+artifacts: [lab-notes, pattern-card, cookbook]
+sanitized: true
 ---
 
-## 0) Summary
+# Networking Core Protocols
+
+## Summary
 
 * Application-layer protocols are mostly “human-readable text over TCP/UDP” (until TLS enters the picture).
 * DNS maps names to addresses (and mail routing) so humans don’t memorize IPs.
@@ -20,7 +26,7 @@ date: 2026-01-27
 * HTTP/HTTPS drives the web; FTP moves files; SMTP sends mail; POP3/IMAP retrieve mail.
 * Many legacy protocols are plaintext by default; prefer TLS variants (HTTPS/STARTTLS/IMAPS/POP3S/FTPS).
 
-## 1) Key Concepts
+## Key Concepts
 
 ### 1.1 Quick protocol map (what / where / why)
 
@@ -70,7 +76,7 @@ FTP uses a **control channel** (commands) and separate **data channels** (LIST, 
 
 If you capture traffic for POP3/IMAP without TLS, you can often see credentials and message content in cleartext.
 
-## 2) Pattern Cards
+## Pattern Cards
 
 ### Pattern Card A — “Name to address” workflow
 
@@ -105,43 +111,43 @@ For every protocol you learn, ask:
 * What is the TLS upgrade path (implicit TLS vs STARTTLS)?
 * What secrets/PII would be exposed on the wire?
 
-## 3) Command Cookbook
+## Command Cookbook
 
-All commands use placeholders. Replace `DOMAIN`, `DNS_IP`, `MACHINE_IP` as needed.
+All commands use placeholders. Replace `TARGET_DOMAIN`, `DNS_IP`, `TARGET_IP` as needed.
 
 ### DNS
 
 ```bash
 # Basic lookup (A/AAAA)
-nslookup www.DOMAIN
+nslookup www.TARGET_DOMAIN
 
 # dig is often more explicit
-# dig A www.DOMAIN @DNS_IP
-# dig AAAA www.DOMAIN @DNS_IP
+# dig A www.TARGET_DOMAIN @DNS_IP
+# dig AAAA www.TARGET_DOMAIN @DNS_IP
 ```
 
 ### WHOIS
 
 ```bash
 # Domain registration metadata
-whois DOMAIN
+whois TARGET_DOMAIN
 ```
 
 ### HTTP
 
 ```bash
 # Minimal request (shows headers)
-curl -i http://MACHINE_IP/
+curl -i http://TARGET_IP/
 
 # Verb demo
-curl -X GET  http://MACHINE_IP/resource
-curl -X POST http://MACHINE_IP/resource -d 'k=v'
+curl -X GET  http://TARGET_IP/resource
+curl -X POST http://TARGET_IP/resource -d 'k=v'
 ```
 
 ### FTP (control channel)
 
 ```bash
-ftp MACHINE_IP
+ftp TARGET_IP
 # USER anonymous
 # PASS <empty>
 # ls (client) -> LIST (wire)
@@ -152,7 +158,7 @@ ftp MACHINE_IP
 ### SMTP (manual session)
 
 ```text
-telnet MACHINE_IP 25
+telnet TARGET_IP 25
 EHLO client.local
 MAIL FROM:<user@client.local>
 RCPT TO:<user@server.local>
@@ -167,7 +173,7 @@ QUIT
 ### POP3 (manual session)
 
 ```text
-telnet MACHINE_IP 110
+telnet TARGET_IP 110
 USER USERNAME
 PASS PASSWORD_REDACTED
 STAT
@@ -179,14 +185,14 @@ QUIT
 ### IMAP (manual session)
 
 ```text
-telnet MACHINE_IP 143
+telnet TARGET_IP 143
 A LOGIN USERNAME PASSWORD_REDACTED
 B SELECT inbox
 C FETCH 1 body[]
 D LOGOUT
 ```
 
-## 4) Evidence (sanitized)
+## Evidence
 
 * `assets/pcap/dns-query.pcapng`
 * `assets/pcap/http-session.pcapng`
@@ -195,14 +201,14 @@ D LOGOUT
 
 For public notes: keep only minimal excerpts, redact credentials, and use placeholders.
 
-## 5) Takeaways
+## Takeaways
 
 * “Core protocols” are less about memorizing ports and more about recognizing **message patterns**.
 * If a protocol is text-based, you can usually learn it quickly by reading a few request/response pairs.
 * Email is a protocol stack, not a single protocol.
 * Wire-level visibility is power: plaintext protocols leak secrets by design.
 
-## 6) References
+## References
 
 * RFC 1035 (DNS), RFC 3596 (AAAA)
 * RFC 3912 (WHOIS)
@@ -211,4 +217,3 @@ For public notes: keep only minimal excerpts, redact credentials, and use placeh
 * RFC 5321 (SMTP)
 * RFC 1939 (POP3)
 * RFC 9051 (IMAP4rev2)
-

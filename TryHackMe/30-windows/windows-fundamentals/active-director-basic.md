@@ -1,10 +1,28 @@
-# Active Directory Basics – THM Room Notes
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, windows, active-directory]
+source: TryHackMe - Active Directory Basics
+platform: tryhackme
+room: Active Directory Basics
+slug: active-directory-basics
+path: TryHackMe/30-windows/windows-fundamentals/active-director-basic.md
+topic: 30-windows
+domain: [windows]
+skills: [ad-basics, accounts, policies]
+artifacts: [concept-notes]
+sanitized: true
+---
+
+# Active Directory Basics
 
 > Mental model: **AD DS = central directory for identities + policies in a Windows domain.**
 
 ---
 
-## 0. Big Picture
+## Summary
 
 * **Active Directory Domain Services (AD DS)** stores information about *objects* in a Windows network (users, computers, groups, printers, etc.).
 * A **Windows domain** = logical boundary where these objects are managed together.
@@ -37,9 +55,11 @@ graph TD
 
 ---
 
-## 1. AD Objects & Security Principals
+## Key Concepts
 
-### 1.1 Object types
+### 1. AD Objects & Security Principals
+
+#### 1.1 Object types
 
 Key object types you meet in the THM room:
 
@@ -51,7 +71,7 @@ Key object types you meet in the THM room:
 | **OU (Organizational Unit)**  | `THM/IT`, `THM/Sales`           | Container used to group objects for **administration & policy scoping**. Not a security principal.                 |
 | **GPO (Group Policy Object)** | `Default Domain Policy`         | Not an AD *object* in the same sense, but stored in AD/SYSVOL and linked to OUs/domains to push settings.          |
 
-### 1.2 Users
+#### 1.2 Users
 
 * **Human users** – staff accounts that log into workstations, mail, etc.
 * **Service users** – accounts used by apps (e.g. MSSQL service account). They usually:
@@ -59,14 +79,14 @@ Key object types you meet in the THM room:
   * Don’t log in interactively.
   * Have only the privileges the service needs.
 
-### 1.3 Machine accounts
+#### 1.3 Machine accounts
 
 * Created automatically when a computer joins the domain.
 * Name in AD: **`<COMPUTERNAME>$`** (e.g. computer `TOM-PC` ⇒ account `TOM-PC$`).
 * Acts as local admin **on that machine only**.
 * Password is a long random value, rotated automatically by the OS.
 
-### 1.4 Security groups (important built‑ins)
+#### 1.4 Security groups (important built‑ins)
 
 Some default domain groups you should recognise:
 
@@ -83,7 +103,7 @@ Some default domain groups you should recognise:
 
 ---
 
-## 2. OUs vs Security Groups (very exam‑like distinction)
+### 2. OUs vs Security Groups (very exam‑like distinction)
 
 * **OUs (Organizational Units)**
 
@@ -119,7 +139,7 @@ graph LR
 
 ---
 
-## 3. ADUC – "Active Directory Users and Computers"
+### 3. ADUC – "Active Directory Users and Computers"
 
 * MMC snap‑in used on a DC / admin workstation to manage:
 
@@ -153,9 +173,9 @@ graph TD
 
 ---
 
-## 4. Managing Users & Delegation
+### 4. Managing Users & Delegation
 
-### 4.1 Cleaning up OUs / users
+#### 4.1 Cleaning up OUs / users
 
 Typical admin tasks you did in the room:
 
@@ -165,7 +185,7 @@ Typical admin tasks you did in the room:
    * In OU properties → *Object* tab → uncheck **Protect object from accidental deletion**.
 2. Make sure users in each department OU match the org chart (create / delete / move users).
 
-### 4.2 Delegation of control
+#### 4.2 Delegation of control
 
 Goal in the room: let **Phillip (IT)** reset passwords for users in Sales/Marketing/Management, without making him Domain Admin.
 
@@ -188,7 +208,7 @@ Name of this whole idea: **delegation of control**.
 
 ---
 
-## 5. Managing Computers & Role‑based OUs
+### 5. Managing Computers & Role‑based OUs
 
 Default behaviour: any non‑DC computer that joins the domain appears in the **Computers** container.
 
@@ -206,9 +226,9 @@ Then move machines accordingly. Later you can link different GPOs to each OU:
 
 ---
 
-## 6. Group Policy Objects (GPOs)
+### 6. Group Policy Objects (GPOs)
 
-### 6.1 Concept
+#### 6.1 Concept
 
 * **GPO = collection of settings** that apply either to **computers** or **users**.
 * Stored partly in AD and partly in a special share on DCs called **SYSVOL**.
@@ -233,7 +253,7 @@ graph TD
   GPO1 --> OU_DCs[OU: Domain Controllers]
 ```
 
-### 6.2 Default Domain Policy example
+#### 6.2 Default Domain Policy example
 
 * Applies to entire domain.
 * Common contents:
@@ -247,7 +267,7 @@ In the room, you edited:
 
 and set **Minimum password length = 10**.
 
-### 6.3 SYSVOL + gpupdate
+#### 6.3 SYSVOL + gpupdate
 
 * Policies are replicated via **`\\DC\SYSVOL`** share (physical path `C:\Windows\SYSVOL\sysvol`).
 * Clients periodically pull changes; can take up to ~2 hours.
@@ -257,7 +277,7 @@ and set **Minimum password length = 10**.
 gpupdate /force
 ```
 
-### 6.4 Example GPOs from the room
+#### 6.4 Example GPOs from the room
 
 1. **Restrict Control Panel Access** (User Configuration)
 
@@ -272,11 +292,11 @@ gpupdate /force
 
 ---
 
-## 7. Authentication Protocols: Kerberos vs NetNTLM
+### 7. Authentication Protocols: Kerberos vs NetNTLM
 
 Modern AD domains support **both**. Kerberos is default; NetNTLM is legacy but kept for compatibility.
 
-### 7.1 Kerberos overview
+#### 7.1 Kerberos overview
 
 Actors:
 
@@ -284,7 +304,7 @@ Actors:
 * **KDC (Key Distribution Center)** – lives on DC.
 * **Service** – e.g. file server, SQL server.
 
-#### Step 1 – Get TGT (Ticket Granting Ticket)
+##### Step 1 – Get TGT (Ticket Granting Ticket)
 
 ```mermaid
 sequenceDiagram
@@ -301,7 +321,7 @@ sequenceDiagram
   * **TGT** – encrypted with `krbtgt` account key (client cannot read).
   * **Session key** – shared between client and KDC.
 
-#### Step 2 – Get TGS (service ticket)
+##### Step 2 – Get TGS (service ticket)
 
 ```mermaid
 sequenceDiagram
@@ -319,7 +339,7 @@ sequenceDiagram
   * **TGS** – encrypted with key derived from **service account’s password hash**.
   * **Service session key** – shared between client and service.
 
-#### Step 3 – Access the service
+##### Step 3 – Access the service
 
 ```mermaid
 sequenceDiagram
@@ -335,7 +355,7 @@ sequenceDiagram
 
 > Key memory point: **TGT lets you ask the KDC for more tickets (TGS).**
 
-### 7.2 NetNTLM (NTLM over the network)
+#### 7.2 NetNTLM (NTLM over the network)
 
 Legacy **challenge–response** protocol.
 
@@ -359,9 +379,9 @@ sequenceDiagram
 
 ---
 
-## 8. Domains, Trees, Forests & Trusts
+### 8. Domains, Trees, Forests & Trusts
 
-### 8.1 Domain
+#### 8.1 Domain
 
 * Basic security & administration boundary.
 * Single AD database with DCs, users, computers, groups.
@@ -374,7 +394,7 @@ graph TD
   D1 --> G1[Groups]
 ```
 
-### 8.2 Tree
+#### 8.2 Tree
 
 * Collection of one or more domains that **share a contiguous namespace**.
 * Example from room: `thm.local` with child domains `uk.thm.local` and `us.thm.local`.
@@ -390,7 +410,7 @@ graph TD
   end
 ```
 
-### 8.3 Forest
+#### 8.3 Forest
 
 * Top‑level structure: **collection of one or more trees** that share:
 
@@ -416,7 +436,7 @@ graph LR
   THM_ROOT --- MHT_ROOT
 ```
 
-### 8.4 Trust relationships
+#### 8.4 Trust relationships
 
 * **Trust = agreement allowing users in one domain to be authenticated for resources in another.**
 * Types you must know:
@@ -438,7 +458,7 @@ graph LR
 
 ---
 
-## 9. Quick THM‑style Concept Check
+### 9. Quick THM‑style Concept Check
 
 Use this as a mini cheat‑sheet when answering conceptual questions in the room.
 

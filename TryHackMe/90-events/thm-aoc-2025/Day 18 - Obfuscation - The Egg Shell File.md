@@ -1,4 +1,22 @@
-# AoC 2025 Day 18 — Obfuscation & Deobfuscation (CyberChef + PowerShell)
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-12
+tags: [security-writeup, tryhackme, aoc2025, obfuscation]
+source: TryHackMe - Advent of Cyber 2025 Day 18
+platform: tryhackme
+room: Advent of Cyber 2025 Day 18 - Obfuscation - The Egg Shell File
+slug: aoc-2025-day-18-obfuscation-the-egg-shell-file
+path: TryHackMe/90-events/thm-aoc-2025/Day 18 - Obfuscation - The Egg Shell File.md
+topic: 90-events
+domain: [forensics, blueteam]
+skills: [triage, powershell]
+artifacts: [lab-notes]
+sanitized: true
+---
+
+# Advent of Cyber 2025 Day 18 - Obfuscation - The Egg Shell File
 
 ## Summary
 
@@ -43,7 +61,7 @@ So deobfuscation often means: **apply XOR again with the same key**.
 
 ---
 
-## CyberChef Quickstart
+### CyberChef Quickstart
 
 CyberChef UI mental mapping:
 
@@ -64,11 +82,11 @@ Useful operations for this day:
 
 ---
 
-## Practical Workflow (SantaStealer.ps1)
+### Practical Workflow (SantaStealer.ps1)
 
 **Safety note**: run unknown scripts only in a disposable VM/sandbox. Treat the script as potentially hostile.
 
-### Part 1 — Deobfuscate C2 URL (Base64)
+#### Part 1 — Deobfuscate C2 URL (Base64)
 
 Goal: decode `$C2B64` and paste decoded URL into `$C2`, then run script to get **flag 1**.
 
@@ -89,14 +107,14 @@ PowerShell execution (example):
 
 Expected behavior (high-level): the script performs checks, downloads/validates something, then prints a token-like flag.
 
-### Part 2 — Obfuscate API key (XOR single-byte 0x37 → Hex)
+#### Part 2 — Obfuscate API key (XOR single-byte 0x37 → Hex)
 
 Goal: obfuscate a plaintext API key using XOR key `0x37`, convert result to hex, paste into `$ObfApiKey`, then rerun script for **flag 2**.
 
 CyberChef recipe:
 
 ```text
-1| Input: <API_KEY_PLAINTEXT>
+1| Input: API_KEY_REDACTED
 2| XOR
 3|   Key: 37
 4|   Key type: Hex
@@ -107,7 +125,7 @@ CyberChef recipe:
 Then paste the resulting hex string into:
 
 ```powershell
-1| $ObfApiKey = "<HEX_STRING_HERE>"
+1| $ObfApiKey = "API_KEY_REDACTED"
 ```
 
 Rerun:
@@ -119,7 +137,7 @@ Rerun:
 
 ---
 
-## Pattern Recognition Cheat Sheet
+### Pattern Recognition Cheat Sheet
 
 Use these “fast heuristics” before you brute-force recipes.
 
@@ -132,7 +150,7 @@ Use these “fast heuristics” before you brute-force recipes.
 
 ---
 
-## Layered Obfuscation (Order Matters)
+### Layered Obfuscation (Order Matters)
 
 Attackers often chain transforms. Reverse by applying operations **in the opposite order**.
 
@@ -157,7 +175,7 @@ Deobfuscation:
 
 ---
 
-## Pitfalls & Debugging (things that waste time)
+### Pitfalls & Debugging (things that waste time)
 
 * **Wrong key format**: `0x37` must be provided as hex byte (`37`) with key type **Hex**.
 * **Hex delimiter**: `To Hex` may insert spaces; set delimiter to **None** if the script expects a continuous string.
@@ -169,7 +187,7 @@ Deobfuscation:
 
 ---
 
-## Defensive Takeaways
+### Defensive Takeaways
 
 * **String matching alone is fragile**: obfuscation breaks naive signatures.
 * Prefer **behavioral detection** (process + network + script block logging) and **deobfuscation at ingest**.
@@ -195,7 +213,7 @@ Deobfuscation:
 
 ---
 
-## References (primary)
+## References
 
 * RFC 4648 — Base-N Encodings (Base64)
 * RFC 1321 — MD5 Message-Digest Algorithm

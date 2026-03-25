@@ -1,43 +1,49 @@
 ---
-
-platform: event
-room: "Hidden Deep Into my Heart"
-slug: love-at-first-breach-2026-hidden-deep-into-my-heart
-path: LoveAtFirstBreach2026/hidden-deep-into-my-heart.md
-topic: 10-web
-domain: [web]
-skills: [web-recon, robots-txt, directory-discovery, weak-secrets]
-artifacts: [lab-notes]
+type: resource-note
 status: done
-date: 2026-02-15
+created: 2026-02-15
+updated: 2026-03-12
+tags: [security-writeup, tryhackme, event, web-recon]
+source: TryHackMe - Love at First Breach 2026 - Hidden Deep Into my Heart
+platform: tryhackme
+room: Love at First Breach 2026 - Hidden Deep Into my Heart
+slug: hidden-deep-into-my-heart
+path: TryHackMe/90-events/love-at-first-breach-2026/hidden-deep-into-my-heart.md
+topic: 90-events
+domain: [web]
+skills: [web-recon, web-enum, weak-secrets]
+artifacts: [lab-notes]
+sanitized: true
 ---
 
-# Love at First Breach 2026 — Hidden Deep Into my Heart
+# Love at First Breach 2026 - Hidden Deep Into my Heart
 
-## 0) Summary
+## Summary
 
 * Target is a simple HTTP web app ("Love Letters Anonymous") exposed on `http://TARGET_IP:5000`.
 * `robots.txt` leaks both a hidden path (`/cupids_secret_vault/`) and a credential-like string in a comment.
 * Visiting the disallowed path leads to an administrator login page; using the leaked string unlocks the vault.
 * Flag recovered: `THM{l0v3_is_in_th3_r0b0ts_txt}`.
 
-## 1) Context
+## Key Concepts
+
+### 1) Context
 
 Challenge prompt (from the event card): "Find what's hidden deep inside this website." The UI strongly hints that Cupid left something exposed.
 
-## 2) Scope / Rules of Engagement (ROE)
+### 2) Scope / Rules of Engagement (ROE)
 
 * Scope: **only** the provided lab instance (`TARGET_IP:5000`).
 * Goal: identify hidden content/endpoint and retrieve the flag.
 * Assumption: No need for brute force; intended path is via passive recon / misconfiguration.
 
-## 3) Recon
+### 3) Recon
 
-### 3.1 Landing page
+#### 3.1 Landing page
 
 * Opening `http://TARGET_IP:5000/` shows a minimal splash page: **Love Letters Anonymous**.
 
-### 3.2 Check `robots.txt`
+#### 3.2 Check `robots.txt`
 
 * Common first move for lightweight web challenges: inspect crawler directives.
 
@@ -57,22 +63,22 @@ Interpretation:
 * `robots.txt` is **not access control**. It’s a hint file for crawlers, and frequently abused to stash “hidden” paths.
 * Commented strings in `robots.txt` are a classic footgun: they often leak creds, API keys, or internal notes.
 
-## 4) Exploitation / Analysis
+### 4) Exploitation / Analysis
 
-### 4.1 Navigate to the disallowed path
+#### 4.1 Navigate to the disallowed path
 
 * Visit:
 
   * `http://TARGET_IP:5000/cupids_secret_vault/`
 * Result: a page confirming you found the vault, implying there’s a next step.
 
-### 4.2 Find the admin entry point
+#### 4.2 Find the admin entry point
 
 * The screenshots show an admin login at:
 
   * `http://TARGET_IP:5000/cupids_secret_vault/administrator`
 
-### 4.3 Use leaked secret to unlock
+#### 4.3 Use leaked secret to unlock
 
 * Username shown in the login form: `admin`.
 * Password is not visible in the screenshot (masked), but the workflow indicates the leaked `robots.txt` comment is the intended password.
@@ -82,14 +88,13 @@ Payload (conceptually):
 * `username = admin`
 * `password = cupid_arrow_2026` *(inferred from `robots.txt` comment; the trailing `!!!` appears decorative)*
 
-### 4.4 Result
+#### 4.4 Result
 
 * After successful login, the vault dashboard reveals the flag:
 
 `THM{l0v3_is_in_th3_r0b0ts_txt}`
 
-
-## 6) Mitigation / Recommendations
+## Mitigation / Recommendations
 
 For real systems, this failure mode is avoidable:
 

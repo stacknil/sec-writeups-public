@@ -1,6 +1,24 @@
-# Principles of Security – Notes
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, security-basics, threat-modeling]
+source: TryHackMe - Principles of Security
+platform: tryhackme
+room: Principles of Security
+slug: principles-of-security
+path: TryHackMe/00-foundations/security-basics/principles-of-security.md
+topic: 00-foundations
+domain: [foundations, blueteam]
+skills: [threat-modeling, ir-basics, triage]
+artifacts: [concept-notes, pattern-card]
+sanitized: true
+---
 
-## 0. Big picture
+# Principles of Security
+
+## Summary
 
 * **Goal**: protect information systems against misuse and abuse.
 * Core idea: **Defence in Depth（纵深防御）** – multiple, different layers of control so that if one fails, others still protect the system.
@@ -8,7 +26,9 @@
 
 ---
 
-## 1. CIA Triad
+## Key Concepts
+
+### 1. CIA Triad
 
 ```mermaid
 graph TD
@@ -17,7 +37,7 @@ graph TD
   A[Availability] --- D
 ```
 
-### 1.1 Confidentiality（机密性）
+#### 1.1 Confidentiality（机密性）
 
 * Only authorised people/systems may access data.
 * Typical controls:
@@ -30,7 +50,7 @@ graph TD
   * HR records: only HR staff with vetting can read.
   * Government classification levels: Top Secret / Secret / Confidential.
 
-### 1.2 Integrity（完整性）
+#### 1.2 Integrity（完整性）
 
 * Data stays **correct & consistent** unless intentionally modified by authorised entities.
 * Threats: careless edits, bugs, or unauthorised tampering.
@@ -40,7 +60,7 @@ graph TD
   * Hashes, checksums, digital signatures
   * Version control, audit logs, input validation
 
-### 1.3 Availability（可用性）
+#### 1.3 Availability（可用性）
 
 * Data/services must be accessible to authorised users **when needed**.
 * Often expressed as uptime targets (e.g. 99.99%).
@@ -54,9 +74,9 @@ graph TD
 
 ---
 
-## 2. Principles of Privileges
+### 2. Principles of Privileges
 
-### 2.1 PIM vs PAM
+#### 2.1 PIM vs PAM
 
 * **PIM – Privileged Identity Management（特权身份管理）**
 
@@ -73,7 +93,7 @@ graph TD
 | “What rights should this UNIX group / AD role have?”              | **PAM** |
 | “What role should this employee get when they join / change job?” | **PIM** |
 
-### 2.2 Principle of Least Privilege（最小权限原则）
+#### 2.2 Principle of Least Privilege（最小权限原则）
 
 * Give users **only** the minimum permissions necessary to perform their duties – nothing more.
 * Benefits:
@@ -84,9 +104,9 @@ graph TD
 
 ---
 
-## 3. Security Models for C & I
+### 3. Security Models for C & I
 
-### 3.1 Bell–LaPadula Model（机密性优先）
+#### 3.1 Bell–LaPadula Model（机密性优先）
 
 * Focus: **Confidentiality**.
 * Assumes hierarchical classification (Top Secret > Secret > Confidential).
@@ -97,7 +117,7 @@ graph TD
 * Intuition: high‑classified info must not leak to lower levels.
 * Typical use: military & government, where staff are vetted and *trusted* once cleared.
 
-### 3.2 Biba Model（完整性优先）
+#### 3.2 Biba Model（完整性优先）
 
 * Focus: **Integrity**.
 * Rules (mirror of Bell–LaPadula):
@@ -115,7 +135,7 @@ graph TD
 
 ---
 
-## 4. Threat Modelling（威胁建模）
+### 4. Threat Modelling（威胁建模）
 
 Goal: **systematically think about what can go wrong** and design controls before incidents happen.
 
@@ -136,7 +156,7 @@ Key inputs:
 * **Mitigation capabilities** – what controls we have / can build.
 * **Risk assessment** – likelihood × impact.
 
-### 4.1 STRIDE model（威胁分类）
+#### 4.1 STRIDE model（威胁分类）
 
 | Letter | Name                       | Core idea / 防护要点                                                                               |
 | ------ | -------------------------- | ---------------------------------------------------------------------------------------------- |
@@ -149,7 +169,7 @@ Key inputs:
 
 ---
 
-## 5. Incident Response（事件响应, IR）
+### 5. Incident Response（事件响应, IR）
 
 Incidents still happen; **IR** is about limiting damage and returning to normal.
 
@@ -169,7 +189,7 @@ Impact/Urgency matrix (conceptually):
 
 ---
 
-## 6. Quick Q&A recap
+### 6. Quick Q&A recap
 
 * **Q:** What element of the CIA triad ensures data cannot be altered by unauthorised people?
 

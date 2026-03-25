@@ -1,25 +1,30 @@
 ---
-
-platform: TryHackMe
-room: Python: Simple Demo
-slug: python-simple-demo
-path: notes/00-foundations/python-simple-demo.md
-topic: 00-foundations
-domain: programming-basics
-skills:python variables conditionals loops
-artifacts:concept-notes
+type: resource-note
 status: done
-date: 2026-02-15
-
+created: 2026-03-11
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, python, demo]
+source: "TryHackMe - Python: Simple Demo"
+platform: tryhackme
+room: "Python: Simple Demo"
+slug: python-simple-demo
+path: TryHackMe/00-foundations/python-basics/python-simple-demo.md
+topic: 00-foundations
+domain: [foundations]
+skills: [python-basics, variables, control-flow, loops]
+artifacts: [concept-notes]
+sanitized: true
 ---
 
-## 0) Summary
+# Python: Simple Demo
+
+## Summary
 
 * This room introduces Python via a small interactive program: **“Guess the Number.”**
 * The computer picks a **secret integer in [1, 20]**; the user keeps guessing until correct.
 * Core pillars demonstrated: **variables**, **if/elif/else** conditionals, and a **while** loop.
 
-## 1) Key Concepts (plain language)
+## Key Concepts
 
 * **High-level language (高级语言)**: Python hides many low-level implementation details.
 * **General-purpose (通用编程语言)**: usable for web apps, automation, data science, ML.
@@ -32,9 +37,9 @@ date: 2026-02-15
 * **Conditional statements (条件语句)**: branching based on comparisons (`<`, `>`, `==`) and logic (`or`).
 * **Iteration / loop (迭代 / 循环)**: repeat a block of code while a condition holds.
 
-## 2) Workflow (how the program evolves)
+### 2) Workflow (how the program evolves)
 
-### Step A — Variables + setup (v1)
+#### Step A — Variables + setup (v1)
 
 Goal: pick a secret number and read one guess.
 
@@ -63,7 +68,7 @@ guess = int(text)  # convert the text to a number
 tries = tries + 1  # add 1 try (written long-form for clarity)
 ```
 
-### Step B — Conditionals (v2)
+#### Step B — Conditionals (v2)
 
 Goal: compare `guess` vs `secret` and give feedback.
 
@@ -88,7 +93,7 @@ else:
     print("You got it in", tries, "tries!")
 ```
 
-### Step C — Loop / Iterations (v3)
+#### Step C — Loop / Iterations (v3)
 
 Goal: allow unlimited attempts until the guess matches the secret.
 
@@ -135,7 +140,7 @@ while guess != secret:
         print("You got it in", tries, "tries!")
 ```
 
-## 3) Examples (from the room)
+### 3) Examples (from the room)
 
 Example interaction:
 
@@ -143,13 +148,13 @@ Example interaction:
 * The user guesses repeatedly.
 * The program responds **Too high / Too low** until correct, then prints tries.
 
-## 4) Pitfalls (based only on the provided text)
+### 4) Pitfalls (based only on the provided text)
 
 * `input()` returns **text (string)**, so numerical comparison requires converting via `int()`.
 * Range constraints are explicit: valid guesses are **1..20**; out-of-range guesses trigger a dedicated message.
 * The loop terminates only when `guess == secret` (i.e., `guess != secret` becomes false).
 
-## 5) Takeaways
+## Takeaways
 
 * A small program can demonstrate the core structure of imperative programming:
 

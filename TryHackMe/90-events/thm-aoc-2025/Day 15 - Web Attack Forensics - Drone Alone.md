@@ -1,10 +1,30 @@
-# Web Attack Forensics with Splunk (TryHackMe AoC 2025 · Day 15)
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-12
+tags: [security-writeup, tryhackme, aoc2025, web-forensics]
+source: TryHackMe - Advent of Cyber 2025 Day 15
+platform: tryhackme
+room: Advent of Cyber 2025 Day 15 - Web Attack Forensics - Drone Alone
+slug: aoc-2025-day-15-web-attack-forensics-drone-alone
+path: TryHackMe/90-events/thm-aoc-2025/Day 15 - Web Attack Forensics - Drone Alone.md
+topic: 90-events
+domain: [forensics, blueteam]
+skills: [logging, triage, splunk]
+artifacts: [lab-notes]
+sanitized: true
+---
+
+# Advent of Cyber 2025 Day 15 - Web Attack Forensics - Drone Alone
 
 ## Summary
 
 This lab is a **blue-team triage** exercise: detect suspicious HTTP requests, pivot into Apache error logs, then validate **OS-level execution** via Sysmon process telemetry. The core hypothesis is **command injection** through a CGI script (`/cgi-bin/hello.bat`) that causes Apache (`httpd.exe`) to spawn `cmd.exe` and run attacker-supplied commands, including Base64-obfuscated PowerShell.
 
-## Scenario & Data Sources
+## Key Concepts
+
+### Scenario & Data Sources
 
 **Symptom:** long HTTP requests with Base64 chunks; Splunk alert indicates unusual processes spawned by Apache.
 
@@ -14,16 +34,16 @@ This lab is a **blue-team triage** exercise: detect suspicious HTTP requests, pi
 * `windows_apache_error`: Apache error logs (server-side execution failures / 500s)
 * `windows_sysmon`: Sysmon process creation and related host telemetry (OS-level proof)
 
-## Operational Baseline
+### Operational Baseline
 
 * Use `Time range` = **Last 7 days** or **All time** (narrow ranges are a common reason for “No results found”).
 * Prefer **Verbose / Table view** for hunting; switch to **Raw** when you need the exact log payload.
 
 ---
 
-## Investigation Workflow
+### Investigation Workflow
 
-### 1) Detect suspicious web commands (access logs)
+#### 1) Detect suspicious web commands (access logs)
 
 Goal: find web requests that *look like command execution attempts*.
 
@@ -45,7 +65,7 @@ Goal: find web requests that *look like command execution attempts*.
 * `uri_path=/cgi-bin/hello.bat`
 * `uri_query` includes `cmd=powershell.exe+-enc+<BASE64>`
 
-### 2) Decode Base64 payloads (triage)
+#### 2) Decode Base64 payloads (triage)
 
 Goal: understand the attacker intent encoded inside `-enc`.
 
@@ -58,7 +78,7 @@ Goal: understand the attacker intent encoded inside `-enc`.
 
 * The provided Base64 decodes to a taunting message (e.g., “This is now mine!”), indicating the request reached a code path that attempted execution.
 
-### 3) Confirm server-side execution attempts (Apache error logs)
+#### 3) Confirm server-side execution attempts (Apache error logs)
 
 Goal: confirm whether the request was processed by the backend (even if it failed).
 
@@ -73,7 +93,7 @@ Goal: confirm whether the request was processed by the backend (even if it faile
 * A `500 Internal Server Error` (or “not recognized as an internal or external command”) suggests the input made it far enough to be *handled by server-side logic*, then failed during execution.
 * This helps distinguish **blocked at the web layer** vs **reaching backend execution**.
 
-### 4) Trace suspicious process creation (Sysmon)
+#### 4) Trace suspicious process creation (Sysmon)
 
 Goal: prove OS-level execution by identifying child processes spawned by Apache.
 
@@ -88,7 +108,7 @@ Goal: prove OS-level execution by identifying child processes spawned by Apache.
 * `ParentImage = ...\httpd.exe` and `Image = ...\cmd.exe` is highly suspicious.
 * Web servers normally spawn worker threads, not interactive system shells.
 
-### 5) Confirm attacker enumeration (post-exploitation recon)
+#### 5) Confirm attacker enumeration (post-exploitation recon)
 
 Goal: confirm the attacker started with *identity discovery*.
 
@@ -106,7 +126,7 @@ Goal: confirm the attacker started with *identity discovery*.
 
 * Reconnaissance executable: `whoami.exe` (often observed as `...\cgi-bin\whoami.exe` in this lab’s process lineage).
 
-### 6) Hunt for Base64-encoded PowerShell (Sysmon)
+#### 6) Hunt for Base64-encoded PowerShell (Sysmon)
 
 Goal: find successful PowerShell execution containing encoded commands.
 
@@ -123,7 +143,7 @@ Goal: find successful PowerShell execution containing encoded commands.
 
 ---
 
-## Attack Chain Reconstruction (High-level)
+### Attack Chain Reconstruction (High-level)
 
 ```mermaid
 graph TD
@@ -136,7 +156,7 @@ graph TD
   F --> H[Splunk: windows_sysmon]
 ```
 
-## Key Indicators (IoCs / Behaviors)
+### Key Indicators (IoCs / Behaviors)
 
 * Web requests:
 
@@ -152,7 +172,7 @@ graph TD
 
   * commands executed as the Apache service account (e.g., `...\apache_svc`)
 
-## Mapping to Defensive Concepts
+### Mapping to Defensive Concepts
 
 * **Web exploitation / command injection** → “public-facing app abuse” model
 * **Command interpreter execution** (`cmd.exe`, `powershell.exe`) → host execution proof
@@ -160,14 +180,14 @@ graph TD
 
 ---
 
-## Pitfalls (Things that waste time)
+### Pitfalls (Things that waste time)
 
 * **Time range too narrow** → false “no results”.
 * Staying in **Smart Mode** and missing fields; switch to **Verbose** when needed.
 * Confusing **access log evidence** (request intent) with **Sysmon evidence** (actual execution).
 * Decoding Base64 with the wrong character encoding (PowerShell often uses UTF-16LE).
 
-## Hardening & Detection Improvements
+### Hardening & Detection Improvements
 
 * Web layer:
 

@@ -1,22 +1,31 @@
 ---
-
-platform: TryHackMe
+type: resource-note
+status: done
+created: 2026-02-13
+updated: 2026-03-12
+tags: [security-writeup, tryhackme, rust, programming]
+source: TryHackMe - Learn Rust
+platform: tryhackme
 room: Learn Rust
 slug: learn-rust
-path: notes/tryhackme/00-foundations/learn-rust.md
+path: TryHackMe/00-foundations/learn-rust.md
 topic: 00-foundations
-status: done
-date: 2026-02-13
+domain: [foundations, programming]
+skills: [rust-basics, ownership, borrowing, error-handling]
+artifacts: [concept-notes, lab-notes]
+sanitized: true
 ---
 
-## 0) Summary
+# Learn Rust
+
+## Summary
 
 * Goal: reverse a simple ciphertext pipeline and print the plaintext in Rust.
 * Pipeline (reverse): `rot13 -> base64 decode -> rot13`.
 * Result (plaintext): `thm{rust}`.
 * Rust angle: keep each intermediate as an *owned* value (`Vec<u8>` / `String`) to reduce lifetime/borrow-checker friction.
 
-## 1) Key Concepts (plain language)
+## Key Concepts
 
 * Ownership (所有权): a value has one owner; when the owner goes out of scope, memory is freed.
 * Borrowing (借用): pass `&T` (shared reference) so a function can read without taking ownership.
@@ -30,7 +39,7 @@ date: 2026-02-13
   * `&str` is a borrowed view into UTF‑8 text.
 * `Result<T, E>` + `?`: propagate errors without manual match boilerplate.
 
-## 2) Reverse pipeline
+### 2) Reverse pipeline
 
 Ciphertext: `M3I6r2IbMzq9`
 
@@ -41,7 +50,7 @@ Steps:
 3. `rot13(step2_bytes)` → bytes representing `thm{rust}`
 4. `utf8(step3_bytes)` → `String`
 
-## 3) Implementation (Rust)
+### 3) Implementation (Rust)
 
 Design rule: **one transformation per line**, store intermediates as owned values.
 
@@ -74,14 +83,14 @@ fn main() -> Result<(), Box<dyn Error>> {
 }
 ```
 
-### Cargo.toml
+#### Cargo.toml
 
 ```toml
 [dependencies]
 base64 = "0.22.1"
 ```
 
-## 4) Why this avoids borrow-checker pain
+### 4) Why this avoids borrow-checker pain
 
 Common beginner trap: creating references (`&[u8]`, `&str`) to *temporary* values that get dropped too early.
 
@@ -91,13 +100,13 @@ This pattern avoids it:
 * The next call borrows it briefly (`&step1`, `&step2`) and returns a new owned value.
 * Net effect: minimal lifetimes to reason about; no dangling references.
 
-## 5) Pitfalls
+### 5) Pitfalls
 
 * Base64 decoding returns raw bytes; not everything is valid UTF‑8. Here it is, but in general `String::from_utf8(...)` can fail.
 * ROT13 is defined over ASCII letters; for non-ASCII text you’d need different logic.
 * Prefer explicit engines (`STANDARD`) instead of deprecated helper functions.
 
-## 6) Takeaways
+## Takeaways
 
 * Treat low-level transforms as `bytes -> bytes` until the final `bytes -> String` conversion.
 * When in doubt in Rust: **own the intermediate**, borrow only for the next function call.

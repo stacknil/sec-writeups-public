@@ -1,19 +1,24 @@
 ---
-
-platform: TryHackMe
+type: resource-note
+status: wip
+created: 2026-01-31
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, networking, secure-protocols]
+source: TryHackMe - Networking Secure Protocols
+platform: tryhackme
 room: Networking Secure Protocols
 slug: networking-secure-protocols
 path: TryHackMe/40-networking/networking-secure-protocols.md
 topic: 40-networking
-domain: REF-Security
-skills: tls,wireshark,ssh,vpn
-artifacts: concept-notes
-status: wip
-date: 2026-01-31
-
+domain: [networking]
+skills: [tls, wireshark, ssh, vpn]
+artifacts: [concept-notes]
+sanitized: true
 ---
 
-## 0) Summary
+# Networking Secure Protocols
+
+## Summary
 
 * Plaintext (cleartext) protocols expose **confidentiality**, **integrity**, and **authenticity** risks when packets are observable on-path.
 * Three pragmatic “upgrade paths”:
@@ -23,7 +28,7 @@ date: 2026-01-31
   3. **VPN** as an encrypted overlay network (site-to-site or remote-access).
 * Operational mental model: **security is added as a layer**, mostly without changing TCP/IP semantics; key material and trust anchors become the new critical dependency.
 
-## 1) Key Concepts
+## Key Concepts
 
 ### CIA + Authenticity (confidentiality / integrity / authenticity)
 
@@ -99,7 +104,7 @@ Operational notes:
 * Some VPN configs route *all* traffic through the tunnel; others only route private subnets (split tunnel).
 * Leak risks: DNS leak / IP leak depending on client+server policy.
 
-## 2) Pattern Cards
+## Pattern Cards
 
 ### Pattern 1 — “Security as a wrapper layer”
 
@@ -125,7 +130,7 @@ Operational notes:
 * Technique: log session keys (e.g., browser key log) and feed to Wireshark.
 * Scope constraint: works when you control the endpoint (your lab VM). Not realistic against third-party services.
 
-## 3) Command Cookbook (lab-safe placeholders)
+## Command Cookbook
 
 ### Inspect TLS/HTTPS endpoints (quick sanity)
 
@@ -143,9 +148,9 @@ ssh -vvv USERNAME@TARGET_HOST
 
    * Chromium-style example:
 
-```bash
-chromium --ssl-key-log-file=$HOME/ssl-key.log
-```
+   ```bash
+   chromium --ssl-key-log-file=$HOME/ssl-key.log
+   ```
 
 2. In Wireshark:
 
@@ -153,16 +158,16 @@ chromium --ssl-key-log-file=$HOME/ssl-key.log
    * Set **(Pre)-Master-Secret log filename** to `~/ssl-key.log`
 3. Reopen capture / reload; apply filters:
 
-```text
-# Useful display filters
-http || http2
-http.request || http2.headers
-frame contains "password"   # coarse search
-```
+   ```text
+   # Useful display filters
+   http || http2
+   http.request || http2.headers
+   frame contains "password"   # coarse search
+   ```
 
 4. Locate the authentication request (usually POST or HTTP/2 HEADERS+DATA), then inspect form data / JSON body.
 
-## 4) Evidence (sanitized)
+## Evidence
 
 * Screenshots captured in-room:
 
@@ -179,7 +184,7 @@ assets/
   wireshark-tls-preferences-keylog.png
 ```
 
-## 5) Takeaways
+## Takeaways
 
 * “Secure protocol” usually means **same application semantics** transported inside TLS/SSH/VPN.
 * If you can’t validate the server identity, “encrypted” traffic can still be attacker-controlled.
@@ -230,7 +235,7 @@ flowchart LR
   VS -->|normal internet| I
 ```
 
-## 8) References
+## References
 
 ```text
 TLS 1.3 (RFC 8446): https://www.rfc-editor.org/rfc/rfc8446.txt

@@ -1,27 +1,33 @@
 ---
-
-platform: tryhackme
-room: CyberChef: The Basics
-slug: cyberchef-the-basics
-path: notes/60-forensics/00-tooling/cyberchef-the-basics.md
-topic: 60-forensics
-domain: [dfir-tooling, data-transformation, osint-utilities]
-skills: [recipes, extractors, timestamps, base-encodings, url-encoding, workflow]
-artifacts: [concept-notes, pattern-cards, cookbook]
+type: resource-note
 status: done
-date: 2026-02-28
+created: 2026-02-28
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, cyberchef, forensics]
+source: "TryHackMe - CyberChef: The Basics"
+platform: tryhackme
+room: "CyberChef: The Basics"
+slug: cyberchef-the-basics
+path: TryHackMe/60-forensics/00-tooling/cyberchef-the-basics.md
+topic: 60-forensics
+domain: [forensics, data-transformation, osint]
+skills: [extractors, timestamps, base-encodings, url-encoding]
+artifacts: [concept-notes, pattern-card, cookbook]
+sanitized: true
 ---
 
-0. Summary
+# CyberChef: The Basics
+
+## Summary
 
 * CyberChef is a browser-based data transformation toolkit. The core idea is simple: feed data into **Input**, chain **Operations** into a **Recipe**, then inspect **Output**.
 * The tool is especially useful for DFIR, OSINT, malware triage, log analysis, indicator extraction, and quick decoding work.
 * The safest mental model is: **objective first, recipe second**. Do not click random operations until you know what question you are trying to answer.
 * Public-repo-friendly usage means writing down repeatable recipes, not just final answers.
 
-1. Key Concepts
+## Key Concepts
 
-1.1 What CyberChef is good at
+### 1.1 What CyberChef is good at
 
 CyberChef is best treated as a visual data-lab for:
 
@@ -38,7 +44,7 @@ Typical use cases:
 * convert UNIX timestamps into readable time
 * test layered transformations such as `From Base64 -> Inflate -> From Hex`
 
-1.2 The four interface areas
+### 1.2 The four interface areas
 
 CyberChef is easiest to learn if you map the UI to four regions:
 
@@ -62,7 +68,7 @@ flowchart LR
   B --> D[Output]
 ```
 
-1.3 The room’s four-step thought process
+### 1.3 The room’s four-step thought process
 
 This room’s most useful lesson is not a specific operation. It is the workflow:
 
@@ -79,7 +85,7 @@ Question -> Input -> Candidate recipe -> Validate output -> Iterate
 
 That is the correct way to use CyberChef during investigations.
 
-1.4 Recipes
+### 1.4 Recipes
 
 A **recipe** is an ordered list of operations.
 
@@ -95,9 +101,9 @@ Good practice for GitHub notes:
 * include the operation names and critical parameters
 * state what “success” looks like
 
-2. Core Operation Families
+### 2. Core Operation Families
 
-2.1 Extractors
+#### 2.1 Extractors
 
 High-value beginner operations:
 
@@ -113,7 +119,7 @@ Analyst mindset:
 * extraction is often the first pass, not the final answer
 * once indicators are extracted, validate and normalize them elsewhere if needed
 
-2.2 Date / Time
+#### 2.2 Date / Time
 
 Most relevant beginner operations:
 
@@ -130,7 +136,7 @@ Rule of thumb:
 * do not trust your intuition on time zones, offsets, or timestamp length
 * convert explicitly and verify the resulting date/time
 
-2.3 Data Format / Encoding
+#### 2.3 Data Format / Encoding
 
 High-frequency operations from this room:
 
@@ -145,7 +151,7 @@ Security note:
 * encoding is not encryption
 * Base64, URL encoding, and similar formats are representation transforms, not confidentiality controls
 
-2.4 Base64 as the baseline mental model
+#### 2.4 Base64 as the baseline mental model
 
 Base64 is worth understanding because it appears everywhere:
 
@@ -165,9 +171,9 @@ What matters operationally:
 * if a string looks plausibly Base64, test it
 * if output is still structured/encoded data, continue peeling layers
 
-3. Pattern Cards
+## Pattern Cards
 
-3.1 “Unknown gibberish” triage card
+### 3.1 “Unknown gibberish” triage card
 
 When you find an opaque string:
 
@@ -183,7 +189,7 @@ When you find an opaque string:
 
 Do not assume the first readable output is the final truth.
 
-3.2 Indicator extraction card
+### 3.2 Indicator extraction card
 
 If the input is a mixed text blob:
 
@@ -197,7 +203,7 @@ Typical sequence:
 Raw text -> Extract IP addresses / URLs / emails -> Review -> Enrich elsewhere
 ```
 
-3.3 Timestamp conversion card
+### 3.3 Timestamp conversion card
 
 If a value may be a timestamp:
 
@@ -207,7 +213,7 @@ If a value may be a timestamp:
 
 A wrong timestamp interpretation can quietly poison the rest of an investigation.
 
-3.4 Safe analytical workflow card
+### 3.4 Safe analytical workflow card
 
 CyberChef is excellent for:
 
@@ -221,7 +227,7 @@ CyberChef is not ideal for:
 * full automation at enterprise scale
 * treating browser-side processing as if it were evidence-safe by default
 
-4. Public GitHub Repo Style Notes
+## 4. Public GitHub Repo Style Notes
 
 For public notes, write CyberChef usage like a reproducible mini-playbook:
 
@@ -256,9 +262,9 @@ Bad example:
 I clicked random operations until something readable came out.
 ```
 
-5. Command / Recipe Cookbook
+## 5. Command / Recipe Cookbook
 
-5.1 Simple extraction workflow
+### 5.1 Simple extraction workflow
 
 ```text
 Recipe:
@@ -274,7 +280,7 @@ Use case:
 * malware notes
 * threat intel blobs
 
-5.2 Timestamp workflow
+### 5.2 Timestamp workflow
 
 ```text
 Recipe A:
@@ -289,7 +295,7 @@ Use case:
 * timeline normalization
 * converting logs into human-readable form
 
-5.3 Encoding workflow
+### 5.3 Encoding workflow
 
 ```text
 Recipe:
@@ -302,7 +308,7 @@ Use when:
 * content looks layered
 * a decoded result still contains escaped URL characters
 
-5.4 URL normalization workflow
+### 5.4 URL normalization workflow
 
 ```text
 Recipe:
@@ -314,7 +320,7 @@ Use when:
 * percent-encoded strings obscure the original URL
 * you need readable values before IOC review
 
-5.5 Validation checklist
+### 5.5 Validation checklist
 
 After every recipe, ask:
 
@@ -323,7 +329,7 @@ After every recipe, ask:
 * Does it match the objective I started with?
 * Do I need another transformation layer?
 
-6. Practical Exercise Notes
+## 6. Practical Exercise Notes
 
 The provided task file is a good example of why CyberChef is useful: a normal-looking text blob can contain embedded indicators and values that are easy to miss by eye.
 
@@ -345,7 +351,7 @@ This is the right separation:
 * **extract first** when you suspect mixed content
 * **decode first** when you suspect opaque encoding
 
-7. Pitfalls
+## 7. Pitfalls
 
 * Using CyberChef without a defined objective.
 * Applying too many operations at once and losing track of what changed the data.
@@ -353,24 +359,24 @@ This is the right separation:
 * Forgetting that Base64 and URL encoding are not security mechanisms.
 * Relying on CyberChef alone for large-scale or evidence-sensitive workflows.
 
-8. Takeaways
+## Takeaways
 
 * CyberChef is strongest as an interactive hypothesis-testing environment for data transformation.
 * The real skill is not memorizing operations; it is recognizing which category of operation is plausible for the data in front of you.
 * A clean recipe plus a short explanation is exactly the kind of artifact that belongs in a public GitHub repo.
 
-9. References
+## References
 
 * GCHQ CyberChef web app and official GitHub repository
 * CyberChef official wiki pages
 * CyberChef release page
 * Related CyberChef recipe collections for community examples
 
-10. Appendix — Common CyberChef Recipes for DFIR / THM / Malware Triage
+## 10. Appendix — Common CyberChef Recipes for DFIR / THM / Malware Triage
 
 This appendix is meant to be copied into future notes as a quick-start set of reusable patterns.
 
-10.1 IOC extraction from a mixed text blob
+### 10.1 IOC extraction from a mixed text blob
 
 Objective:
 
@@ -388,7 +394,7 @@ Validation:
 * check whether extracted items match expected syntax and context
 * remove obvious false positives before enrichment
 
-10.2 Quick “gibberish string” triage
+### 10.2 Quick “gibberish string” triage
 
 Objective:
 
@@ -407,7 +413,7 @@ Validation:
 
 * stop only when the output becomes semantically meaningful, not merely readable
 
-10.3 URL cleanup and de-tracking
+### 10.3 URL cleanup and de-tracking
 
 Objective:
 
@@ -422,7 +428,7 @@ Validation:
 
 * confirm that the decoded result is a plausible URL and not just partially decoded noise
 
-10.4 Base64 blob review
+### 10.4 Base64 blob review
 
 Objective:
 
@@ -438,7 +444,7 @@ Validation:
 
 * determine whether the decoded material is plain text, compressed data, executable content, or still another wrapper
 
-10.5 Timestamp normalization for timeline work
+### 10.5 Timestamp normalization for timeline work
 
 Objective:
 
@@ -456,7 +462,7 @@ Validation:
 
 * confirm the timezone assumptions and whether the resulting date fits the event context
 
-10.6 Safe beginner workflow for layered transformations
+### 10.6 Safe beginner workflow for layered transformations
 
 Objective:
 
@@ -473,7 +479,7 @@ Why this matters:
 
 * layered decoding errors are easy to make and hard to spot if you change too much at once
 
-10.7 Public GitHub documentation format for a recipe
+### 10.7 Public GitHub documentation format for a recipe
 
 Use this template:
 
@@ -485,7 +491,7 @@ Validation: How did I confirm the result makes sense?
 Next step: Extract / enrich / decode further / export
 ```
 
-10.8 Anti-patterns
+### 10.8 Anti-patterns
 
 Avoid these habits:
 
@@ -494,11 +500,11 @@ Avoid these habits:
 * using CyberChef as if it were a secrecy-preserving environment
 * documenting only the answer and not the recipe that produced it
 
-11. Appendix — Recipe Patterns by Scenario
+## 11. Appendix — Recipe Patterns by Scenario
 
 This section organizes recipe ideas by investigative scenario rather than by operation category.
 
-11.1 Phishing email triage
+### 11.1 Phishing email triage
 
 Objective:
 
@@ -518,7 +524,7 @@ What to look for:
 * encoded tracking links
 * mismatches between visible text and actual destination
 
-11.2 PowerShell blob triage
+### 11.2 PowerShell blob triage
 
 Objective:
 
@@ -538,7 +544,7 @@ What to look for:
 * suspicious command fragments
 * evidence that another layer of compression/encoding is still present
 
-11.3 Malware string cleanup
+### 11.3 Malware string cleanup
 
 Objective:
 
@@ -559,7 +565,7 @@ What to look for:
 * suspicious user agents
 * embedded configuration material
 
-11.4 IOC cleanup and export
+### 11.4 IOC cleanup and export
 
 Objective:
 
@@ -578,7 +584,7 @@ Output discipline:
 * keep raw source text separately from extracted results
 * export cleaned indicators as an intermediate artifact, not as final truth
 
-11.5 Log timestamp conversion
+### 11.5 Log timestamp conversion
 
 Objective:
 
@@ -595,7 +601,7 @@ What to verify:
 * whether the source uses seconds vs another unit
 * whether the converted time actually fits the event sequence
 
-11.6 URL and redirect cleanup
+### 11.6 URL and redirect cleanup
 
 Objective:
 
@@ -613,7 +619,7 @@ What to look for:
 * destination domain vs displayed domain mismatch
 * embedded campaign identifiers or tokens
 
-11.7 Multi-layer encoded string workflow
+### 11.7 Multi-layer encoded string workflow
 
 Objective:
 
@@ -631,7 +637,7 @@ Why this works:
 
 * CyberChef’s strength is iterative, visible transformation. Preserve that advantage instead of applying five operations blindly.
 
-11.8 Browser-safety note
+### 11.8 Browser-safety note
 
 CyberChef is client-side and browser-based, which is part of why it is convenient. But for sensitive investigations:
 
@@ -639,7 +645,7 @@ CyberChef is client-side and browser-based, which is part of why it is convenien
 * be careful with unofficial hosted copies
 * remember that very large datasets or sensitive evidence may be better handled in local, controlled workflows
 
-12. Further Improvement Ideas for This Note
+## 12. Further Improvement Ideas for This Note
 
 If this note becomes part of a larger DFIR/tooling repo, useful follow-on add-ons would be:
 
@@ -647,7 +653,7 @@ If this note becomes part of a larger DFIR/tooling repo, useful follow-on add-on
 * a separate appendix for regex-heavy recipes
 * a private companion note with solved THM task answers, while keeping the public repo methodology-only
 
-CN–EN Glossary (mini)
+## CN–EN Glossary (mini)
 
 * CyberChef: 网络安全数据变换工具
 * Operation: 操作

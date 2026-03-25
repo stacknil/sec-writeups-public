@@ -1,19 +1,24 @@
 ---
-
-platform: TryHackMe
+type: resource-note
+status: done
+created: 2026-02-15
+updated: 2026-03-12
+tags: [security-writeup, tryhackme, binary, data-representation]
+source: TryHackMe - Data Representation
+platform: tryhackme
 room: Data Representation
 slug: data-representation
 path: TryHackMe/00-foundations/data-representation.md
 topic: 00-foundations
-domain: foundations
-skills: number-systems binary hexadecimal rgb-color
-artifacts: concept-notes
-status: done
-date: 2026-02-15
-
+domain: [foundations]
+skills: [number-systems, hexadecimal]
+artifacts: [concept-notes]
+sanitized: true
 ---
 
-## 0) Summary
+# Data Representation
+
+## Summary
 
 * Computers store and process information using two states interpreted as **0** and **1** (binary / base-2).
 * **Bits** (0/1) combine to represent larger ranges: 1 bit → 2 states; 8 bits → 256 states.
@@ -32,7 +37,9 @@ date: 2026-02-15
 * RGB（红绿蓝三原色）: red/green/blue channel intensities.
 * Radix / Base（基数）: the number of digits in a positional system.
 
-## 1) Task 1 — Introduction: Why bases matter
+## Key Concepts
+
+### 1) Task 1 — Introduction: Why bases matter
 
 Humans naturally use **decimal (base-10)** (e.g., 17, 99, 3049). Computers are constrained to **two readable states**, so they use **binary (base-2)**.
 
@@ -44,9 +51,9 @@ Examples of “two states” mentioned:
 
 Core idea: complex data becomes manageable when we treat each state as a **bit**.
 
-## 2) Task 2 — Representing Colors (RGB)
+### 2) Task 2 — Representing Colors (RGB)
 
-### 2.1 First 8 colors (1 bit per channel)
+#### 2.1 First 8 colors (1 bit per channel)
 
 Assume each channel (R, G, B) is either **off (0)** or **on (1)**.
 
@@ -63,7 +70,7 @@ Total colors: 2 × 2 × 2 = **8**.
 | 110      | red + green  | Yellow     |
 | 111      | all on       | White      |
 
-### 2.2 From 8 to 16,777,216 colors (8-bit per channel)
+#### 2.2 From 8 to 16,777,216 colors (8-bit per channel)
 
 If each channel has **256 levels** (0–255), then:
 
@@ -71,7 +78,7 @@ If each channel has **256 levels** (0–255), then:
 * 256 levels require **8 bits**.
 * RGB color becomes **3 × 8 bits = 24 bits = 3 bytes**.
 
-### 2.3 Why hex is used for colors
+#### 2.3 Why hex is used for colors
 
 Binary like `10100011 11101010 00101010` is hard to read/write.
 
@@ -99,16 +106,16 @@ Key takeaways for color representation:
 * Each byte: **2 hex digits**
 * Whole color: **6 hex digits**
 
-## 3) Task 3 — Numbers: Decimal, Binary, Hex (and Octal)
+### 3) Task 3 — Numbers: Decimal, Binary, Hex (and Octal)
 
-### 3.1 Positional notation (decimal example)
+#### 3.1 Positional notation (decimal example)
 
 A number like 213 is:
 
 * 213 = 200 + 10 + 3
 * 213 = 2 × 10² + 1 × 10¹ + 3 × 10⁰
 
-### 3.2 Binary numbers (base-2)
+#### 3.2 Binary numbers (base-2)
 
 Binary uses digits {0,1} and powers of 2.
 
@@ -127,7 +134,7 @@ Worked conversions shown:
 * 1110 → 14
 * 1111 → 15
 
-### 3.3 Hexadecimal numbers (base-16)
+#### 3.3 Hexadecimal numbers (base-16)
 
 Hex digits represent decimal 0–15 using:
 
@@ -139,7 +146,7 @@ Optional conversion example given:
 
 * 9BDF = 9 × 16³ + 11 × 16² + 13 × 16¹ + 15 × 16⁰ = **39,903**
 
-### 3.4 (Optional) Octal numbers (base-8)
+#### 3.4 (Optional) Octal numbers (base-8)
 
 Octal uses digits {0..7} and groups 3 bits per digit.
 
@@ -158,7 +165,7 @@ Optional conversion example given:
 
 * 357₈ = 3 × 8² + 5 × 8¹ + 7 × 8⁰ = 192 + 40 + 7 = **239**
 
-## 4) Task 4 — Conclusion (What you should retain)
+### 4) Task 4 — Conclusion (What you should retain)
 
 Number systems:
 
@@ -177,13 +184,13 @@ Colors:
 * RGB with 8-bit per channel → **24-bit color** → **16,777,216** combinations
 * Hex color is a readable shorthand for binary RGB
 
-## 5) Pitfalls (common mistakes)
+### 5) Pitfalls (common mistakes)
 
 * Confusing the roles of digits vs. place values: each position is a power of the base.
 * Forgetting that hex A–F correspond to decimal 10–15.
 * Mixing “byte” meaning: here it is explicitly treated as **8 bits (octet)**.
 
-## 6) Takeaways
+## Takeaways
 
 * Binary and hex literacy is foundational for tooling in security (e.g., reading memory dumps, network bytes, hashes, color/byte encodings).
 * Treat “base conversion” as a deterministic positional-expansion exercise; slow, careful arithmetic prevents errors.

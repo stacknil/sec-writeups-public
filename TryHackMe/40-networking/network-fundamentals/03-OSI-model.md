@@ -1,10 +1,28 @@
-# TryHackMe – OSI Model (Notes)
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, networking, osi]
+source: TryHackMe - OSI Model
+platform: tryhackme
+room: OSI Model
+slug: osi-model
+path: TryHackMe/40-networking/network-fundamentals/03-OSI-model.md
+topic: 40-networking
+domain: [networking]
+skills: [osi-model, tcp-ip, ports]
+artifacts: [concept-notes]
+sanitized: true
+---
+
+# OSI Model
 
 > Room: **OSI Model** – networking fundamentals for security
 
 ---
 
-## 1. Why the OSI model matters (for hacking & defence)
+## Summary
 
 **OSI (Open Systems Interconnection) model** is a 7‑layer conceptual model describing how data moves from one application to another across a network.
 
@@ -34,7 +52,9 @@ L1 Physical      ── bits on wire / RF ───────▶  L1     │
 
 ---
 
-## 2. Layer overview
+## Key Concepts
+
+### 2. Layer overview
 
 | Layer | Name         | PDU (data unit)                | Typical devices / examples         |
 | ----: | ------------ | ------------------------------ | ---------------------------------- |
@@ -48,7 +68,7 @@ L1 Physical      ── bits on wire / RF ───────▶  L1     │
 
 ---
 
-## 3. Layer 1 – Physical
+### 3. Layer 1 – Physical
 
 **Role:** Move raw bits between devices.
 
@@ -65,7 +85,7 @@ L1 Physical      ── bits on wire / RF ───────▶  L1     │
 
 ---
 
-## 4. Layer 2 – Data Link
+### 4. Layer 2 – Data Link
 
 **Role:** Local delivery over a single link / LAN.
 
@@ -87,7 +107,7 @@ L1 Physical      ── bits on wire / RF ───────▶  L1     │
 
 ---
 
-## 5. Layer 3 – Network
+### 5. Layer 3 – Network
 
 **Role:** End‑to‑end logical addressing and routing between networks.
 
@@ -108,21 +128,21 @@ L1 Physical      ── bits on wire / RF ───────▶  L1     │
 
 ---
 
-## 6. Layer 4 – Transport (TCP vs UDP)
+### 6. Layer 4 – Transport (TCP vs UDP)
 
 **Role:** Host‑to‑host delivery, ports, reliability.
 
 * Identifies **applications** on a host using **port numbers** (e.g., TCP 80, UDP 53).
 * Manages how data is chopped into segments and re‑ordered.
 
-### TCP – Transmission Control Protocol
+#### TCP – Transmission Control Protocol
 
 * **Connection‑oriented**, reliable, ordered.
 * Uses the **3‑way handshake**: `SYN → SYN/ACK → ACK`.
 * Provides acknowledgements, retransmission, and flow control.
 * Slower but safe: used for web (HTTP/S), email, file transfer, etc.
 
-### UDP – User Datagram Protocol
+#### UDP – User Datagram Protocol
 
 * **Connectionless**, “fire‑and‑forget”.
 * No guarantee of delivery, ordering, or duplicate protection.
@@ -135,7 +155,7 @@ L1 Physical      ── bits on wire / RF ───────▶  L1     │
 
 ---
 
-## 7. Layer 5 – Session
+### 7. Layer 5 – Session
 
 **Role:** Create, manage, and tear down logical **sessions** between hosts.
 
@@ -150,7 +170,7 @@ L1 Physical      ── bits on wire / RF ───────▶  L1     │
 
 ---
 
-## 8. Layer 6 – Presentation
+### 8. Layer 6 – Presentation
 
 **Role:** Translate data formats so different applications can understand each other.
 
@@ -168,7 +188,7 @@ L1 Physical      ── bits on wire / RF ───────▶  L1     │
 
 ---
 
-## 9. Layer 7 – Application
+### 9. Layer 7 – Application
 
 **Role:** Closest to the user – defines **how software talks on the network**.
 
@@ -189,7 +209,7 @@ L1 Physical      ── bits on wire / RF ───────▶  L1     │
 
 ---
 
-## 10. Quick “mental elevator” from L1 to L7
+### 10. Quick “mental elevator” from L1 to L7
 
 ```text
 User clicks a link in the browser (L7)
@@ -211,7 +231,7 @@ On the way back, the receiving host walks **up** the same staircase, stripping h
 
 ---
 
-## 11. Key terminology (EN → ZH)
+### 11. Key terminology (EN → ZH)
 
 | Term (EN)                                  | 中文术语                |
 | ------------------------------------------ | ------------------- |

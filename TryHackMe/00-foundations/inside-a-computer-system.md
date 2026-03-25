@@ -1,18 +1,24 @@
 ---
-
+type: resource-note
+status: done
+created: 2026-02-21
+updated: 2026-03-12
+tags: [security-writeup, tryhackme, hardware, systems]
+source: TryHackMe - Inside a Computer System
 platform: tryhackme
 room: Inside a Computer System
 slug: inside-a-computer-system
-path: notes/00-foundations/inside-a-computer-system.md
+path: TryHackMe/00-foundations/inside-a-computer-system.md
 topic: 00-foundations
-domain: [systems, hardware]
+domain: [foundations, hardware]
 skills: [hardware-basics, memory-hierarchy, boot-process, firmware]
-artifacts: [concept-notes, pattern-cards]
-status: done
-date: 2026-02-21
+artifacts: [concept-notes, pattern-card]
+sanitized: true
 ---
 
-0. Summary
+# Inside a Computer System
+
+## Summary
 
 * A computer system is a set of cooperating components (CPU, RAM, storage, I/O, networking, power) connected by the motherboard’s interconnect fabric.
 * The CPU executes instructions, RAM holds “working set” data temporarily (volatile), and storage keeps data persistently (non-volatile).
@@ -20,9 +26,9 @@ date: 2026-02-21
 * The bootloader loads the OS into RAM and hands off control; the OS then owns device drivers, scheduling, and user-facing services.
 * Security implication: the boot chain is a trust boundary; firmware/boot stages are high-impact attack surfaces.
 
-1. Key Concepts (plain language)
+## Key Concepts
 
-1.1 Core components and what they do
+### 1.1 Core components and what they do
 
 * Motherboard (mainboard / “the backplane”)
 
@@ -66,7 +72,7 @@ date: 2026-02-21
   * Output examples: monitor, speakers, printer.
   * Common connectors: USB, HDMI, DisplayPort, audio.
 
-1.2 Memory hierarchy: why RAM vs storage matters
+### 1.2 Memory hierarchy: why RAM vs storage matters
 
 Think “speed vs size vs persistence.”
 
@@ -76,7 +82,7 @@ Think “speed vs size vs persistence.”
 
 This hierarchy shapes both performance tuning (bottlenecks) and security work (what evidence exists where).
 
-1.3 Firmware and boot: from power-on to OS
+### 1.3 Firmware and boot: from power-on to OS
 
 A practical mental model:
 
@@ -99,9 +105,9 @@ flowchart LR
   H --> I[OS loads drivers/services, login/UI]
 ```
 
-2. Pattern Cards (generalizable)
+## Pattern Cards
 
-2.1 “Component ↔ Interface” mapping card
+### 2.1 “Component ↔ Interface” mapping card
 
 * CPU ↔ CPU socket (motherboard)
 * RAM ↔ DIMM slots
@@ -112,14 +118,14 @@ flowchart LR
 
 Use case: when diagnosing a system or threat scenario, always tie a component to the physical/logical interface it depends on.
 
-2.2 Volatile vs non-volatile evidence card
+### 2.2 Volatile vs non-volatile evidence card
 
 * Volatile (RAM): running processes, in-memory secrets, ephemeral network states.
 * Non-volatile (SSD/HDD/NVRAM): files, logs, configs, boot entries, firmware variables.
 
 Use case (DFIR mindset): “live response” targets RAM; “post-mortem forensics” targets disks and firmware state.
 
-2.3 Boot chain trust boundary card
+### 2.3 Boot chain trust boundary card
 
 * Firmware stage controls the earliest code execution.
 * Bootloader decides what OS kernel gets loaded.
@@ -127,16 +133,16 @@ Use case (DFIR mindset): “live response” targets RAM; “post-mortem forensi
 
 Security note: attacks before the OS (firmware/bootkits) can persist and evade many endpoint defenses.
 
-2.4 Common failure symptoms card (ops-oriented)
+### 2.4 Common failure symptoms card (ops-oriented)
 
 * No power / no fans: PSU/cabling/front-panel switch.
 * Powers on then shuts off: PSU overload, short, CPU cooler, RAM seating.
 * Beep codes / no display: RAM/GPU/firmware issues.
 * Slow boot / high disk activity: storage bottleneck, failing HDD, OS startup load.
 
-3. Command Cookbook (reproducible, placeholders only)
+## Command Cookbook
 
-3.1 Linux quick inventory
+### 3.1 Linux quick inventory
 
 ```bash
 # CPU
@@ -162,7 +168,7 @@ sudo dmidecode -t bios
 journalctl -b --no-pager | head
 ```
 
-3.2 Windows quick inventory (PowerShell)
+### 3.2 Windows quick inventory (PowerShell)
 
 ```powershell
 # System overview
@@ -184,11 +190,11 @@ Get-NetAdapter | Select-Object Name,Status,LinkSpeed,MacAddress
 bcdedit
 ```
 
-3.3 Operational tip
+### 3.3 Operational tip
 
 If you need to check boot order or Secure Boot state, use the OS tools first (Windows “System Information”, Linux `mokutil --sb-state` where available) before changing firmware settings. Avoid random toggling in firmware menus.
 
-4. Evidence (sanitized; assets/)
+## Evidence
 
 * `assets/inside-computer-components.png`
 
@@ -199,20 +205,20 @@ If you need to check boot order or Secure Boot state, use the OS tools first (Wi
 
 (If you publish this note publicly, ensure images contain no personal identifiers and are either self-made or permitted for reuse.)
 
-5. Takeaways
+## Takeaways
 
 * Systems thinking: always reason in layers (power → firmware → hardware init → bootloader → OS → userland).
 * Performance thinking: the memory hierarchy explains why “more RAM” can fix thrashing and why SSDs improve responsiveness.
 * Security thinking: earlier layers have higher leverage. Firmware and boot are where “root of trust” concepts start.
 
-6. References (official/docs-first)
+## References
 
 * UEFI Specification (UEFI Forum): Boot Manager and general firmware/OS interface.
 * POST (Power‑On Self Test) definitions: firmware pre-boot diagnostics.
 * Vendor platform documentation (OEM manuals/whitepapers) for boot device behavior.
 * TryHackMe: Pre Security / Computer Fundamentals learning path context.
 
-CN–EN Glossary (mini)
+## CN–EN Glossary (mini)
 
 * Motherboard: 主板
 * CPU (Central Processing Unit): 中央处理器

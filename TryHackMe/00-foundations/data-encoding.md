@@ -1,25 +1,31 @@
 ---
-
-platform: TryHackMe
+type: resource-note
+status: done
+created: 2026-02-15
+updated: 2026-03-12
+tags: [security-writeup, tryhackme, encoding, unicode]
+source: TryHackMe - Data Encoding
+platform: tryhackme
 room: Data Encoding
 slug: data-encoding
-path: notes/00-foundations/data-encoding.md
+path: TryHackMe/00-foundations/data-encoding.md
 topic: 00-foundations
-domain: text-encoding unicode
-skills: ascii unicode utf
-artifacts: concept-notes
-status: done
-date: 2026-02-15
+domain: [foundations, data-transformation]
+skills: [ascii, unicode]
+artifacts: [concept-notes]
+sanitized: true
 ---
 
-## 0) Summary
+# Data Encoding
+
+## Summary
 
 * **Representation**: data lives as **bits** (0/1) and therefore as **numbers** in memory.
 * **Encoding**: an agreed mapping from numbers → meaning (e.g., which number means the character `A`).
 * Mismatched encodings are a common reason text becomes **gibberish** when opened on another system.
 * Core standards covered: **ASCII**, **Unicode**, and **UTF-8 / UTF-16 / UTF-32**.
 
-## 1) Key Concepts (plain language)
+## Key Concepts
 
 ### Representation vs Encoding
 
@@ -84,9 +90,9 @@ These are ways to store Unicode code points as bytes.
     * `A` as `U+00000041`
     * `🔥` as `U+0001F525`
 
-## 2) Worked Examples (from the text)
+### 2) Worked Examples (from the text)
 
-### ASCII example: `TryHackMe`
+#### ASCII example: `TryHackMe`
 
 If stored using ASCII, the text plus newline is:
 
@@ -102,7 +108,7 @@ Interpretation:
 
 * The last byte `0a` represents a newline (`\n`).
 
-### Unicode examples mentioned
+#### Unicode examples mentioned
 
 * `龍` (dragon): `U+9F8D` (or shown as `U+00009F8D` in UTF-32 style)
 * `😊`: `U+0001F60A` (UTF-32 style; also shown as a 32-bit binary sequence)
@@ -110,7 +116,7 @@ Interpretation:
 * `ت`: `U+062A`
 * `♞`: `U+265E`
 
-## 3) Pattern Cards (generalizable)
+## Pattern Cards
 
 ### Pattern: “Gibberish text” = encoding mismatch
 
@@ -133,7 +139,7 @@ Interpretation:
 * Assuming “8-bit extended ASCII” is one standard: regional variants make the upper 128 positions inconsistent.
 * Opening a file with the wrong encoding: non-English characters are most likely to break first.
 
-## 5) Takeaways
+## Takeaways
 
 * Text is numbers; encoding is the contract that assigns meaning.
 * ASCII explains the historical baseline and why hex dumps are readable for text.
@@ -148,7 +154,7 @@ Interpretation:
 * ASCII（美国信息交换标准代码）: 7-bit English-centric encoding
 * UTF (Unicode Transformation Format)（Unicode 转换格式）: UTF-8 / UTF-16 / UTF-32
 
-## 7) References (optional, for verification)
+## References
 
 ```text
 Unicode Standard (general): https://www.unicode.org/standard/standard.html

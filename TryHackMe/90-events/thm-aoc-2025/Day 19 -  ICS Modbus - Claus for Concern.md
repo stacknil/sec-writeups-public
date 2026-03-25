@@ -1,26 +1,46 @@
-# THM Advent of Cyber Day 19 — ICS/SCADA Modbus Incident Response Notes
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-12
+tags: [security-writeup, tryhackme, aoc2025, ics, modbus]
+source: TryHackMe - Advent of Cyber 2025 Day 19
+platform: tryhackme
+room: Advent of Cyber 2025 Day 19 - ICS Modbus - Claus for Concern
+slug: aoc-2025-day-19-ics-modbus-claus-for-concern
+path: TryHackMe/90-events/thm-aoc-2025/Day 19 -  ICS Modbus - Claus for Concern.md
+topic: 90-events
+domain: [networking, blueteam]
+skills: [triage, ir-basics]
+artifacts: [lab-notes]
+sanitized: true
+---
 
-## Context
+# Advent of Cyber 2025 Day 19 - ICS Modbus - Claus for Concern
+
+## Summary
 
 A drone-delivery warehouse is “working” but delivering the wrong items. The attacker bypassed any friendly UI and manipulated the control logic directly over **Modbus/TCP** (default TCP port **502**, MBAP). The system also includes a **trap**: an unsafe write order arms a self-destruct/dump routine.
 
-## Scope / Rules of Engagement (ROE)
+## Key Concepts
+
+### Scope / Rules of Engagement (ROE)
 
 * This workflow is for **authorized lab environments only** (TryHackMe AttackBox + target VM).
 * Industrial Control Systems (ICS) interact with physical processes; careless writes can cause real-world harm.
 
 ---
 
-## Mental Model
+### Mental Model
 
-### What you are actually dealing with
+#### What you are actually dealing with
 
 * **SCADA (Supervisory Control and Data Acquisition / 监控与数据采集)**: operator-facing monitoring + command layer.
 * **PLC (Programmable Logic Controller / 可编程逻辑控制器)**: executes deterministic control logic; reads sensors, writes actuators.
 * **Historian (历史库/日志库)**: stores operational data and audit trails.
 * **Modbus (工业通信协议)**: simple request/response protocol; common in OT because it is easy and reliable.
 
-### Why this is brittle
+#### Why this is brittle
 
 Modbus is “security-naive” by design:
 
@@ -32,7 +52,7 @@ Result: if TCP/502 is reachable, reads/writes are possible at protocol level.
 
 ---
 
-## Data Model
+### Data Model
 
 Modbus organizes data into types:
 
@@ -41,7 +61,7 @@ Modbus organizes data into types:
 
 In this scenario (register map from the “maintenance note”):
 
-### Holding Registers
+#### Holding Registers
 
 | Address | Name                     | Meaning                            |
 | ------: | ------------------------ | ---------------------------------- |
@@ -49,7 +69,7 @@ In this scenario (register map from the “maintenance note”):
 |     HR1 | Delivery Zone            | 1–9 normal, 10 ocean dump          |
 |     HR4 | System Signature/Version | Default 100; compromised shows 666 |
 
-### Coils
+#### Coils
 
 | Address | Name                    | Meaning                                 |
 | ------: | ----------------------- | --------------------------------------- |
@@ -62,15 +82,15 @@ In this scenario (register map from the “maintenance note”):
 
 ---
 
-## Recon Workflow
+### Recon Workflow
 
-### 1) Service discovery
+#### 1) Service discovery
 
 Use a narrow scan to save time:
 
 ```bash
 # 01
-nmap -sV -p 22,80,502 MACHINE_IP
+nmap -sV -p 22,80,502 TARGET_IP
 ```
 
 Interpretation:
@@ -78,13 +98,13 @@ Interpretation:
 * `80/tcp` = CCTV web view (visual ground truth)
 * `502/tcp` = Modbus/TCP (your real control surface)
 
-### 2) Visual confirmation (SCADA monitoring)
+#### 2) Visual confirmation (SCADA monitoring)
 
-Open `http://MACHINE_IP` and observe:
+Open `http://TARGET_IP` and observe:
 
 * the system is operational but performing the wrong selection (logic manipulation vs “broken system”).
 
-### 3) Protocol-level reconnaissance (Modbus)
+#### 3) Protocol-level reconnaissance (Modbus)
 
 Install `pymodbus` if needed:
 
@@ -98,7 +118,7 @@ Minimal read-only recon (safe):
 ```python
 # 01  from pymodbus.client import ModbusTcpClient
 # 02
-# 03  PLC_IP = "MACHINE_IP"
+# 03  PLC_IP = "TARGET_IP"
 # 04  PORT = 502
 # 05  UNIT_ID = 1
 # 06
@@ -129,7 +149,7 @@ Expected compromise indicators:
 
 ---
 
-## Trap Logic
+### Trap Logic
 
 The note’s warning is the whole point:
 
@@ -151,7 +171,7 @@ Operational meaning:
 
 ---
 
-## Safe Remediation (Order Matters)
+### Safe Remediation (Order Matters)
 
 Goal state:
 
@@ -178,7 +198,7 @@ Minimal remediation snippet:
 ```python
 # 01  from pymodbus.client import ModbusTcpClient
 # 02
-# 03  PLC_IP = "MACHINE_IP"
+# 03  PLC_IP = "TARGET_IP"
 # 04  UNIT_ID = 1
 # 05  client = ModbusTcpClient(PLC_IP, port=502)
 # 06  assert client.connect(), "connect failed"
@@ -205,13 +225,13 @@ Minimal remediation snippet:
 
 After remediation:
 
-* Re-check CCTV (`http://MACHINE_IP`) as a sanity check that the physical workflow matches the intended logic.
+* Re-check CCTV (`http://TARGET_IP`) as a sanity check that the physical workflow matches the intended logic.
 
 ---
 
-## Post-Incident Analysis
+### Post-Incident Analysis
 
-### What the attacker actually did (high-level)
+#### What the attacker actually did (high-level)
 
 * Used unauthenticated Modbus/TCP access (direct register/coil writes)
 * Forced wrong business logic (HR0)
@@ -222,7 +242,7 @@ After remediation:
 * Deployed anti-remediation trap (C11 + write HR0 triggers C15 → C12)
 * Left a signature (HR4=666) for psychological effect and attribution bait
 
-### Why the “maintenance note” matters
+#### Why the “maintenance note” matters
 
 It is essentially an **OT asset inventory + control mapping**:
 

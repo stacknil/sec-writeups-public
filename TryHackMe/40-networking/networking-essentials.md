@@ -1,20 +1,24 @@
 ---
-
+type: resource-note
+status: wip
+created: 2026-01-21
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, networking, essentials]
+source: TryHackMe - Networking Essentials
 platform: tryhackme
-room: "Networking Essentials"
+room: Networking Essentials
 slug: networking-essentials
-path: "Network-Fundamentals"   
-topic: "40-networking"         
-domain: ["networking", "linux"]
-skills: ["dhcp", "arp", "icmp", "nat", "traceroute"]
-artifacts: ["lab-notes"]
-status: "wip"
-date: 2026-01-21
+path: TryHackMe/40-networking/networking-essentials.md
+topic: 40-networking
+domain: [networking, linux]
+skills: [dhcp, arp, icmp, nat, traceroute]
+artifacts: [lab-notes]
+sanitized: true
 ---
 
-# Networking Essentials 
+# Networking Essentials
 
-## 0) Summary 
+## Summary
 
 * **What this room trains:** how endpoints get basic network config (DHCP), how IP talks to Ethernet/Wi-Fi (ARP), and how to troubleshoot reachability (ICMP ping/traceroute) plus how “many devices share one public IP” works (NAT).
 * **Main concepts:** DORA, broadcast vs unicast, MAC vs IP addressing, ICMP Echo/Time Exceeded, TTL, NAT translation table.
@@ -35,7 +39,7 @@ date: 2026-01-21
 | NAT (Network Address Translation)          | 网络地址转换        | many private hosts share one public IP using port mappings    |
 | Default gateway                            | 默认网关          | local router IP used to reach outside the subnet              |
 
-## 1) Key Concepts 
+## Key Concepts
 
 * **“I have Wi-Fi but no IP”: DHCP likely failed.** DHCP gives at minimum: IP + subnet, gateway, DNS.
 * **“I know the target IP but can’t send frames”: ARP is missing.** On a LAN, IP packets must be wrapped in Ethernet/Wi-Fi frames; frames need destination MAC.
@@ -43,7 +47,7 @@ date: 2026-01-21
 * **Traceroute’s core trick:** it forces routers to reveal themselves via TTL reaching 0 → ICMP Time Exceeded.
 * **NAT changes what the server sees.** Internal host connects as `INTERNAL_IP:INTERNAL_PORT`, but the outside world observes `PUBLIC_IP:PUBLIC_PORT`.
 
-## 2) Pattern Cards 
+## Pattern Cards
 
 ### Pattern 1 — “Joined a new network, got no working Internet”
 
@@ -108,7 +112,7 @@ date: 2026-01-21
 * **Expected output:** server sees the router’s public address, not the original private address.
 * **Next step decision:** NAT helps address exhaustion, but complicates inbound connectivity and attribution.
 
-## 3) Command Cookbook 
+## Command Cookbook
 
 > Keep commands reproducible. Use placeholders.
 
@@ -146,7 +150,7 @@ Notes:
   * Request “Who has `GATEWAY_IP`? Tell `CLIENT_IP`” sent to broadcast MAC.
   * Reply “`GATEWAY_IP` is at `GATEWAY_MAC`” unicast back.
 
-## 4) Evidence 
+## Evidence
 
 * Store screenshots/pcaps under `assets/`.
 * Remove usernames, real MACs, and any non-demo public IPs. Use placeholders.
@@ -160,13 +164,13 @@ Suggested asset names (example):
 * `assets/nat-translation.png` (private→public mapping table)
 * `assets/routing-topology.png` (multiple paths)
 
-## 5) Takeaways (transfer learning)
+## Takeaways
 
 * **1 thing I would do faster next time:** separate “IP config problem” (DHCP) from “L2 neighbor discovery” (ARP) from “upstream path” (ICMP/traceroute).
 * **1 check I keep forgetting:** default route + DNS (it’s easy to blame “the Internet” when it’s just `resolv.conf`).
 * **1 reference worth re-reading:** the mental model of encapsulation + where each protocol sits (DHCP over UDP; ARP at L2; ICMP inside IP).
 
-## 6) References
+## References
 
 * RFC 2131 — Dynamic Host Configuration Protocol (DHCP)
 * RFC 826 — An Ethernet Address Resolution Protocol (ARP)
@@ -176,9 +180,9 @@ Suggested asset names (example):
 
 ---
 
-## Appendix: Minimal diagrams 
+## Appendix: Minimal diagrams
 
-### DHCP DORA 
+### DHCP DORA
 
 ```mermaid
 sequenceDiagram

@@ -1,4 +1,22 @@
-# Windows Registry Forensics Notes — Dispatch-SRV01 (TryHackMe AoC)
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-12
+tags: [security-writeup, tryhackme, aoc2025, registry-forensics]
+source: TryHackMe - Advent of Cyber 2025 Day 16
+platform: tryhackme
+room: Advent of Cyber 2025 Day 16 - Forensics - Registry Furensics
+slug: aoc-2025-day-16-forensics-registry-furensics
+path: TryHackMe/90-events/thm-aoc-2025/Day 16 - Forensics - Registry Furensics.md
+topic: 90-events
+domain: [forensics]
+skills: [registry, triage]
+artifacts: [lab-notes]
+sanitized: true
+---
+
+# Advent of Cyber 2025 Day 16 - Forensics - Registry Furensics
 
 ## Summary
 
@@ -47,13 +65,13 @@ Live acquisitions can be **dirty** (incomplete transactions). Use transaction lo
 
 ---
 
-## Tools
+### Tools
 
-### Registry Editor (live)
+#### Registry Editor (live)
 
 Good for quick checks on a running host, but **not** ideal for forensic analysis (risk of modification, limited offline handling).
 
-### Registry Explorer (offline)
+#### Registry Explorer (offline)
 
 * Loads hive files directly.
 * Parses binary value data.
@@ -63,7 +81,7 @@ Good for quick checks on a running host, but **not** ideal for forensic analysis
 
 ---
 
-## Registry Artifacts Cheat Sheet (DFIR)
+### Registry Artifacts Cheat Sheet (DFIR)
 
 Think of these as “sensors” for user behavior + system configuration.
 
@@ -81,16 +99,16 @@ Think of these as “sensors” for user behavior + system configuration.
 
 ---
 
-## Practical Workflow: Install → Execute → Persist
+### Practical Workflow: Install → Execute → Persist
 
 Use this as a repeatable playbook (Te/Te-style: deterministic pivots).
 
-### Step 0 — Establish the incident boundary
+#### Step 0 — Establish the incident boundary
 
 * Record the **known abnormal start time** (here: **2025-10-21**).
 * Anything before that is “pre-positioning” candidate.
 
-### Step 1 — Identify the host (sanity check)
+#### Step 1 — Identify the host (sanity check)
 
 * Load **SYSTEM** hive.
 * Navigate to:
@@ -101,7 +119,7 @@ ROOT\ControlSet001\Control\ComputerName\ComputerName
 
 Confirm the hostname matches your case target.
 
-### Step 2 — Find suspicious install (SOFTWARE hive)
+#### Step 2 — Find suspicious install (SOFTWARE hive)
 
 * Load **SOFTWARE** hive.
 * Pivot into:
@@ -112,7 +130,7 @@ ROOT\Microsoft\Windows\CurrentVersion\Uninstall
 
 Sort by LastWrite timestamp and look for entries just before the abnormal window.
 
-### Step 3 — Confirm user execution path (NTUSER.DAT)
+#### Step 3 — Confirm user execution path (NTUSER.DAT)
 
 Install evidence ≠ executed. Confirm a *user ran it*:
 
@@ -122,7 +140,7 @@ HKCU\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Compatibility A
 
 This often records **full executable paths** that were actually launched.
 
-### Step 4 — Find persistence (SOFTWARE hive)
+#### Step 4 — Find persistence (SOFTWARE hive)
 
 Attackers (or shady installers) often set logon persistence here:
 
@@ -134,27 +152,27 @@ Look for new values pointing to unusual binaries (or unusual arguments like `/ba
 
 ---
 
-## Case Findings (from the lab walkthrough)
+### Case Findings (from the lab walkthrough)
 
 > Treat these as the lab’s ground truth for this scenario.
 
 1. **Installed application (pre-abnormal window):**
 
-* `Drone Manager Updater`
+   * `Drone Manager Updater`
 
 2. **Full path where the user launched it from:**
 
-* `C:\Users\dispatch.admin\Downloads\DroneManagerSetup.exe`
+   * `C:\Users\dispatch.admin\Downloads\DroneManagerSetup.exe`
 
 3. **Persistence value added on startup:**
 
-* Key: `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run`
-* Value name: `DroneHelper`
-* Data (example): `"C:\Program Files\Drone Manager\DroneHelper.exe" /background`
+   * Key: `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run`
+   * Value name: `DroneHelper`
+   * Data (example): `"C:\Program Files\Drone Manager\DroneHelper.exe" /background`
 
 ---
 
-## Pitfalls / Common Mistakes
+### Pitfalls / Common Mistakes
 
 * **ControlSet confusion:** offline views show `ControlSet001/002`, not always `CurrentControlSet`.
 * **Per-user artifacts require SID:** `HKU\<SID>` matters; `HKCU` is a convenience alias.

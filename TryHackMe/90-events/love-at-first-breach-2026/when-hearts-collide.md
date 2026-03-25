@@ -1,24 +1,31 @@
 ---
-
-platform: TryHackMe
-room: Love at First Breach 2026 — When Hearts Collide
+type: resource-note
+status: done
+created: 2026-02-15
+updated: 2026-03-12
+tags: [security-writeup, tryhackme, event, web, crypto]
+source: TryHackMe - Love at First Breach 2026 - When Hearts Collide
+platform: tryhackme
+room: Love at First Breach 2026 - When Hearts Collide
 slug: when-hearts-collide
 path: TryHackMe/90-events/love-at-first-breach-2026/when-hearts-collide.md
-domain: [Web, Crypto]
-skills: [HTTP traffic inspection, Hash functions, Docker tooling]
-artifacts: [lab-notes, pattern-cards]
-status: done
-date: 2026-02-15
+topic: 90-events
+domain: [web, crypto]
+skills: [http-traffic-inspection, hash-functions, docker-tooling]
+artifacts: [lab-notes, pattern-card]
+sanitized: true
 ---
 
-## 0) Summary
+# Love at First Breach 2026 - When Hearts Collide
+
+## Summary
 
 * The web app (“Matchmaker”) claims it pairs you with a dog by comparing the **MD5 hash** of your uploaded photo against dog snapshots.
 * The upload flow hits a single endpoint (`POST /upload`). After uploading, the page shows whether a match exists.
 * The core weakness is using **MD5 equality as an identity / matching primitive**. Because MD5 is collision-prone, you can craft two *different* files that share the same MD5.
 * Practical exploit in this lab: generate two distinct JPEGs with the same MD5, upload the first (no match), then upload the second (hash matches what the app already saw) → the app reports a “match” and reveals the flag (visible after scrolling).
 
-## 1) Key Concepts (plain language)
+## Key Concepts
 
 ### Representation vs security decision
 
@@ -35,13 +42,12 @@ date: 2026-02-15
 * A **collision** means two different files produce the same hash.
 * If an app relies on “hash equality ⇒ same file” as logic, a collision can be used as a bypass.
 
-
-* Invitation card provides the app URL (sanitize as `APP_URL`).
+* Invitation card provides the app URL (sanitize as `TARGET_URL`).
 * Matchmaker page: “How we pair humans with dogs” explains MD5-based matching.
-* Browser DevTools shows `POST APP_URL/upload` when uploading an image.
+* Browser DevTools shows `POST TARGET_URL/upload` when uploading an image.
 * Terminal shows a Docker-based MD5 collision workflow producing `collision1.jpg` and `collision2.jpg` with identical `md5sum`.
 
-## 2) Pattern Cards (generalizable)
+## Pattern Cards
 
 ### Pattern 1 — Hash-as-Identity Anti-Pattern (把哈希当身份证)
 
@@ -59,7 +65,7 @@ date: 2026-02-15
 * For image formats, you often need to preserve a valid header.
 * A “prefix file” technique keeps the beginning of the output file consistent enough to remain a valid JPEG.
 
-## 3) Command Cookbook (CTF-lab only; placeholders)
+## Command Cookbook
 
 > Use placeholders and keep this scoped to the lab VM.
 
@@ -82,8 +88,8 @@ docker run --rm -it \
 ```bash
 md5sum collision1.jpg
 md5sum collision2.jpg
-# Expect: SAME_MD5_HASH  collision1.jpg
-#         SAME_MD5_HASH  collision2.jpg
+# Expect: SAME_HASH_VALUE  collision1.jpg
+#         SAME_HASH_VALUE  collision2.jpg
 ```
 
 ### 3.3 Trigger the app logic
@@ -91,17 +97,17 @@ md5sum collision2.jpg
 * Upload `collision1.jpg` → typically “no match”.
 * Upload `collision2.jpg` → the app treats it as an identical fingerprint and reports a match; the flag appears on the page (scroll down).
 
-## 4) Evidence 
+## Evidence
 
-* `assets/invite.png`: “My Dearest Hacker … access the web app here: APP_URL”.
+* `assets/invite.png`: “My Dearest Hacker … access the web app here: TARGET_URL”.
 * `assets/matchmaker-home.png`: landing page + upload box.
 * `assets/how-it-works.png`: text explicitly saying matching is done by comparing your photo’s MD5 hash.
-* `assets/network-upload.png`: DevTools shows `POST APP_URL/upload`.
+* `assets/network-upload.png`: DevTools shows `POST TARGET_URL/upload`.
 * `assets/fastcoll-doc.png`: Docker usage for `brimstone/fastcoll`.
 * `assets/terminal-fastcoll.png`: collision generation running.
 * `assets/terminal-md5sum.png`: identical md5sum for `collision1.jpg` and `collision2.jpg`.
 
-## 5) Takeaways
+## Takeaways
 
 * You can often solve “toy crypto” web labs by reading the UI copy literally; here it directly tells you the matching primitive (MD5).
 * Network tab + one upload is enough to discover the functional API surface (`POST /upload`).

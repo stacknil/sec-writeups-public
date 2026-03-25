@@ -1,18 +1,24 @@
 ---
-
+type: resource-note
+status: wip
+created: 2026-02-28
+updated: 2026-03-12
+tags: [security-writeup, tryhackme, networking, tcp-ip]
+source: TryHackMe - Introductory Networking
 platform: tryhackme
 room: Introductory Networking
 slug: introductory-networking
-path: notes/00-foundations/introductory-networking.md
+path: TryHackMe/00-foundations/introductory-networking.md
 topic: 00-foundations
-domain: [networking-fundamentals, tcpip, dns, osint-basics]
-skills: [osi-model, tcpip-model, encapsulation, tcp-handshake, icmp, ping, traceroute, whois, dig]
-artifacts: [concept-notes, pattern-cards, cookbook]
-status: wip
-date: 2026-02-28
+domain: [foundations, networking]
+skills: [osi-model, tcp-ip, encapsulation, tcp-handshake, icmp, traceroute, whois, dig]
+artifacts: [concept-notes, pattern-card, cookbook]
+sanitized: true
 ---
 
-0. Summary
+# Introductory Networking
+
+## Summary
 
 * OSI is a 7-layer *reference model* used to reason about networking; TCP/IP is the practical Internet stack.
 * Encapsulation: as data goes down the stack, each layer adds headers (and L2 adds a trailer). De-encapsulation reverses it.
@@ -24,9 +30,9 @@ date: 2026-02-28
   * `whois` (domain registration metadata)
   * `dig` (DNS troubleshooting; answers + TTL)
 
-1. Key Concepts
+## Key Concepts
 
-1.1 OSI Model (7 layers)
+### 1.1 OSI Model (7 layers)
 
 Mnemonic (pick any): *“All People Seem To Need Data Processing”*.
 
@@ -52,7 +58,7 @@ Quick “Which layer does what?” map (answers are stable)
 * FTP communicates with → L7
 * Live video best transport protocol (typical) → UDP
 
-1.2 Encapsulation (why “the same data” changes names)
+### 1.2 Encapsulation (why “the same data” changes names)
 
 Protocol Data Units (PDUs):
 
@@ -88,7 +94,7 @@ Why it matters (practically)
   * L4 firewalls (ports/state)
   * L7 proxies/WAF (application semantics)
 
-1.3 TCP/IP Model (4 layers)
+### 1.3 TCP/IP Model (4 layers)
 
 * Application
 * Transport
@@ -104,7 +110,7 @@ Rough mapping to OSI:
 
 Note: Some teaching materials use a 5-layer TCP/IP model (splitting Network Interface into L1 + L2). Both are common in practice.
 
-1.4 TCP three-way handshake (connection establishment)
+### 1.4 TCP three-way handshake (connection establishment)
 
 Sequence:
 
@@ -130,35 +136,35 @@ Interpretation (high level)
 * SYN/ACK: “I heard you; here’s my synchronize + acknowledgement.”
 * ACK: “Confirmed. Let’s talk.”
 
-2. Pattern Cards
+## Pattern Cards
 
-2.1 Layering intuition card
+### 2.1 Layering intuition card
 
 * If your bug is “can’t reach host”: start low (L1/L2) and climb.
 * If your bug is “DNS name doesn’t resolve”: that’s mostly Application-layer (DNS), but depends on Transport (UDP/TCP 53) and Internet (routing).
 * If your bug is “website loads but video call is garbage”: likely Transport choice + loss/jitter (UDP sensitivity) or congestion.
 
-2.2 Tool selection card
+### 2.2 Tool selection card
 
 * Need *reachability + RTT* → `ping`.
 * Need *path/hops* → `traceroute`/`tracert`.
 * Need *ownership/registration metadata* → `whois`.
 * Need *DNS truth* (records, TTL, which nameserver answered) → `dig`.
 
-2.3 “Why traceroute works” card
+### 2.3 “Why traceroute works” card
 
 * It manipulates the IP TTL (hop limit).
 * Each hop decrements TTL; when TTL hits 0, the router sends back ICMP Time Exceeded.
 * By increasing TTL stepwise, you learn the hop sequence.
 
-2.4 Security angle card (defensive thinking)
+### 2.4 Security angle card (defensive thinking)
 
 * ICMP is useful for diagnostics, but also for recon; many orgs rate-limit or filter ICMP.
 * Blocking ICMP entirely can break PMTU discovery and troubleshooting; prefer selective filtering + rate-limits.
 
-3. Command Cookbook (placeholders only)
+## Command Cookbook
 
-3.1 ping
+### 3.1 ping
 
 ```bash
 # basic reachability
@@ -177,7 +183,7 @@ ping -v <target>
 ping -c 4 <target>
 ```
 
-3.2 traceroute / tracert
+### 3.2 traceroute / tracert
 
 ```bash
 # Linux / Unix
@@ -196,7 +202,7 @@ traceroute -I <target>
 tracert <domain_or_ip>
 ```
 
-3.3 whois
+### 3.3 whois
 
 ```bash
 whois <domain>
@@ -204,7 +210,7 @@ whois <domain>
 # Tip: results are often privacy-redacted; parse for registrar, creation date, nameservers.
 ```
 
-3.4 dig
+### 3.4 dig
 
 ```bash
 # query A record
@@ -237,7 +243,7 @@ TTL note
 * TTL is seconds.
 * 24 hours = 86400.
 
-4. Evidence (sanitized; assets/)
+## Evidence
 
 * Suggested local assets (rename + store under repo `assets/`):
 
@@ -247,14 +253,14 @@ TTL note
 
 (Do not store any screenshots containing personal identifiers, unique IPs tied to you, or account tokens.)
 
-5. Takeaways
+## Takeaways
 
 * OSI is a thinking tool; TCP/IP is the implementation reality.
 * Encapsulation is the mental model behind “why packets look like stacked headers”.
 * TCP reliability has a price (handshake, retransmissions); UDP speed has a price (loss/jitter sensitivity).
 * Tooling is a workflow: validate reachability → map path → inspect DNS → inspect registration metadata.
 
-6. References (official/docs-first; no raw links in public notes)
+## References
 
 * RFC 1122 (Internet host requirements; Internet model layers)
 * RFC 792 (ICMP)
@@ -265,7 +271,7 @@ TTL note
 * RFC 3912 (WHOIS)
 * Google Public DNS documentation
 
-CN–EN Glossary (mini)
+## CN–EN Glossary (mini)
 
 * OSI model: OSI 模型（开放系统互连）
 * Encapsulation: 封装
