@@ -1,18 +1,24 @@
 ---
-
+type: resource-note
+status: done
+created: 2026-02-28
+updated: 2026-03-12
+tags: [security-writeup, tryhackme, osint, google-dorking]
+source: TryHackMe - Google Hacking
 platform: tryhackme
 room: Google Hacking
 slug: google-hacking
-path: notes/00-foundations/google-dorking.md
+path: TryHackMe/10-web/google-dorking.md
 topic: 10-web
-domain: [osint, web-recon]
-skills: [search-engines, crawling-indexing, seo-basics, robots-sitemaps, google-dorking]
-artifacts: [concept-notes, pattern-cards, cookbook]
-status: done
-date: 2026-02-28
+domain: [osint, web]
+skills: [search-engines, crawling-indexing, web-enum, google-dorking]
+artifacts: [concept-notes, pattern-card, cookbook]
+sanitized: true
 ---
 
-0. Summary
+# Google Hacking
+
+## Summary
 
 * Search engines are *public, large-scale indexes* built by crawlers/spiders that fetch URLs, parse content, and store signals for retrieval.
 * “Google dorking” is precision querying with operators (`site:`, `filetype:`, `intitle:`…) to shrink search space and surface exposed content.
@@ -20,9 +26,9 @@ date: 2026-02-28
 * `sitemap.xml` accelerates discovery by listing canonical URLs; it has hard size/URL limits and supports sitemap index files.
 * Defensive takeaway: periodically “dork your own org” to find exposures before others do.
 
-1. Key Concepts (plain language)
+## Key Concepts
 
-1.1 Crawl → index → rank → serve (the pipeline)
+### 1.1 Crawl → index → rank → serve (the pipeline)
 
 * Crawling: fetch pages and discover new URLs.
 * Indexing: extract content + metadata and store it in an index.
@@ -47,7 +53,7 @@ Key vocabulary
 * Index: database mapping terms/signals → documents.
 * SERP: Search Engine Results Page.
 
-1.2 Google operators: what works and what drifts
+### 1.2 Google operators: what works and what drifts
 
 Reality check:
 
@@ -77,7 +83,7 @@ Important nuance for `filetype:`
 
 * It filters by file type/extension and indexable formats. If Google doesn’t index a format, `filetype:` won’t help.
 
-1.3 robots.txt (Robots Exclusion Protocol; advisory)
+### 1.3 robots.txt (Robots Exclusion Protocol; advisory)
 
 What it is
 
@@ -104,7 +110,7 @@ Practical OSINT heuristic
 
 * Treat `Disallow:` entries as *high-signal leads* (admin panels, backups, staging, old paths). Verify carefully and ethically.
 
-1.4 Meta robots and X-Robots-Tag (index control)
+### 1.4 Meta robots and X-Robots-Tag (index control)
 
 Crawling vs indexing
 
@@ -116,7 +122,7 @@ Operational consequence
 * If you block a page via robots.txt, Googlebot won’t crawl it and therefore won’t read `noindex` on the page.
 * If you allow crawling but set `noindex`, Google can crawl and then drop it from results.
 
-1.5 sitemap.xml (Sitemaps Protocol)
+### 1.5 sitemap.xml (Sitemaps Protocol)
 
 What it is
 
@@ -131,15 +137,15 @@ Why it matters
 
 * Sitemaps reduce discovery cost for crawlers and help with crawl efficiency.
 
-1.6 Ethical boundary (OSINT vs intrusion)
+### 1.6 Ethical boundary (OSINT vs intrusion)
 
 * OSINT (including dorking) uses publicly reachable information.
 * Crossing the line typically happens when you attempt access to restricted resources, mass-download sensitive data, or exploit what you find.
 * In public notes: do not publish real targets or sensitive URLs; use placeholders.
 
-2. Pattern Cards (generalizable)
+## Pattern Cards
 
-2.1 Query design card (minimize → sharpen)
+### 2.1 Query design card (minimize → sharpen)
 
 * Step 1: reduce scope
 
@@ -154,7 +160,7 @@ Why it matters
 
   * `"confidential"`, `"password"`, `"backup"`, `"api key"`
 
-2.2 “robots + sitemap first” card
+### 2.2 “robots + sitemap first” card
 
 * Check early:
 
@@ -164,14 +170,14 @@ Why it matters
 
   * `site:TARGET_DOMAIN inurl:<path>`
 
-2.3 Sensitive filetype shortlist (defensive awareness)
+### 2.3 Sensitive filetype shortlist (defensive awareness)
 
 * Config/secrets: `env`, `ini`, `conf`, `yml`, `yaml`, `properties`
 * Data dumps: `sql`, `bak`, `db`, `sqlite`, `csv`, `json`
 * Keys/certs: `pem`, `key`, `pfx`, `p12`, `crt`
 * “internal docs”: `pdf`, `docx`, `xlsx`, `pptx`
 
-2.4 Defensive remediation mapping
+### 2.4 Defensive remediation mapping
 
 * If it’s publicly accessible, fix at source:
 
@@ -180,9 +186,9 @@ Why it matters
   * add `noindex`/`X-Robots-Tag` where appropriate
   * remove/rotate exposed credentials
 
-3. Command Cookbook (placeholders only)
+## Command Cookbook
 
-3.1 Operator templates
+### 3.1 Operator templates
 
 ```text
 # Domain scoping
@@ -210,23 +216,23 @@ site:TARGET_DOMAIN inurl:/admin/
 site:TARGET_DOMAIN "incident report"
 ```
 
-3.2 robots + sitemap retrieval
+### 3.2 robots + sitemap retrieval
 
 ```bash
 curl -s https://TARGET_DOMAIN/robots.txt | sed -n '1,200p'
 curl -s https://TARGET_DOMAIN/sitemap.xml | sed -n '1,200p'
 ```
 
-3.3 Defensive self-audit (run on your own assets)
+### 3.3 Defensive self-audit (run on your own assets)
 
 ```text
-site:YOUR_DOMAIN filetype:env
-site:YOUR_DOMAIN (filetype:sql OR filetype:bak)
-site:YOUR_DOMAIN intitle:"index of" "backup"
-site:YOUR_DOMAIN "BEGIN PRIVATE KEY"
+site:TARGET_DOMAIN filetype:env
+site:TARGET_DOMAIN (filetype:sql OR filetype:bak)
+site:TARGET_DOMAIN intitle:"index of" "backup"
+site:TARGET_DOMAIN "BEGIN PRIVATE KEY"
 ```
 
-4. Evidence (sanitized; assets/)
+## Evidence
 
 * This note was expanded from a walkthrough transcript provided by the user.
 * If you later add screenshots, store under `assets/` and redact:
@@ -235,14 +241,14 @@ site:YOUR_DOMAIN "BEGIN PRIVATE KEY"
   * user identifiers
   * unique query outputs that expose sensitive paths
 
-5. Takeaways
+## Takeaways
 
 * Indexing turns “unknown paths” into “search queries.” Attackers can recon at scale with no scanning.
 * The strongest dorks are not complicated; they are *well scoped*.
 * robots.txt is not a lock; it is public metadata and often a recon hint.
 * Defensive action item: schedule periodic “self-dorking” and treat findings like vuln reports.
 
-6. References (official/docs-first; list titles in public notes)
+## References
 
 * Google Search: Advanced Search page
 * Google Search Central: File types Google can index (mentions `filetype:` operator)
@@ -253,7 +259,7 @@ site:YOUR_DOMAIN "BEGIN PRIVATE KEY"
 * Google Search Central: Build and submit a sitemap + sitemap index files
 * Google Search Central: Control what you share on Search (noindex, robots meta, X-Robots-Tag)
 
-CN–EN Glossary (mini)
+## CN–EN Glossary (mini)
 
 * Search engine: 搜索引擎
 * Crawler / spider: 爬虫/蜘蛛
