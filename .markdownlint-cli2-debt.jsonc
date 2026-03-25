@@ -1,0 +1,17 @@
+{
+  // Repo-wide markdownlint debt audit. This stays non-blocking and separate from active-note commit validation.
+  "config": {
+    "default": true,
+    "MD013": false,
+    "MD029": {
+      "style": "ordered"
+    },
+    "MD036": false,
+    "MD040": false
+  },
+  "globs": [
+    "**/*.md",
+    "!**/node_modules/**/*.md",
+    "!**/.git/**/*.md"
+  ]
+}

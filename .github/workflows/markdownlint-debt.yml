@@ -1,0 +1,61 @@
+---
+name: Markdownlint Debt Audit
+
+'on':
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  markdownlint-debt:
+    name: Full Active-Note Markdownlint Debt Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Run full markdownlint debt audit
+        id: audit
+        shell: bash
+        run: |
+          set +e
+          mkdir -p reports
+          temp_config="${RUNNER_TEMP}/markdownlint-debt.markdownlint-cli2.jsonc"
+          cp .markdownlint-cli2-debt.jsonc "${temp_config}"
+          python scripts/run_markdownlint.py \
+            --config "${temp_config}" \
+            > reports/markdownlint-debt.txt 2>&1
+          status=$?
+          echo "exit_code=${status}" >> "${GITHUB_OUTPUT}"
+          {
+            echo "## Markdownlint debt audit"
+            echo
+            if [[ "${status}" -eq 0 ]]; then
+              echo "No markdownlint findings in the full repository scope."
+            else
+              echo "markdownlint returned exit code ${status}"
+              echo "for the full repository scope."
+              echo "Download the \`markdownlint-debt-report\`"
+              echo "artifact for the full report."
+            fi
+          } >> "${GITHUB_STEP_SUMMARY}"
+          exit 0
+
+      - name: Upload markdownlint debt report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: markdownlint-debt-report
+          path: reports/markdownlint-debt.txt
+          if-no-files-found: error
