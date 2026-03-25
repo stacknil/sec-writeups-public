@@ -1,21 +1,25 @@
 ---
-title: "How Websites Work"
-source: "[https://tryhackme.com/room/howwebsiteswork]"
+type: resource-note
+status: done
 created: 2025-12-04
-description: "Summary notes for the TryHackMe room 'How Websites Work': basic web architecture, HTML, JavaScript, and introductory web security issues."
-tags:
-- "web"
-- "http"
-- "html"
-- "javascript"
-- "security"
-- "tryhackme"
-
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, web, html, javascript]
+source: TryHackMe - How Websites Work
+platform: tryhackme
+room: How Websites Work
+slug: how-websites-work
+path: TryHackMe/10-web/how-the-web-works/03-how-website-work.md
+topic: 10-web
+domain: [web]
+skills: [http-basics, html-basics, javascript-basics]
+artifacts: [concept-notes]
+sanitized: true
+description: "Basic web architecture, HTML, JavaScript, and introductory web security issues."
 ---
 
-# How Websites Work — Notes
+# How Websites Work
 
-## 0. Snapshot / TL;DR
+## Summary
 
 * Web apps follow a **request–response** pattern: browser (client) sends an HTTP request, server replies with an HTTP response (HTML/CSS/JS, JSON, etc.).
 * Two major components:
@@ -34,9 +38,11 @@ tags:
 
 ---
 
-## 1. High‑level architecture: request → response
+## Key Concepts
 
-### 1.1 Basic flow
+### 1. High‑level architecture: request → response
+
+#### 1.1 Basic flow
 
 1. User types a URL or clicks a link in the **browser**.
 2. Browser builds an **HTTP request** (e.g. `GET /index.html HTTP/1.1`).
@@ -45,7 +51,7 @@ tags:
 5. Server sends an **HTTP response** back (status code + headers + body).
 6. Browser parses the body (HTML, CSS, JS) and renders the page.
 
-### 1.2 Simple diagram
+#### 1.2 Simple diagram
 
 ```mermaid
 flowchart LR
@@ -62,9 +68,9 @@ Notes:
 
 ---
 
-## 2. Front end vs Back end
+### 2. Front end vs Back end
 
-### 2.1 Front end (client‑side)
+#### 2.1 Front end (client‑side)
 
 * Runs **inside the browser**.
 * Built mainly with **HTML + CSS + JavaScript**.
@@ -78,7 +84,7 @@ Notes:
   * Everything sent to the browser is **visible** and **modifiable** by the user.
   * Never trust front‑end checks alone.
 
-### 2.2 Back end (server‑side)
+#### 2.2 Back end (server‑side)
 
 * Runs on the **web server**.
 * Implemented in many possible languages/frameworks (Python, PHP, Node.js, Java, Go, etc.).
@@ -95,14 +101,14 @@ Notes:
 
 ---
 
-## 3. HTML essentials
+### 3. HTML essentials
 
-### 3.1 Role of HTML
+#### 3.1 Role of HTML
 
 * **HTML (HyperText Markup Language)** describes **structure** and basic semantics of a page.
 * Browser reads HTML and builds the **DOM (Document Object Model)**, a tree of elements.
 
-### 3.2 Basic document skeleton
+#### 3.2 Basic document skeleton
 
 ```html
 <!DOCTYPE html>
@@ -124,7 +130,7 @@ Key pieces:
 * `<head>`: metadata (title, charset, linked CSS/JS, etc.).
 * `<body>`: content visible in the page.
 
-### 3.3 Common tags
+#### 3.3 Common tags
 
 * Headings: `<h1>` … `<h6>`
 * Paragraph: `<p>`
@@ -133,7 +139,7 @@ Key pieces:
 * Lists: `<ul>`, `<ol>`, `<li>`
 * Forms: `<form>`, `<input>`, `<textarea>`, `<button>`
 
-### 3.4 Attributes, `class` vs `id`
+#### 3.4 Attributes, `class` vs `id`
 
 * General format: `<tag attr="value">content</tag>`
 * **`class`**:
@@ -154,7 +160,7 @@ Other important attributes:
 * `href` for links: where the link leads.
 * `type`, `name`, `value` on form fields.
 
-### 3.5 Viewing page source
+#### 3.5 Viewing page source
 
 * In a browser: **Right‑click → View Page Source** or use developer tools.
 * You can see **all HTML** the server sent, including:
@@ -165,9 +171,9 @@ Other important attributes:
 
 ---
 
-## 4. JavaScript basics
+### 4. JavaScript basics
 
-### 4.1 Purpose
+#### 4.1 Purpose
 
 * Adds **interactivity** and dynamic behaviour to pages.
 * Runs in the browser (client‑side JavaScript).
@@ -177,7 +183,7 @@ Other important attributes:
   * React to events (clicks, keyboard, timers).
   * Make additional HTTP requests (AJAX / `fetch`).
 
-### 4.2 Simple DOM manipulation example
+#### 4.2 Simple DOM manipulation example
 
 ```javascript
 document.getElementById("demo").innerHTML = "Hack the Planet";
@@ -187,7 +193,7 @@ document.getElementById("demo").innerHTML = "Hack the Planet";
 * `getElementById("demo")` finds the element with `id="demo"`.
 * `innerHTML` controls the HTML content inside that element.
 
-### 4.3 Event‑driven JS (onclick example)
+#### 4.3 Event‑driven JS (onclick example)
 
 ```html
 <button onclick="document.getElementById('demo').innerHTML = 'Button Clicked';">
@@ -208,9 +214,9 @@ Security angle:
 
 ---
 
-## 5. Intro security issues from this room
+### 5. Intro security issues from this room
 
-### 5.1 Sensitive Data Exposure (frontend)
+#### 5.1 Sensitive Data Exposure (frontend)
 
 **Definition**
 
@@ -235,7 +241,7 @@ Basic checklist when you assess a site:
 * Inspect linked JS files as well.
 * Assume anything shipped to the browser is public.
 
-### 5.2 HTML Injection
+#### 5.2 HTML Injection
 
 **Definition**
 
@@ -275,7 +281,7 @@ Defences (developer side):
 
 ---
 
-## 6. Key answers / mental flashcards
+### 6. Key answers / mental flashcards
 
 * Component of a web app rendered by the browser:
 
@@ -292,7 +298,7 @@ Defences (developer side):
 
 ---
 
-## 7. Quick Chinese glossary (术语小词汇)
+### 7. Quick Chinese glossary (术语小词汇)
 
 * **Front end / Client‑side** — 前端 / 客户端
 * **Back end / Server‑side** — 后端 / 服务器端

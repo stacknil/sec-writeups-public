@@ -1,17 +1,25 @@
 ---
-title: "Putting It All Together: Web Request Lifecycle"
-source: "[https://tryhackme.com/room/puttingitalltogether](https://tryhackme.com/room/puttingitalltogether)"
+type: resource-note
+status: done
 created: 2025-12-04
-description: "End‑to‑end view of how a browser request becomes a rendered, dynamic web page, and where key infrastructure components sit."
-tags:
-- web
-- networking
-- http
-- dns
-- security
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, web, networking, http, dns]
+source: TryHackMe - Putting It All Together
+platform: tryhackme
+room: Putting It All Together
+slug: putting-it-all-together
+path: TryHackMe/10-web/how-the-web-works/04-puttin-it-all-together.md
+topic: 10-web
+domain: [web]
+skills: [dns, http-basics, request-lifecycle]
+artifacts: [concept-notes]
+sanitized: true
+description: "End-to-end view of how a browser request becomes a rendered, dynamic web page."
 ---
 
-## 1. Big picture: from URL to page
+# Putting It All Together
+
+## Summary
 
 High‑level mental model:
 
@@ -46,7 +54,9 @@ Everything else (CDN, WAF, load balancer, caching, etc.) is optimization or prot
 
 ---
 
-## 2. DNS resolution chain
+## Key Concepts
+
+### 2. DNS resolution chain
 
 When I type `https://tryhackme.com` in a browser:
 
@@ -63,9 +73,9 @@ Result: browser now has an IP address (or multiple IPs) to connect to.
 
 ---
 
-## 3. Extra infrastructure on the path
+### 3. Extra infrastructure on the path
 
-### 3.1 Load balancer
+#### 3.1 Load balancer
 
 **Why:** one web server is not enough (traffic, availability, maintenance).
 
@@ -82,7 +92,7 @@ Result: browser now has an IP address (or multiple IPs) to connect to.
 
 Effect: users see one site; behind the scenes, many servers share the work.
 
-### 3.2 CDN (Content Delivery Network)
+#### 3.2 CDN (Content Delivery Network)
 
 **Goal:** move static content closer to users and offload origin servers.
 
@@ -99,7 +109,7 @@ Benefits:
 * Less bandwidth + CPU load on origin.
 * Extra protection against volumetric DDoS.
 
-### 3.3 WAF (Web Application Firewall)
+#### 3.3 WAF (Web Application Firewall)
 
 **Position:** usually in front of the application (often combined with CDN or load balancer).
 
@@ -117,9 +127,9 @@ Important caveats:
 
 ---
 
-## 4. Web server, virtual hosts, and content types
+### 4. Web server, virtual hosts, and content types
 
-### 4.1 Web server software
+#### 4.1 Web server software
 
 Typical daemons:
 
@@ -135,7 +145,7 @@ Responsibilities:
 * Map the incoming **Host** header and URL path to a site and a file or an application handler.
 * Serve static files or hand off to an application runtime (PHP‑FPM, Python WSGI, Node, etc.).
 
-### 4.2 Virtual hosts
+#### 4.2 Virtual hosts
 
 One server IP can host many sites using **virtual hosts**:
 
@@ -145,7 +155,7 @@ One server IP can host many sites using **virtual hosts**:
   * Its own **document root** (`/var/www/site1`, `/var/www/site2`, ...).
   * Its own TLS certificate and config.
 
-### 4.3 Static vs dynamic content
+#### 4.3 Static vs dynamic content
 
 * **Static content**
 
@@ -175,7 +185,7 @@ This **server‑side execution** is where many security bugs live (injection, au
 
 ---
 
-## 5. End‑to‑end request timeline (expanded)
+### 5. End‑to‑end request timeline (expanded)
 
 Another way to memorize the full chain:
 
@@ -197,7 +207,7 @@ At each step, logs and controls exist: DNS logs, WAF logs, web server access log
 
 ---
 
-## 6. Security checkpoints to think about
+### 6. Security checkpoints to think about
 
 When analysing or defending a web stack, mentally probe each layer:
 
@@ -213,7 +223,7 @@ This is essentially **defence in depth** mapped onto the end‑to‑end request.
 
 ---
 
-## 7. Mini glossary (EN → 中文)
+### 7. Mini glossary (EN → 中文)
 
 * **Recursive resolver** → 递归解析器
 * **Authoritative DNS server** → 权威 DNS 服务器

@@ -1,18 +1,24 @@
 ---
-
+type: resource-note
+status: done
+created: 2026-02-28
+updated: 2026-03-12
+tags: [security-writeup, tryhackme, web-fundamentals, http]
+source: TryHackMe - Web Application Basics
 platform: tryhackme
 room: Web Application Basics
 slug: web-application-basics
-path: 10-web/web-application-basics.md
+path: TryHackMe/10-web/web-application-basics.md
 topic: 10-web
-domain: [web-fundamentals, http]
-skills: [url-anatomy, http-messages, request-methods, response-codes, headers, security-headers]
-artifacts: [concept-notes, pattern-cards, cookbook]
-status: done
-date: 2026-02-28
+domain: [web]
+skills: [url-anatomy, http-basics, headers, security-headers]
+artifacts: [concept-notes, pattern-card, cookbook]
+sanitized: true
 ---
 
-0. Summary
+# Web Application Basics
+
+## Summary
 
 * A web application has two broad sides: the **front end** (what the browser renders and executes) and the **back end** (server-side logic, storage, and supporting infrastructure).
 * A **URL** is a structured locator made of parts such as scheme, host, port, path, query, and fragment.
@@ -21,9 +27,11 @@ date: 2026-02-28
 * HTTP response codes are grouped into five classes: `1xx`, `2xx`, `3xx`, `4xx`, and `5xx`.
 * Headers matter for both function and security. In practice, cookies, content types, caching rules, and browser security headers often decide whether an app is robust or fragile.
 
-1. Web Application Overview
+## Key Concepts
 
-1.1 Front end vs back end
+### Web Application Overview
+
+#### 1.1 Front end vs back end
 
 Front end components (browser-visible):
 
@@ -66,7 +74,7 @@ flowchart LR
   WAF[WAF] --> WS
 ```
 
-2. URL Anatomy
+### URL Anatomy
 
 A URL is not “just a web address.” It is a structured locator.
 
@@ -113,7 +121,7 @@ Key room-style answers:
 * Misspelled lookalike domain abuse: **typosquatting**
 * Part used to pass extra information: **query string**
 
-3. HTTP Messages
+### HTTP Messages
 
 HTTP communication is built from two message types:
 
@@ -154,9 +162,9 @@ Key room-style answers:
 * Message returned by the server: **HTTP response**
 * What follows headers: **an empty line**
 
-4. HTTP Requests
+### HTTP Requests
 
-4.1 Request line
+#### 4.1 Request line
 
 Format:
 
@@ -176,7 +184,7 @@ Components:
 * **Path**
 * **HTTP version**
 
-4.2 Request methods
+#### 4.2 Request methods
 
 Common methods:
 
@@ -215,7 +223,7 @@ Security reminders:
 * Enforce authorization on modifying methods (`PUT`, `PATCH`, `DELETE`).
 * Disable unnecessary methods where possible.
 
-4.3 HTTP versions (high level)
+#### 4.3 HTTP versions (high level)
 
 * **HTTP/0.9**
 
@@ -239,9 +247,9 @@ Key room-style answers:
 * Method describing supported communication options: **OPTIONS**
 * Component after domain that identifies the resource: **path**
 
-5. Request Headers and Body
+### Request Headers and Body
 
-5.1 Common request headers
+#### 5.1 Common request headers
 
 * **Host**
 
@@ -263,7 +271,7 @@ Key room-style answer:
 
 * Header specifying target domain: **Host**
 
-5.2 Request body formats
+#### 5.2 Request body formats
 
 Common formats:
 
@@ -303,9 +311,9 @@ Key room-style answers:
 * Default content type for key=value style form submission: **application/x-www-form-urlencoded**
 * Part containing host, user agent, content type, etc.: **headers**
 
-6. HTTP Responses
+### HTTP Responses
 
-6.1 Status line
+#### 6.1 Status line
 
 Format:
 
@@ -323,7 +331,7 @@ Key room-style answer:
 
 * Part containing HTTP version, status code, and explanation: **status line**
 
-6.2 Status code classes
+#### 6.2 Status code classes
 
 * **1xx Informational**
 
@@ -354,9 +362,9 @@ Key room-style answers:
 * Class indicating internal server problem: **5xx / Server Error Responses**
 * Code for resource not found: **404**
 
-7. Response Headers and Body
+### Response Headers and Body
 
-7.1 Common response headers
+#### 7.1 Common response headers
 
 * **Date**
 
@@ -392,11 +400,11 @@ Key room-style answers:
 * Cookie flag for HTTPS-only transmission: **Secure**
 * Cookie flag preventing JavaScript access: **HttpOnly**
 
-8. Security Headers
+### Security Headers
 
 These are HTTP response headers that harden browser behavior.
 
-8.1 Content-Security-Policy (CSP)
+#### 8.1 Content-Security-Policy (CSP)
 
 Purpose:
 
@@ -415,7 +423,7 @@ Key directive from the room:
 
   * defines where scripts can be loaded from
 
-8.2 Strict-Transport-Security (HSTS)
+#### 8.2 Strict-Transport-Security (HSTS)
 
 Purpose:
 
@@ -433,7 +441,7 @@ Important directive:
 
   * applies HSTS to subdomains too
 
-8.3 X-Content-Type-Options
+#### 8.3 X-Content-Type-Options
 
 Purpose:
 
@@ -449,7 +457,7 @@ Key room-style answer:
 
 * Directive/header used to stop content type sniffing: **X-Content-Type-Options: nosniff**
 
-8.4 Referrer-Policy
+#### 8.4 Referrer-Policy
 
 Purpose:
 
@@ -468,9 +476,9 @@ Operational intuition:
 
 * more restrictive policies leak less browsing context to other origins
 
-9. Pattern Cards
+## Pattern Cards
 
-9.1 URL review card
+### 9.1 URL review card
 
 When reading a URL, inspect in this order:
 
@@ -483,7 +491,7 @@ When reading a URL, inspect in this order:
 
 This prevents “I only looked at the domain” mistakes.
 
-9.2 Request triage card
+### 9.2 Request triage card
 
 If you are analyzing a request, ask:
 
@@ -493,7 +501,7 @@ If you are analyzing a request, ask:
 * Is there a body, and what format is it in?
 * Which user-controlled values reach the server?
 
-9.3 Response triage card
+### 9.3 Response triage card
 
 If you are analyzing a response, ask:
 
@@ -503,7 +511,7 @@ If you are analyzing a response, ask:
 * Are security headers present?
 * Does the body reflect unsanitized user input?
 
-10. Command / Inspection Cookbook
+## Command Cookbook
 
 Basic command-line inspection:
 
@@ -532,7 +540,7 @@ Browser-side checks:
   * response headers
   * cookies
 
-11. Pitfalls
+## Pitfalls
 
 * Treating query strings as trusted input.
 * Assuming `GET` means “safe” in a security sense.
@@ -540,13 +548,13 @@ Browser-side checks:
 * Ignoring `Server` or `Location` header exposure.
 * Adding CSP/HSTS incorrectly and assuming security is solved.
 
-12. Takeaways
+## Takeaways
 
 * Web app basics are really protocol basics plus browser behavior.
 * If you understand URLs, requests, responses, methods, and headers, you can already read a large amount of web traffic intelligently.
 * Security headers do not replace secure coding, but they add important browser-enforced defenses.
 
-13. References
+## References
 
 * RFC 9110: HTTP Semantics
 * MDN: URL anatomy / What is a URL?
@@ -556,7 +564,7 @@ Browser-side checks:
 * MDN: X-Content-Type-Options
 * MDN: Referrer-Policy
 
-CN–EN Glossary (mini)
+## CN–EN Glossary (mini)
 
 * Web application: Web 应用
 * Front end: 前端

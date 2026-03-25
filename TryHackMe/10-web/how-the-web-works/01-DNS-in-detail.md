@@ -1,10 +1,28 @@
-# DNS in Detail – Study Notes
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, dns, web]
+source: TryHackMe - DNS in Detail
+platform: tryhackme
+room: DNS in Detail
+slug: dns-in-detail
+path: TryHackMe/10-web/how-the-web-works/01-DNS-in-detail.md
+topic: 10-web
+domain: [web, dns]
+skills: [dns, caching, name-resolution]
+artifacts: [concept-notes]
+sanitized: true
+---
+
+# DNS in Detail
 
 Room: `DNS in Detail` (TryHackMe)
 
 ---
 
-## 0. Big Picture
+## Summary
 
 DNS (Domain Name System) = **Internet phonebook**.
 
@@ -24,7 +42,9 @@ Core ideas:
 
 ---
 
-## 1. Domain Hierarchy
+## Key Concepts
+
+### 1. Domain Hierarchy
 
 A domain is structured from **right to left**.
 
@@ -37,12 +57,12 @@ jupiter.servers.tryhackme.com.
                 └── jupiter  # Subdomain level 2 (host)
 ```
 
-### 1.1 Root
+#### 1.1 Root
 
 * Written as `.` but usually **omitted** in everyday use.
 * Served by a small set of **root DNS servers** – DNS “backbone”.
 
-### 1.2 TLD – Top‑Level Domain
+#### 1.2 TLD – Top‑Level Domain
 
 Right‑most visible label, e.g. `.com`, `.org`, `.edu`, `.gov`, `.mil`, `.uk`, `.io`.
 
@@ -58,7 +78,7 @@ Two main classes:
 
 > Example: `.co.uk` → **ccTLD** (country‑code top‑level domain).
 
-### 1.3 Second‑Level Domain (SLD)
+#### 1.3 Second‑Level Domain (SLD)
 
 * The part **left of the TLD**, e.g. `tryhackme` in `tryhackme.com`.
 * Combined with TLD to form the “base domain”.
@@ -69,7 +89,7 @@ Two main classes:
   * Cannot **start** or **end** with `-`
   * Cannot contain consecutive `--` in some reserved cases (IDN punycode).
 
-### 1.4 Subdomains
+#### 1.4 Subdomains
 
 * Any label(s) **to the left** of the SLD.
 
@@ -81,11 +101,11 @@ Two main classes:
 
 ---
 
-## 2. DNS Record Types (Core)
+### 2. DNS Record Types (Core)
 
 Each domain can have multiple **resource records**.
 
-### 2.1 A Record (Address)
+#### 2.1 A Record (Address)
 
 * Maps name → **IPv4** address.
 * Example:
@@ -94,7 +114,7 @@ Each domain can have multiple **resource records**.
 tryhackme.com.  IN  A   104.26.10.229
 ```
 
-### 2.2 AAAA Record (Quad‑A)
+#### 2.2 AAAA Record (Quad‑A)
 
 * Maps name → **IPv6** address.
 
@@ -102,7 +122,7 @@ tryhackme.com.  IN  A   104.26.10.229
 example.com.  IN  AAAA  2001:db8:85a3::8a2e:370:7334
 ```
 
-### 2.3 CNAME Record (Canonical Name)
+#### 2.3 CNAME Record (Canonical Name)
 
 * Alias: maps **name → another name**, not directly to IP.
 * Client must then resolve the **target name**.
@@ -112,7 +132,7 @@ example.com.  IN  AAAA  2001:db8:85a3::8a2e:370:7334
 store.tryhackme.com.  IN  CNAME  shops.shopify.com.
 ```
 
-### 2.4 MX Record (Mail Exchange)
+#### 2.4 MX Record (Mail Exchange)
 
 * Tells the world **which mail server(s)** handle email for this domain.
 * Includes **priority** (lower number = higher priority).
@@ -125,7 +145,7 @@ tryhackme.com.  IN  MX  20 alt2.aspmx.l.google.com.
 > Q: *What record type is used to advise where to send email?*
 > A: **MX** record.
 
-### 2.5 TXT Record (Text)
+#### 2.5 TXT Record (Text)
 
 * Arbitrary text data associated with the domain.
 * Common uses:
@@ -139,7 +159,7 @@ example.com.  IN  TXT  "v=spf1 include:_spf.google.com ~all"
 
 ---
 
-## 3. DNS Resolution Flow (Recursive Query)
+### 3. DNS Resolution Flow (Recursive Query)
 
 High‑level pipeline:
 
@@ -153,7 +173,7 @@ flowchart LR
   B --> A
 ```
 
-### Step‑by‑Step
+#### Step‑by‑Step
 
 1. **Client check (local cache)**
 
@@ -181,16 +201,16 @@ tryhackme.com.  IN  NS  kip.ns.cloudflare.com.
 tryhackme.com.  IN  NS  uma.ns.cloudflare.com.
 ```
 
-5. **Authoritative DNS server**
+1. **Authoritative DNS server**
 
    * Stores the real DNS zone for `tryhackme.com`.
    * Returns the requested record(s): A / AAAA / MX / TXT / etc.
 
-6. **Back to recursive → client**
+2. **Back to recursive → client**
 
    * Recursive resolver caches the answer (respecting TTL) and sends it to the client.
 
-### TTL – Time To Live
+#### TTL – Time To Live
 
 * Each DNS record has a **TTL** (seconds).
 * Defines **how long a DNS record may be cached** before it must be re‑queried.
@@ -198,20 +218,20 @@ tryhackme.com.  IN  NS  uma.ns.cloudflare.com.
 
 > Q: *What field specifies how long a record should be cached?*
 > A: **TTL (Time To Live)**.
-
+>
 > Q: *What type of DNS server is usually provided by your ISP?*
 > A: **Recursive DNS server**.
-
+>
 > Q: *What type of server holds all records for a domain?*
 > A: **Authoritative DNS server**.
 
 ---
 
-## 4. Practical Queries (from the room)
+### 4. Practical Queries (from the room)
 
 The TryHackMe web helper showed equivalent CLI commands.
 
-### 4.1 Using `dig`
+#### 4.1 Using `dig`
 
 ```bash
 # A record
@@ -234,7 +254,7 @@ Typical kinds of answers in the room:
 * MX record priority → e.g. `30`.
 * A record of `www.website.thm` → lab IP, e.g. `10.10.10.10`.
 
-### 4.2 Mental mapping
+#### 4.2 Mental mapping
 
 * CNAME → alias; will **not** have its own A record in same reply.
 * MX → mail routing; lower priority number first.
@@ -242,7 +262,7 @@ Typical kinds of answers in the room:
 
 ---
 
-## 5. Quick Q&A Recap (Room‑style)
+### 5. Quick Q&A Recap (Room‑style)
 
 * **Q:** What does DNS stand for?
   **A:** Domain Name System.
@@ -267,7 +287,7 @@ Typical kinds of answers in the room:
 
 ---
 
-## 6. Takeaways for Security / OSINT
+### 6. Takeaways for Security / OSINT
 
 * Understanding DNS hierarchy & caching is critical for:
 
