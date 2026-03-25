@@ -1,0 +1,52 @@
+---
+name: Placeholder Audit
+
+'on':
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  placeholder-audit:
+    name: Full Public Placeholder Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run full placeholder audit
+        id: audit
+        shell: bash
+        run: |
+          set +e
+          mkdir -p reports
+          python scripts/check_placeholders.py \
+            --report reports/placeholder-audit.txt
+          status=$?
+          echo "exit_code=${status}" >> "${GITHUB_OUTPUT}"
+          {
+            echo "## Placeholder audit"
+            echo
+            if [[ "${status}" -eq 0 ]]; then
+              echo "No placeholder convergence findings in active public notes."
+            else
+              echo "Placeholder audit returned exit code ${status}."
+              echo "Download the"
+              echo "\`placeholder-audit-report\` artifact for the full report."
+            fi
+          } >> "${GITHUB_STEP_SUMMARY}"
+          exit 0
+
+      - name: Upload placeholder audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: placeholder-audit-report
+          path: reports/placeholder-audit.txt
+          if-no-files-found: error

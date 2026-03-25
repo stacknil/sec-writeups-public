@@ -1,0 +1,13 @@
+{
+  // Blocking markdownlint uses only the Markdown filenames passed by pre-commit or CI.
+  // Repo-wide markdownlint belongs to the manual debt-audit workflow.
+  "config": {
+    "default": true,
+    "MD013": false,
+    "MD029": {
+      "style": "ordered"
+    },
+    "MD036": false,
+    "MD040": false
+  }
+}

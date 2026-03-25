@@ -1,39 +1,88 @@
 ---
-platform: tryhackme | hackthebox
-content: retired-only | training-only
-difficulty: easy | medium | hard
-tags: [auth, sqli, misconfig, linux, windows]
-date: YYYY-MM-DD
+type: lab-note
+status: wip
+created: YYYY-MM-DD
+updated: YYYY-MM-DD
+tags: [security-writeup, sanitized]
+project:
+area:
+source:
+next_action:
+platform: tryhackme
+room:
+slug:
+path:
+topic:
+domain: []
+skills: []
+artifacts: [lab-notes, pattern-card]
+difficulty:
 sanitized: true
 ---
 
-# Title
+# ROOM_TITLE
 
-## 1. Executive Summary
-- **What happened:** (one paragraph)
-- **Why it matters:** (risk in plain language)
-- **High-level fix:** (one sentence)
+## Executive Summary
 
-## 2. Scope & Assumptions (ROE)
-- Authorized lab/training environment only.
-- Identifiers sanitized (`TARGET_IP`, `USER_A`, `SERVICE_X`).
+- **Objective:** What the lab, room, or exercise is designed to teach.
+- **Core finding:** The main security issue or defensive insight.
+- **Security impact:** What an attacker or defender can realistically gain or lose.
+- **Primary remediation:** The most important fix or control.
 
-## 3. Attack Surface (Observed)
-- Key exposed services (summary, no raw dumps)
-- Initial hypotheses (why these services matter)
+## Scope and Sanitization
 
-## 4. Findings (Vuln → Impact → Fix)
-### Finding A: <name>
-- **Category:** (e.g., Broken Access Control)
-- **Impact:** (what attacker gains)
-- **Root cause:** (why it exists)
-- **Remediation:** (concrete steps)
-- **Detection ideas:** (logs, alerts, controls)
-- **Generalizable lesson:** (pattern you can reuse)
+- Authorized lab or training target only.
+- Replace live identifiers with canonical placeholders such as `TARGET_IP`, `TARGET_HOST`, `TARGET_URL`, `USER_A`, and `API_KEY_REDACTED`.
+- Follow [docs/placeholder-policy.md](/D:/OneDrive/2%20/10%20Projects/p-sec-write-ups/docs/placeholder-policy.md) and validate materially edited public notes with `python scripts/check_placeholders.py <changed files>`.
+- Exclude secrets, full exploit chains, and customer-specific data.
+- Publish reasoning, decision points, and defensive takeaways instead of raw command spam.
 
-## 5. Method Notes (Sanitized)
-- Decision points: why X not Y
-- Failed paths: what didn’t work and why (very valuable)
+## Attack Surface
 
-## 6. References
-- Vendor docs / standards / public writeups (links)
+- Entry points observed:
+- Trust boundaries:
+- Signals worth testing:
+- Constraints that shaped the approach:
+
+## Finding 1: TITLE
+
+- **Category:** Vulnerability class or detection theme.
+- **Affected component:** Endpoint, service, route, parser, workflow, or trust boundary.
+- **Root cause:** Why the weakness exists.
+- **Exploitation logic:** High-level reasoning, not a weaponized recipe.
+- **Impact:** Confidentiality, integrity, availability, or detection impact.
+- **Remediation:** Concrete engineering fix.
+- **Detection ideas:** Logs, alerts, telemetry pivots, and control points.
+- **Generalizable lesson:** What to reuse elsewhere.
+
+## Method and Decision Notes
+
+- Why this path was tested:
+- What was ruled out:
+- What evidence changed the hypothesis:
+- What should stay private or unpublished:
+
+## Evidence
+
+- Screenshots or artifacts kept under `assets/`.
+- Sanitize usernames, tokens, domains, hostnames, and IP addresses before publishing.
+- Prefer short narrative evidence summaries over raw dumps.
+
+## Detection and Defensive Notes
+
+- Preventive controls:
+- Detective controls:
+- Hardening opportunities:
+- Residual risk:
+
+## Takeaways
+
+- Reusable pattern:
+- Mistake to avoid next time:
+- Reference worth re-reading:
+
+## References
+
+- Vendor documentation
+- Standards, ATT&CK, OWASP, NVD, or protocol references
+- Official lab page if publication rules allow it

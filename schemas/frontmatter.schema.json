@@ -1,0 +1,190 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/sec-writeups-public/frontmatter.schema.json",
+  "$defs": {
+    "dateString": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "nullableString": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "slugString": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "stringArray": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/nonEmptyString"
+      }
+    },
+    "topicString": {
+      "type": "string",
+      "enum": [
+        "00-foundations",
+        "10-web",
+        "20-linux",
+        "30-windows",
+        "40-networking",
+        "50-crypto",
+        "60-forensics",
+        "70-cloud",
+        "80-blue-team",
+        "90-events"
+      ]
+    },
+    "core": {
+      "type": "object",
+      "properties": {
+        "platform": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "room": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "slug": {
+          "$ref": "#/$defs/slugString"
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^(TryHackMe|notes)/.+\\.md$"
+        },
+        "topic": {
+          "$ref": "#/$defs/topicString"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "todo",
+            "wip",
+            "done"
+          ]
+        },
+        "created": {
+          "$ref": "#/$defs/dateString"
+        },
+        "updated": {
+          "$ref": "#/$defs/dateString"
+        },
+        "domain": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "skills": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "artifacts": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "project": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "area": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "next_action": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "description": {
+          "$ref": "#/$defs/nullableString"
+        }
+      },
+      "required": [
+        "platform",
+        "room",
+        "slug",
+        "path",
+        "topic",
+        "status",
+        "created",
+        "updated",
+        "domain",
+        "skills",
+        "artifacts"
+      ]
+    },
+    "tryhackme": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/core"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "platform": {
+              "const": "tryhackme"
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "resource-note",
+                "lab-note"
+              ]
+            },
+            "tags": {
+              "$ref": "#/$defs/stringArray"
+            },
+            "source": {
+              "$ref": "#/$defs/nonEmptyString"
+            },
+            "sanitized": {
+              "type": "boolean"
+            },
+            "date": {
+              "$ref": "#/$defs/dateString"
+            }
+          },
+          "required": [
+            "type",
+            "tags",
+            "source",
+            "sanitized"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "notes": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/core"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "resource-note",
+                "lab-note"
+              ]
+            },
+            "tags": {
+              "$ref": "#/$defs/stringArray"
+            },
+            "source": {
+              "$ref": "#/$defs/nonEmptyString"
+            },
+            "sanitized": {
+              "type": "boolean"
+            },
+            "date": {
+              "$ref": "#/$defs/dateString"
+            }
+          },
+          "required": [
+            "date"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    }
+  }
+}

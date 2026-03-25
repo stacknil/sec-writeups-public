@@ -1,0 +1,37 @@
+---
+minimum_pre_commit_version: "3.6.0"
+repos:
+  - repo: local
+    hooks:
+      - id: validate-tags-doc
+        name: validate-tags-doc
+        entry: python scripts/render_tags_doc.py --check
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: validate-frontmatter
+        name: validate-frontmatter
+        entry: python scripts/check_markdown.py
+        language: python
+        additional_dependencies:
+          - PyYAML>=6.0,<7.0
+          - jsonschema>=4.23,<5.0
+        files: ^(TryHackMe|notes)/.*\.md$
+      - id: validate-placeholders
+        name: validate-placeholders
+        entry: python scripts/check_placeholders.py
+        language: system
+        pass_filenames: true
+        files: ^(TryHackMe/(?!_meta/)|notes/).+\.md$
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.38.0
+    hooks:
+      - id: yamllint
+  - repo: local
+    hooks:
+      - id: markdownlint-cli2
+        name: markdownlint-cli2
+        entry: python scripts/run_markdownlint.py
+        language: system
+        pass_filenames: true
+        files: ^(TryHackMe/(?!_meta/)|notes/).+\.md$
