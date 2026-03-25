@@ -1,4 +1,22 @@
-# Defensive Security Intro – Notes
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, defensive-security, soc]
+source: TryHackMe - Defensive Security Intro
+platform: tryhackme
+room: Defensive Security Intro
+slug: defensive-security-intro
+path: TryHackMe/00-foundations/intro-cybersecurity/defensive-security-intro.md
+topic: 00-foundations
+domain: [foundations, blueteam]
+skills: [triage, logging, ir-basics]
+artifacts: [concept-notes, lab-notes]
+sanitized: true
+---
+
+# Defensive Security Intro
 
 - **Type:** Concept + Guided Lab  
 - **Focus:** Defensive Security / Blue Team / SOC / SIEM  
@@ -6,7 +24,7 @@
 
 ---
 
-## 1. What is Defensive Security?
+## Summary
 
 Defensive security = all measures an organisation takes to **protect** its networks, systems, and data against attacks.
 
@@ -24,15 +42,17 @@ Real-world failures lead to:
 
 ---
 
-## 2. Core Responsibility Areas
+## Key Concepts
 
-### 2.1 Monitoring & Detection
+### 2. Core Responsibility Areas
+
+#### 2.1 Monitoring & Detection
 
 - Continuously watch network and host activity: logins, HTTP access, system logs, etc.  
 - Separate **normal behaviour** from **suspicious behaviour**.  
 - Example: logins from a foreign country while the employee is supposed to be in the London office.
 
-### 2.2 Incident Response (IR)
+#### 2.2 Incident Response (IR)
 
 Once suspicious activity is confirmed, the IR process starts:
 
@@ -44,13 +64,13 @@ Once suspicious activity is confirmed, the IR process starts:
 
 Goal: limit impact and prevent the same issue from happening again.
 
-### 2.3 Threat Intelligence
+#### 2.3 Threat Intelligence
 
 - Collect information about attackers: current exploits, preferred targets, TTPs (tactics, techniques, procedures).  
 - Turn this into detection rules and hardening guidance.  
 - Aim: move from “reactive” to “proactive” defence.
 
-### 2.4 Vulnerability Management
+#### 2.4 Vulnerability Management
 
 - Continuously find and fix weaknesses: outdated software, misconfigurations, weak passwords, exposed services.  
 - Use scanners + manual verification.  
@@ -58,31 +78,35 @@ Goal: limit impact and prevent the same issue from happening again.
 
 ---
 
-## 3. Typical Roles in a Defensive Team
+### 3. Typical Roles in a Defensive Team
 
 **SOC Analyst**  
+
 - Monitors SIEM dashboards and alerts.  
 - Triage: decide which events are benign, suspicious, or incidents.  
 - Acts as “eyes and ears” on the front line.
 
 **Incident Responder**  
+
 - Investigates and responds to active attacks.  
 - Contains attackers in real time, coordinates technical teams.  
 - Produces incident reports and lessons-learned documents.  
 - In the FakeBank room, this is the person handling the *Web Discovery Attack*.
 
 **Security Engineer**  
+
 - Designs, deploys, and maintains defensive tooling: SIEM, WAF, EDR, log pipelines, sensors.  
 - Ensures the team has the right data and reliable alerts.
 
 **Digital Forensics Specialist**  
+
 - Collects and analyses evidence from disks, memory, and logs.  
 - Rebuilds the attack timeline and attacker actions.  
 - Supports both technical remediation and potential legal action.
 
 ---
 
-## 4. Defence in Depth
+### 4. Defence in Depth
 
 Organisations rarely rely on a single security control. Instead they build **multiple layers of defence** (defence in depth). If one layer fails, others still provide protection.
 
@@ -97,9 +121,9 @@ Key idea: **no single point of failure**.
 
 ---
 
-## 5. SOC & SIEM
+### 5. SOC & SIEM
 
-### 5.1 Security Operations Centre (SOC)
+#### 5.1 Security Operations Centre (SOC)
 
 - Central hub for defensive operations.  
 - Usually runs 24/7 with rotating shifts.  
@@ -108,7 +132,7 @@ Key idea: **no single point of failure**.
   - Investigate anomalies.  
   - Escalate and handle incidents.
 
-### 5.2 Security Information and Event Management (SIEM)
+#### 5.2 Security Information and Event Management (SIEM)
 
 - Central system that aggregates and normalises logs from:
   - Firewalls, IDS/WAF  
@@ -123,11 +147,11 @@ Without a SIEM, a modern SOC is effectively blind.
 
 ---
 
-## 6. FakeBank Web Discovery Attack – Practical Summary
+### 6. FakeBank Web Discovery Attack – Practical Summary
 
 **Scenario:** You join FakeBank’s defensive team and use their SIEM to handle a *Web Discovery Attack*.
 
-### 6.1 Understanding the Alert
+#### 6.1 Understanding the Alert
 
 From the Event Management view:
 
@@ -141,7 +165,7 @@ From the Event Management view:
 Interpretation:  
 Automated directory brute-forcing or reconnaissance, trying to discover admin panels or hidden areas of the website.
 
-### 6.2 Defensive Actions Taken
+#### 6.2 Defensive Actions Taken
 
 In the lab you applied three classic countermeasures:
 
@@ -159,7 +183,7 @@ In the lab you applied three classic countermeasures:
      - Many different sensitive paths requested in a short time.  
      - Suspicious User-Agent or tool fingerprints.
 
-### 6.3 Key Lessons
+#### 6.3 Key Lessons
 
 - “Clicking buttons” is not the goal; understanding **why** each action matters is.  
 - IP blocking ≈ emergency brake; rate limiting & WAF tuning ≈ long-term resilience.  
@@ -167,7 +191,7 @@ In the lab you applied three classic countermeasures:
 
 ---
 
-## 7. Checklist: Handling Web Discovery / Directory Enumeration Alerts
+### 7. Checklist: Handling Web Discovery / Directory Enumeration Alerts
 
 When a SIEM raises a directory-enumeration / web-discovery alert:
 
@@ -182,7 +206,7 @@ When a SIEM raises a directory-enumeration / web-discovery alert:
 
 ---
 
-## 8. Glossary (EN–ZH)
+### 8. Glossary (EN–ZH)
 
 - **Defensive security / Blue team** – 防御安全 / 蓝队  
 - **Offensive security / Red team** – 攻击安全 / 红队  

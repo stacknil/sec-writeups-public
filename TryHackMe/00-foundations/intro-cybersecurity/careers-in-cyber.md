@@ -1,4 +1,22 @@
-# Careers in Cyber – Role Overview Notes
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, careers, cyber]
+source: TryHackMe - Careers in Cyber
+platform: tryhackme
+room: Careers in Cyber
+slug: careers-in-cyber
+path: TryHackMe/00-foundations/intro-cybersecurity/careers-in-cyber.md
+topic: 00-foundations
+domain: [foundations]
+skills: []
+artifacts: [concept-notes]
+sanitized: true
+---
+
+# Careers in Cyber
 
 - **Type:** Concept / career mapping  
 - **Focus:** Security roles & typical responsibilities  
@@ -6,7 +24,7 @@
 
 ---
 
-## 1. Why Cyber Security as a Career?
+## Summary
 
 Key points from the room:
 
@@ -22,9 +40,11 @@ This note summarises the main roles presented in the room and how they connect.
 
 ---
 
-## 2. Core Defensive & Monitoring Roles
+## Key Concepts
 
-### 2.1 Security Analyst
+### 2. Core Defensive & Monitoring Roles
+
+#### 2.1 Security Analyst
 
 **Goal:** Maintain and continuously assess the security posture of an organisation.
 
@@ -49,7 +69,7 @@ Role keywords:
 
 ---
 
-### 2.2 Security Engineer
+#### 2.2 Security Engineer
 
 **Goal:** Design, build, and maintain the technical defences.
 
@@ -72,7 +92,7 @@ Role keywords:
 
 ---
 
-### 2.3 Incident Responder
+#### 2.3 Incident Responder
 
 **Goal:** Handle attacks while they are happening and minimise damage.
 
@@ -98,9 +118,9 @@ Role keywords:
 
 ---
 
-## 3. Investigation & Analysis Roles
+### 3. Investigation & Analysis Roles
 
-### 3.1 Digital Forensics Examiner
+#### 3.1 Digital Forensics Examiner
 
 **Goal:** Use digital evidence to understand what really happened.
 
@@ -122,7 +142,7 @@ Role keywords:
 
 ---
 
-### 3.2 Malware Analyst
+#### 3.2 Malware Analyst
 
 **Goal:** Understand how malicious software works and how to detect/stop it.
 
@@ -141,9 +161,9 @@ Role keywords:
 
 ---
 
-## 4. Offensive & Adversarial Roles
+### 4. Offensive & Adversarial Roles
 
-### 4.1 Penetration Tester
+#### 4.1 Penetration Tester
 
 **Goal:** Legally attack systems to find vulnerabilities before criminals do.
 
@@ -168,7 +188,7 @@ Role keywords:
 
 ---
 
-### 4.2 Red Teamer
+#### 4.2 Red Teamer
 
 **Goal:** Emulate real-world threat actors to test detection and response capabilities.
 
@@ -197,7 +217,7 @@ Role keywords:
 
 ---
 
-## 5. How These Roles Connect (Mental Map)
+### 5. How These Roles Connect (Mental Map)
 
 You can think of an organisation’s security function as a loop:
 
@@ -223,7 +243,7 @@ For a personal career path, common entry points are:
 
 ---
 
-## 6. Personal Notes / Planning Hooks
+### 6. Personal Notes / Planning Hooks
 
 Some questions to help align this with my own path:
 
@@ -238,7 +258,7 @@ Some questions to help align this with my own path:
 
 ---
 
-## 7. Glossary (EN–ZH)
+### 7. Glossary (EN–ZH)
 
 - **Security Analyst** – 安全分析师  
 - **Security Engineer** – 安全工程师  

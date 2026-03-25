@@ -1,6 +1,24 @@
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, networking, lan]
+source: TryHackMe - Intro to LAN
+platform: tryhackme
+room: Intro to LAN
+slug: intro-to-lan
+path: TryHackMe/40-networking/network-fundamentals/02-intro-to-LAN.md
+topic: 40-networking
+domain: [networking]
+skills: [lan, switching, topology]
+artifacts: [concept-notes]
+sanitized: true
+---
+
 # Intro to LAN
 
-## 1. What is a LAN?
+## Summary
 
 A **Local Area Network (LAN)** is a network that connects devices within a limited physical area (home, office, lab, small data centre rack, etc.).
 
@@ -14,11 +32,13 @@ From a security perspective, the LAN is the environment we usually **pivot throu
 
 ---
 
-## 2. LAN Topologies (Network Layouts)
+## Key Concepts
+
+### 2. LAN Topologies (Network Layouts)
 
 A **topology** describes how devices are arranged and interconnected. Historically there were several physical topologies; modern networks are mostly star‑like, but the concepts still show up in exams and old environments.
 
-### 2.1 Star Topology
+#### 2.1 Star Topology
 
 All devices connect to a single central device (switch or hub):
 
@@ -47,7 +67,7 @@ All devices connect to a single central device (switch or hub):
 
 ---
 
-### 2.2 Bus Topology
+#### 2.2 Bus Topology
 
 All hosts share a single backbone cable:
 
@@ -74,7 +94,7 @@ PC1 ---- PC2 ---- PC3 ---- PC4
 
 ---
 
-### 2.3 Ring Topology
+#### 2.3 Ring Topology
 
 Devices form a closed loop and forward frames for each other:
 
@@ -106,7 +126,7 @@ Data travels in one direction around the ring.
 
 ---
 
-## 3. Switches – Layer 2 Aggregation
+### 3. Switches – Layer 2 Aggregation
 
 A **switch** operates mostly at OSI Layer 2 (data link). It connects many Ethernet devices and learns which **MAC address** is reachable via which port.
 
@@ -137,7 +157,7 @@ Security‑relevant points:
 
 ---
 
-## 4. Routers – Layer 3 Gateways
+### 4. Routers – Layer 3 Gateways
 
 A **router** connects multiple networks and forwards IP packets between them. It works at **Layer 3 (network layer)**.
 
@@ -169,7 +189,7 @@ Security‑relevant points:
 
 ---
 
-## 5. Subnetting Primer
+### 5. Subnetting Primer
 
 A **subnet** is a logical slice of an IP network, defined by an IP range and a **subnet mask** or prefix length.
 
@@ -188,7 +208,7 @@ Why subnetting matters for security:
 
 ---
 
-## 6. ARP – Address Resolution Protocol
+### 6. ARP – Address Resolution Protocol
 
 **ARP (Address Resolution Protocol)** maps IP addresses to MAC addresses inside a LAN.
 
@@ -221,7 +241,7 @@ Security‑relevant points:
 
 ---
 
-## 7. DHCP – Dynamic Host Configuration Protocol
+### 7. DHCP – Dynamic Host Configuration Protocol
 
 **DHCP** automatically assigns IP configuration to hosts, so users don’t have to set addresses manually.
 
@@ -248,7 +268,7 @@ Security‑relevant points:
 
 ---
 
-## 8. Why LAN Basics Matter for Offense / Defense
+### 8. Why LAN Basics Matter for Offense / Defense
 
 * When you pop a box on a LAN, your next questions are:
 

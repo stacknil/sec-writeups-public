@@ -1,10 +1,28 @@
-# Learning Cyber Security – Room Notes
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, web, networking]
+source: TryHackMe - Learning Cyber Security
+platform: tryhackme
+room: Learning Cyber Security
+slug: learning-cyber-security
+path: TryHackMe/00-foundations/learning-meta/learning-cyber-security.md
+topic: 00-foundations
+domain: [web, networking]
+skills: [auth-session, threat-modeling, logging]
+artifacts: [concept-notes, pattern-card]
+sanitized: true
+---
+
+# Learning Cyber Security
 
 > TryHackMe room: **Learning Cyber Security** – overview of web and network security fundamentals.
 
 ---
 
-## 1. Room overview
+## Summary
 
 * **Goal**: Give a high‑level taste of:
 
@@ -15,9 +33,11 @@
 
 ---
 
-## 2. Task 1 – Web Application Security
+## Key Concepts
 
-### 2.1 Why understanding the web matters
+### 2. Task 1 – Web Application Security
+
+#### 2.1 Why understanding the web matters
 
 * Modern attacks against websites are rarely about “magic tools”. They are about:
 
@@ -25,7 +45,7 @@
   * Spotting **assumptions, edge cases and missing checks**.
 * A **vulnerability** is any weakness in design, implementation or configuration that can be abused to break confidentiality, integrity or availability.
 
-### 2.2 BookFace scenario – weak password reset
+#### 2.2 BookFace scenario – weak password reset
 
 Mini‑lab: a fake social network called **BookFace**.
 
@@ -55,7 +75,7 @@ reset_code=0001&username=Ben.Spring
 
 * Eventually we hit the correct code (e.g. `0187`) and are allowed to set a new password → full account takeover.
 
-### 2.3 BookFace attack chain (high‑level)
+#### 2.3 BookFace attack chain (high‑level)
 
 ```mermaid
 sequenceDiagram
@@ -73,7 +93,7 @@ sequenceDiagram
     BookFace-->>Attacker: Account compromised
 ```
 
-### 2.4 Security lessons from BookFace
+#### 2.4 Security lessons from BookFace
 
 Key mistakes in the design:
 
@@ -108,9 +128,9 @@ Takeaway: password‑reset flows are a common weak point. Treat them with the sa
 
 ---
 
-## 3. Task 2 – Network Security
+### 3. Task 2 – Network Security
 
-### 3.1 Why networking knowledge matters
+#### 3.1 Why networking knowledge matters
 
 For security work you constantly need to answer two questions:
 
@@ -126,7 +146,7 @@ Use‑cases:
 * Offensive: scan networks, identify exposed services, pivot between segments.
 * Defensive: monitor network logs, detect lateral movement, investigate data exfiltration.
 
-### 3.2 Target breach case (2013)
+#### 3.2 Target breach case (2013)
 
 The room uses the famous **Target** retail breach as an example:
 
@@ -138,7 +158,7 @@ The room uses the famous **Target** retail breach as an example:
 
 Core lesson: tools alone are not enough; **network design and segmentation** are crucial.
 
-### 3.3 Network‑security principles illustrated
+#### 3.3 Network‑security principles illustrated
 
 1. **Network segmentation**
 
@@ -159,7 +179,7 @@ Core lesson: tools alone are not enough; **network design and segmentation** are
 
 ---
 
-## 4. Task 3 – Learning roadmap
+### 4. Task 3 – Learning roadmap
 
 The room ends with a very high‑level roadmap:
 
@@ -182,7 +202,7 @@ The room ends with a very high‑level roadmap:
 
 ---
 
-## 5. Key terms (quick glossary)
+### 5. Key terms (quick glossary)
 
 * **Vulnerability** – A weakness in design, implementation or configuration that can be exploited.
 * **Brute‑force attack** – Systematically trying all possible values (e.g. all 4‑digit codes) until the correct one is found.
@@ -194,7 +214,7 @@ The room ends with a very high‑level roadmap:
 
 ---
 
-## 6. next actions
+### 6. next actions
 
 * Practise:
 
