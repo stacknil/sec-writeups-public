@@ -1,115 +1,107 @@
 ---
-
-platform: TryHackMe
-room: Love at First Breach 2026 — LoveLetterLocker
-slug: lafb2026-loveletterlocker
-path: TryHackMe/LoveAtFirstBreach2026/LoveLetterLocker.md
-topic: 10-web
-domain: ["web-app-security", "access-control"]
-skills: ["IDOR (Insecure Direct Object Reference)", "Broken Access Control", "Web enumeration"]
-artifacts: ["lab-notes", "pattern-card"]
+type: resource-note
 status: done
-date: 2026-02-15
+created: 2026-02-15
+updated: 2026-03-12
+tags: [security-writeup, tryhackme, event, idor, broken-access-control]
+source: TryHackMe - Love at First Breach 2026 - LoveLetterLocker
+platform: tryhackme
+room: Love at First Breach 2026 - LoveLetterLocker
+slug: lafb2026-loveletterlocker
+path: TryHackMe/90-events/love-at-first-breach-2026/LoveLetterLocker.md
+topic: 90-events
+domain: [web, access-control]
+skills: [idor, broken-access-control, web-enum]
+artifacts: [lab-notes, pattern-card]
+sanitized: true
 ---
 
-## 0) Summary
+# Love at First Breach 2026 - LoveLetterLocker
 
-* Target is a simple web app “LoveLetterLocker” where users can register/login and store love letters.
-* Letters are assigned sequential numeric IDs; the UI hints that “numbers make everything easier to find”.
-* The letter view endpoint exposes an **IDOR**: changing the numeric letter ID in the URL reveals other users’ letters.
-* Flag observed (from a letter page): `THM{1_c4n_r3ad_4ll_l3tt3rs_w1th_th1s_1d0r}`.
+## Executive Summary
 
-## 1) Key Concepts (plain language)
+- **Objective:** Assess a simple web application that allows authenticated users to create and read stored love letters.
+- **Core finding:** The letter detail endpoint uses sequential numeric object identifiers without enforcing per-user authorization.
+- **Security impact:** Any authenticated user can enumerate and read letters that belong to other users, resulting in a horizontal privilege escalation and confidentiality loss.
+- **Primary remediation:** Enforce server-side object-level authorization on every letter retrieval request.
 
-* **Broken Access Control（访问控制缺陷）**: the server fails to check whether the logged-in user is allowed to access a specific resource.
-* **IDOR / Insecure Direct Object Reference（不安全的对象直接引用）**: an object (here: a letter) is referenced by a predictable identifier (here: an integer), and authorization is missing or insufficient.
+## Scope and Sanitization
 
-Why this matters: if resource IDs are guessable and access checks are absent, an attacker can enumerate and exfiltrate private data.
+- This note covers an authorized TryHackMe training target only.
+- Live host details are replaced with placeholders such as `TARGET_IP`.
+- The emphasis is on application logic, impact, and remediation rather than a step-by-step exploit chain.
 
-## 2) Recon from screenshots
+## Attack Surface
 
-App identity and entry:
+Observed routes from the browser workflow:
 
-* Landing page: “Keep your love letters safe…”.
-* The challenge card shows the service exposed at `http://TARGET_IP:5000` (replace the real host/IP in public notes).
+- `GET /`
+- `GET /register`
+- `GET /login`
+- `GET /letters`
+- `GET /letters/new`
+- `GET /letter/<id>`
 
-Observed routes (from browser tabs / URLs):
+Signals that made the letter endpoint high priority:
 
-* `GET /` (Home)
-* `GET /register` (Register)
-* `GET /login` (Login)
-* `GET /letters` (My Letters listing)
-* `GET /letters/new` (New letter editor)
-* `GET /letter/<id>` (Letter detail view)  ✅ **primary attack surface**
+- The application explicitly states that each letter receives a unique archive number.
+- The detail route exposes a predictable integer identifier.
+- The workflow is stateful and user-specific, which makes authorization boundaries critical.
 
-UI hints:
+## Finding 1: Insecure Direct Object Reference in Letter Retrieval
 
-* “Every love letter gets a unique number in the archive. Numbers make everything easier to find.”
+- **Category:** Broken Access Control / IDOR
+- **Affected component:** `GET /letter/<id>`
+- **Root cause:** The application appears to trust the supplied object identifier without validating whether the active session owns the requested letter.
+- **Exploitation logic:** After creating or opening a legitimate letter, the numeric identifier in the URL can be incremented or decremented to request other users' records.
+- **Impact:** Private letter contents become readable across account boundaries, which is a direct confidentiality failure.
+- **Remediation:** Bind every letter lookup to the authenticated owner, return `403` for unauthorized access, and treat untrusted object identifiers as input that must pass authorization checks.
+- **Detection ideas:** Alert on sequential access to many nearby object IDs, repeated `GET /letter/<id>` requests across multiple IDs in a short interval, and mismatches between session identity and object ownership.
+- **Generalizable lesson:** Predictable identifiers are not the vulnerability by themselves; the vulnerability is missing server-side authorization.
 
-  * Translation: sequential IDs → easy enumeration → likely IDOR.
+## Method and Decision Notes
 
-## 3) Workflow (what was done)
+High-level workflow used during the lab:
 
-1. Register a user (any username/password) via `/register`.
-2. Login and reach `/letters`.
-3. Create a new letter via `/letters/new` and save.
-4. Open a letter from the list and observe the detail URL format: `/letter/<id>`.
-5. Manually modify `<id>` in the address bar and access other letters.
+1. Register a test account.
+2. Authenticate and access the letter list.
+3. Create a letter to observe normal application behavior.
+4. Open the saved letter and inspect the detail URL format.
+5. Modify the numeric identifier and compare the returned content.
 
-This is a classic “horizontal privilege escalation” pattern: reading another user’s objects.
+Why this path mattered:
 
-## 4) Evidence (sanitized)
+- The route design exposed a classic object reference pattern.
+- The UI hint about archive numbers suggested straightforward enumeration risk.
+- No specialized tooling was required; the browser alone was sufficient to validate the finding.
 
-* After saving a letter, the list shows:
+## Evidence
 
-  * “Total letters in Cupid’s archive: 3” (example number from the session).
-  * A letter entry with an “Open” button.
-* Letter detail example:
+Sanitized observations captured from the session:
 
-  * `/letter/1` shows a message containing the flag.
+- The application displays a total letter count in the archive, which can reinforce enumeration assumptions.
+- The letter detail page resolves cleanly when the numeric identifier is changed.
+- A flag was observed on one retrieved page: `THM{1_c4n_r3ad_4ll_l3tt3rs_w1th_th1s_1d0r}`.
 
-Flag observed:
+Suggested supporting asset layout:
 
-* `THM{1_c4n_r3ad_4ll_l3tt3rs_w1th_th1s_1d0r}`
+- `assets/screenshots/` for redacted screenshots
+- `assets/evidence.md` for short sanitized evidence notes
 
-Suggested repo asset layout (optional):
+## Detection and Defensive Notes
 
-* `assets/screenshots/` (store screenshots locally/private; do not publish raw target IPs)
-* `assets/evidence.md` (sanitized notes)
+- **Preventive controls:** Enforce object-level authorization on read, update, and delete operations; use indirect or non-guessable identifiers as a secondary hardening measure, not a replacement for authorization.
+- **Detective controls:** Log denied access attempts, monitor for sequential resource access, and correlate abnormal enumeration behavior to authenticated sessions.
+- **Hardening opportunities:** Avoid exposing global record counts when they provide attackers with enumeration guidance.
+- **Residual risk:** UUIDs reduce guessability but do not solve the issue if ownership checks are still missing.
 
-## 5) Pattern Cards
+## Takeaways
 
-### Pattern: Sequential object IDs + missing authz
+- IDOR is usually a business-logic failure, not a transport or cryptography problem.
+- Any route shaped like `/resource/<int>` should trigger an immediate authorization review.
+- Public-safe write-ups are stronger when they explain the reasoning path, not just the final flag.
 
-Signals:
+## References
 
-* URLs like `/resource/1`, `/resource/2`, …
-* UI explicitly mentions “unique number” or “archive number”.
-* “Works for me” behavior but no per-user access boundaries.
-
-Exploit path (conceptual):
-
-* Capture/observe your own object ID → increment/decrement → access others.
-
-### Defenses (server-side)
-
-* Enforce authorization checks on every object access:
-
-  * `if letter.owner_id != session.user_id: return 403`
-* Prefer non-guessable identifiers (UUIDv4) *and* still enforce authz.
-* Avoid leaking global counts (e.g., “total letters in archive”) if it aids enumeration.
-* Add audit logging + rate limiting for suspicious enumeration patterns.
-
-## 6) Command Cookbook
-
-Not applicable (browser-only workflow shown in screenshots).
-
-## 7) Takeaways
-
-* “Security by obscurity” (hiding IDs) never replaces authorization.
-* IDOR is usually a product issue: it’s a business-logic bug, not a “fancy crypto” problem.
-* If the UI hints at “numbers” and you see `/thing/<int>`, assume IDOR until proven otherwise.
-
-## 8) References
-
-* OWASP Top 10: Broken Access Control (concept)
+- OWASP Top 10: Broken Access Control
+- OWASP: Insecure Direct Object Reference

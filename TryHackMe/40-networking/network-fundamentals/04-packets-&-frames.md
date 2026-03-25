@@ -1,11 +1,29 @@
-# Networking Fundamentals – Packets, TCP/UDP and Ports
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, networking, packets]
+source: TryHackMe - Packets & Frames
+platform: tryhackme
+room: Packets & Frames
+slug: packets-and-frames
+path: TryHackMe/40-networking/network-fundamentals/04-packets-&-frames.md
+topic: 40-networking
+domain: [networking]
+skills: [tcp-udp, ports, pcap]
+artifacts: [concept-notes]
+sanitized: true
+---
+
+# Packets, TCP/UDP and Ports
 
 > Source: Security Blue Team / networking module
 > Scope: packets & frames, TCP three‑way handshake, UDP basics, ports 101 (practical)
 
 ---
 
-## 1. Packets and Frames
+## Summary
 
 ### 1.1 Core definitions
 
@@ -54,9 +72,11 @@ Some important header fields:
 
 ---
 
-## 2. TCP/IP and the Three‑Way Handshake
+## Key Concepts
 
-### 2.1 TCP/IP model refresher
+### 2. TCP/IP and the Three‑Way Handshake
+
+#### 2.1 TCP/IP model refresher
 
 TCP/IP is a practical networking model with **four layers**:
 
@@ -67,7 +87,7 @@ TCP/IP is a practical networking model with **four layers**:
 
 Like the OSI model, each layer adds its own headers → **encapsulation**. Removing them on the way up the stack is **decapsulation**.
 
-### 2.2 TCP characteristics
+#### 2.2 TCP characteristics
 
 * **Connection‑oriented** – must establish a connection **before** data transfer.
 * **Reliable** – guarantees ordered, loss‑free delivery (or signals failure).
@@ -83,7 +103,7 @@ Like the OSI model, each layer adds its own headers → **encapsulation**. Remov
 * Requires a stable connection between both hosts.
 * Extra handshakes and checks make it **slower** and more resource‑intensive than UDP.
 
-### 2.3 Key TCP header fields
+#### 2.3 Key TCP header fields
 
 * **Source Port** – ephemeral port chosen by the client (0–65535, unused at that moment).
 * **Destination Port** – port where a service is listening on the server (e.g. 80 for HTTP).
@@ -93,7 +113,7 @@ Like the OSI model, each layer adds its own headers → **encapsulation**. Remov
 * **Checksum** – integrity check over header + data.
 * **Flags** – bits that describe control information (SYN, ACK, FIN, RST, etc.).
 
-### 2.4 The TCP three‑way handshake
+#### 2.4 The TCP three‑way handshake
 
 Goal: establish a shared sequence‑number space and confirm both sides are ready.
 
@@ -118,7 +138,7 @@ After this, both sides agree on:
 
 Then the connection switches to normal **DATA** transfer.
 
-### 2.5 Closing a TCP connection
+#### 2.5 Closing a TCP connection
 
 * When one side is done sending data, it sends **FIN**.
 * The other side replies with **ACK**, then usually sends its own **FIN** when it is also done.
@@ -134,9 +154,9 @@ A **RST** flag can be sent by either side to **abruptly reset** a connection whe
 
 ---
 
-## 3. UDP/IP
+### 3. UDP/IP
 
-### 3.1 UDP characteristics
+#### 3.1 UDP characteristics
 
 * **User Datagram Protocol (UDP)** – a simple, **connectionless** transport protocol.
 * No three‑way handshake, no synchronisation, no built‑in reliability.
@@ -155,7 +175,7 @@ A **RST** flag can be sent by either side to **abruptly reset** a connection whe
 
 Use‑cases: where some loss is acceptable, or latency is more critical than reliability – e.g. **video/voice streaming, online games, DNS lookups**.
 
-### 3.2 Typical UDP headers
+#### 3.2 Typical UDP headers
 
 UDP segments are simpler than TCP segments, but seen at the IP layer they still sit inside an IP packet.
 
@@ -172,9 +192,9 @@ There is **no handshake / ACK sequence** – the sender simply transmits datagra
 
 ---
 
-## 4. Ports 101
+### 4. Ports 101
 
-### 4.1 What is a port?
+#### 4.1 What is a port?
 
 * Conceptually: a **numbered endpoint** on a host used by applications to send/receive data.
 * Range: `0–65535` (16‑bit unsigned integer).
@@ -185,7 +205,7 @@ Why standardise?
 * If every service used random ports, clients would not know where to connect.
 * So common protocols have **well‑known ports**; software defaults to these.
 
-### 4.2 Common ports (well‑known 0–1024)
+#### 4.2 Common ports (well‑known 0–1024)
 
 Some important defaults:
 
@@ -200,13 +220,13 @@ Some important defaults:
 
 > Note: services **can** run on non‑standard ports (e.g. HTTP on 8080). In that case the client must specify `host:port` explicitly.
 
-### 4.3 Why ports matter in practice
+#### 4.3 Why ports matter in practice
 
 * Ports allow multiple networked applications to coexist on one IP address.
 * Firewalls, IDS/IPS, and security policies often match on **port numbers** to allow/deny traffic.
 * Enumeration of open ports (e.g. with nmap) is a key recon step in security testing.
 
-### 4.4 Practical challenge (from the room)
+#### 4.4 Practical challenge (from the room)
 
 > Connect to IP `8.8.8.8` on port `1234` via the provided site to receive a flag.
 
@@ -217,7 +237,7 @@ This exercise reinforces that:
 
 ---
 
-## 5. Concept map
+### 5. Concept map
 
 ```mermaid
 flowchart LR

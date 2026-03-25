@@ -1,18 +1,24 @@
 ---
-
+type: resource-note
+status: done
+created: 2026-02-21
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, hashing, crypto]
+source: TryHackMe - Hashing Basics
 platform: tryhackme
 room: Hashing Basics
 slug: hashing-basics
-path: notes/50-crypto/hashing-basics.md
+path: TryHackMe/50-crypto/hashing-basics.md
 topic: 50-crypto
-domain: [crypto-basics, authentication, integrity]
+domain: [crypto, authentication]
 skills: [hash-functions, password-hashing, hash-recognition, hash-cracking, file-integrity, hmac]
-artifacts: [concept-notes, pattern-cards, cookbook]
-status: done
-date: 2026-02-21
+artifacts: [concept-notes, pattern-card, cookbook]
+sanitized: true
 ---
 
-0. Summary
+# Hashing Basics
+
+## Summary
 
 * A cryptographic hash function maps arbitrary-length input to a fixed-length digest; it is designed to be one-way and collision-resistant (practically).
 * The “avalanche effect” matters: a 1-bit change in input should produce a drastically different digest.
@@ -22,15 +28,15 @@ date: 2026-02-21
 * Hash identification is mostly context + format cues (prefixes, length, encoding), not magic.
 * HMAC adds a secret key to hashing to provide integrity + authenticity of a message.
 
-1. Key Concepts (plain language)
+## Key Concepts
 
-1.1 Hash function ≠ encryption ≠ encoding
+### 1.1 Hash function ≠ encryption ≠ encoding
 
 * Hashing: one-way summary (“digest”). No key. You should not be able to recover the original input from the digest.
 * Encryption: two-way confidentiality with a key (decryptable if you have the key).
 * Encoding: reversible representation change for compatibility (Base64, UTF-8). No security by itself.
 
-1.2 Properties you actually care about
+### 1.2 Properties you actually care about
 
 * Fixed output size: e.g., MD5 → 128-bit (16 bytes), SHA-256 → 256-bit (32 bytes).
 * Preimage resistance (one-way): given digest h, finding any message m such that H(m)=h is infeasible.
@@ -38,7 +44,7 @@ date: 2026-02-21
 * Collision resistance: finding any (m1, m2) with same digest is infeasible.
 * Avalanche effect: small input change → large, unpredictable output change.
 
-1.3 Collisions + pigeonhole principle
+### 1.3 Collisions + pigeonhole principle
 
 * For an n-bit digest, there are exactly 2^n possible hash values.
 * Inputs are unbounded, so collisions must exist in principle.
@@ -49,7 +55,7 @@ Rule of thumb:
 * Don’t use MD5/SHA-1 for integrity protection or signatures.
 * Prefer SHA-256 / SHA-512 / SHA-3 family, depending on policy.
 
-1.4 Hashing in authentication (password verification)
+### 1.4 Hashing in authentication (password verification)
 
 Why plaintext passwords are a disaster:
 
@@ -93,7 +99,7 @@ Pepper (optional):
 * Stored outside the DB (e.g., HSM/KMS/env secrets).
 * Useful defense-in-depth, but do not replace salts.
 
-1.5 Rainbow tables: what they trade
+### 1.5 Rainbow tables: what they trade
 
 * Rainbow table = precomputed mapping from hash → plaintext.
 * Trade storage for cracking speed.
@@ -103,7 +109,7 @@ Defense:
 
 * Per-user unique salt + slow KDF.
 
-1.6 Recognising password hashes (defensive + offensive view)
+### 1.6 Recognising password hashes (defensive + offensive view)
 
 Linux (/etc/shadow style)
 
@@ -129,7 +135,7 @@ Hash recognition heuristics
 * No prefix? Use: length + encoding + where you found it (web DB vs Windows SAM vs network device config).
 * Tools (hashid, hashcat `--example-hashes`) help, but expect ambiguity.
 
-1.7 Cracking hashes (offline guessing)
+### 1.7 Cracking hashes (offline guessing)
 
 * You cannot “decrypt” a hash. You guess candidate passwords, hash them (with salt/params), and compare.
 * Tooling:
@@ -149,12 +155,12 @@ VM note
 Hashcat minimal syntax (room mental model)
 
 ```bash
-hashcat -m <MODE> -a <ATTACK> <HASHFILE> <WORDLIST>
+hashcat -m <MODE> -a <ATTACK> /path/to/file.txt /path/to/wordlist.txt
 # -m: hash mode (algorithm/format)
 # -a: attack mode (0=straight wordlist)
 ```
 
-1.8 Hashing for integrity checking
+### 1.8 Hashing for integrity checking
 
 Basic idea:
 
@@ -178,7 +184,7 @@ flowchart LR
   M -- no --> BAD2[Checksum source not trustworthy]
 ```
 
-1.9 HMAC (Keyed-Hash Message Authentication Code)
+### 1.9 HMAC (Keyed-Hash Message Authentication Code)
 
 * HMAC uses a secret key + hash function to produce a tag.
 * Provides:
@@ -202,16 +208,16 @@ Use cases:
 * Log integrity in pipelines
 * Token authentication primitives (depending on design)
 
-2. Pattern Cards (generalizable)
+## Pattern Cards
 
-2.1 “Which primitive do I need?” card
+### 2.1 “Which primitive do I need?” card
 
 * Need confidentiality (hide contents) → encryption.
 * Need integrity only (detect changes) → hash + trusted digest distribution.
 * Need integrity + authenticity (shared secret) → HMAC.
 * Need integrity + authenticity (public verifiability) → digital signature.
 
-2.2 “Password storage checklist” card
+### 2.2 “Password storage checklist” card
 
 * Use a password hashing scheme: Argon2id preferred; otherwise bcrypt/scrypt/PBKDF2 per constraints.
 * Unique per-user salt.
@@ -219,20 +225,20 @@ Use cases:
 * Rate-limit online attempts; monitor credential stuffing.
 * Protect secrets at rest (DB encryption) but treat DB compromise as plausible.
 
-2.3 “Collision risk” card
+### 2.3 “Collision risk” card
 
 * If your use case depends on collision resistance (signatures, file integrity attestation), avoid MD5/SHA-1.
 * For fingerprints in non-adversarial settings (dedupe), collisions still exist but may be acceptable depending on risk.
 
-2.4 “Hash identification” card
+### 2.4 “Hash identification” card
 
 * Prefix → trust it (mostly).
 * No prefix → use context + length + encoding.
 * Confirm with at least two sources (tool + documentation) before choosing a cracking mode.
 
-3. Command Cookbook (placeholders only)
+## Command Cookbook
 
-3.1 Compute file digests
+### 3.1 Compute file digests
 
 ```bash
 # MD5 (legacy; do not use for adversarial integrity)
@@ -248,7 +254,7 @@ sha256sum <FILE>
 sha512sum <FILE>
 ```
 
-3.2 Integrity verification workflow (downloaded artifacts)
+### 3.2 Integrity verification workflow (downloaded artifacts)
 
 ```bash
 # 1) Verify signed checksum file (example)
@@ -259,7 +265,7 @@ sha256sum <DOWNLOADED_FILE>
 # then compare manually or via a check file
 ```
 
-3.3 Quick hash recognition (best-effort)
+### 3.3 Quick hash recognition (best-effort)
 
 ```bash
 # hashid sometimes helps, but expect ambiguity without context
@@ -269,7 +275,7 @@ hashid '<HASH_STRING>'
 hashcat --example-hashes | less
 ```
 
-3.4 Cracking basics (lab-safe)
+### 3.4 Cracking basics (lab-safe)
 
 ```bash
 # Straight wordlist attack
@@ -279,7 +285,7 @@ hashcat -m <MODE> -a 0 hashes.txt /usr/share/wordlists/rockyou.txt
 john --wordlist=/usr/share/wordlists/rockyou.txt hashes.txt
 ```
 
-4. Evidence (sanitized; assets/)
+## Evidence
 
 * Room is command-first; keep screenshots minimal.
 * If you include outputs later, store:
@@ -288,14 +294,14 @@ john --wordlist=/usr/share/wordlists/rockyou.txt hashes.txt
   * `assets/task-6-hashcat-runs.txt`
   * Redact usernames/hostnames if they include identifiers.
 
-5. Takeaways
+## Takeaways
 
 * Hashing is a backbone primitive; misusing it is how password leaks become catastrophes.
 * “Store hash” is not enough: you need salting + a slow KDF-style password hashing scheme.
 * Integrity checking needs a trusted digest source; signed checksums are the practical bridge.
 * Hash cracking is mostly compute economics: GPUs dominate fast hashes, so defenses must change the cost model.
 
-6. References (official/docs-first)
+## References
 
 * NIST CSRC Glossary: Cryptographic hash function.
 * NIST SP 800-63B: guidance for salted, one-way password hashing/KDFs for verifiers.
@@ -305,7 +311,7 @@ john --wordlist=/usr/share/wordlists/rockyou.txt hashes.txt
 * hashcat wiki: example hashes / hash modes.
 * SHAttered (CWI + Google): practical SHA-1 collision demonstration.
 
-CN–EN Glossary (mini)
+## CN–EN Glossary (mini)
 
 * Hash function: 哈希函数/散列函数
 * Digest / hash value: 摘要/哈希值

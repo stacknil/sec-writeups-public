@@ -1,38 +1,44 @@
 ---
-
+type: resource-note
+status: done
+created: 2026-01-31
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, wireshark, networking]
+source: "TryHackMe - Wireshark: The Basics"
 platform: tryhackme
 room: "Wireshark: The Basics"
 slug: wireshark-the-basics
-path: notes/TryHackMe/40-networking/wireshark-the-basics.md
+path: TryHackMe/40-networking/wireshark-the-basics.md
 topic: 40-networking
-domain: DFIR, Networking
-skills: wireshark, pcap-analysis, display-filters
-artifacts: concept-notes, cookbook
-status: done
-date: 2026-01-31
+domain: [forensics, networking]
+skills: [wireshark, pcap, display-filters]
+artifacts: [concept-notes, cookbook]
+sanitized: true
 ---
 
-0. Summary
+# Wireshark: The Basics
+
+## Summary
 
 * Wireshark is a packet analyzer (network traffic analyser / 网络流量分析器) for live capture and offline PCAP inspection.
 * The UI is organized to support fast triage: Packet List → Packet Details → Packet Bytes (hex/ASCII).
 * Your basic analysis loop is: load PCAP → navigate packets → dissect layers → filter down → reconstruct streams → extract artifacts.
 * Two filter planes exist: capture filters (what you collect) vs display filters (what you view). This room focuses on display filters.
 
-1. Key Concepts
+## Key Concepts
 
-1.1 What Wireshark is / is not
+### 1.1 What Wireshark is / is not
 
 * Wireshark is not an IDS (Intrusion Detection System / 入侵检测系统). It does not block or modify traffic; it helps you interpret it.
 * Its output quality depends on analyst hypotheses + protocol knowledge.
 
-1.2 Primary use cases
+### 1.2 Primary use cases
 
 * Troubleshooting: congestion, retransmissions, failure points.
 * Security hunting: rogue hosts, abnormal ports, suspicious protocols.
 * Protocol learning: response codes, headers, payloads.
 
-1.3 GUI mental model (5 prominent sections)
+### 1.3 GUI mental model (5 prominent sections)
 
 * Toolbar: capture, filtering, sorting, export/merge, statistics.
 * Display Filter Bar: the main query input for display filters.
@@ -57,7 +63,7 @@ ASCII layout sketch (conceptual)
 +--------------------------------------------------------------+
 ```
 
-1.4 Packet dissection (protocol dissection / 协议剖析)
+### 1.4 Packet dissection (protocol dissection / 协议剖析)
 
 * Click a packet → Packet Details shows the protocol stack as a tree.
 * Clicking a field highlights its corresponding bytes in the Packet Bytes pane (byte-level grounding).
@@ -71,14 +77,14 @@ ASCII layout sketch (conceptual)
   * Application protocol (e.g., HTTP)
   * Application data (payload)
 
-2. Pattern Cards
+## Pattern Cards
 
-2.1 “If you can click it, you can filter it”
+### 2.1 “If you can click it, you can filter it”
 
 * Select a field in Packet Details → right-click → Apply as Filter (immediate narrowing).
 * Use Prepare as Filter when you want to build a compound expression before applying.
 
-2.2 Conversation-first triage
+### 2.2 Conversation-first triage
 
 * When you want the whole conversation (endpoints + ports) rather than a single field:
 
@@ -87,7 +93,7 @@ ASCII layout sketch (conceptual)
 
   * View → Colourise Conversation.
 
-2.3 Reconstruct application content
+### 2.3 Reconstruct application content
 
 * Packet-level views fragment payload.
 * Follow Stream reconstructs application-level data:
@@ -95,15 +101,15 @@ ASCII layout sketch (conceptual)
   * Follow TCP/UDP/HTTP Stream (depending on protocol).
 * After following, Wireshark applies a stream filter automatically; clear it using the “X” on the display filter bar.
 
-2.4 “Navigate like a debugger”
+### 2.4 “Navigate like a debugger”
 
 * Go to Packet: jump to a packet number when the task gives you an anchor (e.g., “packet 38”).
 * Find Packet: search content using String/Regex/Hex/Display filter, with the correct search scope (list/details/bytes).
 * Mark + Comments: annotate packets for later review or collaboration; marks reset per session, comments persist in the capture file.
 
-3. Command Cookbook (only items present in the room text)
+## Command Cookbook
 
-3.1 Display filter examples
+### 3.1 Display filter examples
 
 ```text
 # By protocol
@@ -123,13 +129,13 @@ udp.port == 53
 ip.addr == TARGET_IP
 ```
 
-3.2 File hash (terminal)
+### 3.2 File hash (terminal)
 
 ```bash
 md5sum <filename>
 ```
 
-4. Workflow Checklist (mapped to the room tasks)
+## Workflow Checklist (mapped to the room tasks)
 
 Task 1–2: Loading + first orientation
 
@@ -208,19 +214,19 @@ Right-click filtering modes
 * Apply as Column: add a field as a column to compare across many packets.
 * Follow Stream: reconstruct app-layer stream; auto-applies stream filter; clear with “X”.
 
-5. Pitfalls
+## Pitfalls
 
 * Searching the wrong pane: a string in Packet Details won’t be found if you search only Packet List.
 * Over-trusting color: packet coloring is a triage aid, not evidence.
 * Forgetting stream filters: Follow Stream silently applies a stream filter; if you “lose packets,” check the display filter bar.
 * Mixing capture vs display filters: beginners often type display syntax into capture filter fields.
 
-6. References
+## References
 
 * Wireshark User’s Guide (official): [https://www.wireshark.org/docs/wsug_html/](https://www.wireshark.org/docs/wsug_html/)
 * Display filter syntax (manpage): [https://www.wireshark.org/docs/man-pages/wireshark-filter.html](https://www.wireshark.org/docs/man-pages/wireshark-filter.html)
 
-CN–EN Glossary (small)
+## CN–EN Glossary (small)
 
 * packet capture / PCAP：数据包抓包文件
 * packet dissection：协议剖析 / 分层解析

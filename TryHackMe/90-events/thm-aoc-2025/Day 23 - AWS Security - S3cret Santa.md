@@ -1,4 +1,22 @@
-# AoC 2025 Day 23 — AWS Security Secret Center (TryHackMe) | Lab Notes
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-12
+tags: [security-writeup, tryhackme, aoc2025, aws-security]
+source: TryHackMe - Advent of Cyber 2025 Day 23
+platform: tryhackme
+room: Advent of Cyber 2025 Day 23 - AWS Security - S3cret Santa
+slug: aoc-2025-day-23-aws-security-s3cret-santa
+path: TryHackMe/90-events/thm-aoc-2025/Day 23 - AWS Security - S3cret Santa.md
+topic: 90-events
+domain: [cloud]
+skills: [iam, sts, s3]
+artifacts: [lab-notes]
+sanitized: true
+---
+
+# Advent of Cyber 2025 Day 23 - AWS Security - S3cret Santa
 
 ## Summary
 
