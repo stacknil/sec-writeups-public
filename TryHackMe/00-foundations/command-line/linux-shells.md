@@ -1,4 +1,22 @@
-# Linux Shells — Notes (CLI, shells, and basic Bash scripting)
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, linux, shell]
+source: TryHackMe - Linux Shells
+platform: tryhackme
+room: Linux Shells
+slug: linux-shells
+path: TryHackMe/00-foundations/command-line/linux-shells.md
+topic: 00-foundations
+domain: [foundations, linux]
+skills: [enum, logs, bash-scripting]
+artifacts: [concept-notes, cookbook]
+sanitized: true
+---
+
+# Linux Shells
 
 ## Summary
 
@@ -12,9 +30,11 @@ A *shell* is the user-facing interface that mediates between you and the operati
 
 ---
 
-## Mental model
+## Key Concepts
 
-### Shell vs CLI
+### Mental model
+
+#### Shell vs CLI
 
 * **Shell**: the *facilitator* between user and OS (broad concept). A GUI can be seen as a “shell” too.
 * **CLI**: one concrete interaction mode provided by a shell (typed commands, text IO).
@@ -27,9 +47,9 @@ User  →  Shell (CLI/GUI)  →  OS services (kernel + system calls)  →  hardw
 
 ---
 
-## Task 2 — Interacting with a shell (core commands)
+### Task 2 — Interacting with a shell (core commands)
 
-### 1) Where am I?
+#### 1) Where am I?
 
 ```bash
 1  pwd
@@ -37,7 +57,7 @@ User  →  Shell (CLI/GUI)  →  OS services (kernel + system calls)  →  hardw
 
 * Prints current working directory (CWD).
 
-### 2) Move around
+#### 2) Move around
 
 ```bash
 1  cd <dir>
@@ -47,7 +67,7 @@ User  →  Shell (CLI/GUI)  →  OS services (kernel + system calls)  →  hardw
 
 * `..` = parent directory, `~` = home.
 
-### 3) What’s here?
+#### 3) What’s here?
 
 ```bash
 1  ls
@@ -56,7 +76,7 @@ User  →  Shell (CLI/GUI)  →  OS services (kernel + system calls)  →  hardw
 
 * `-l` long listing; `-a` includes dotfiles.
 
-### 4) Read a file
+#### 4) Read a file
 
 ```bash
 1  cat <file>
@@ -65,7 +85,7 @@ User  →  Shell (CLI/GUI)  →  OS services (kernel + system calls)  →  hardw
 
 * Prefer `less` for large files.
 
-### 5) Search inside a file
+#### 5) Search inside a file
 
 ```bash
 1  grep "PATTERN" <file>
@@ -83,21 +103,21 @@ User  →  Shell (CLI/GUI)  →  OS services (kernel + system calls)  →  hardw
 
 ---
 
-## Task 3 — Types of shells (bash / fish / zsh)
+### Task 3 — Types of shells (bash / fish / zsh)
 
-### Identify the current shell
+#### Identify the current shell
 
 ```bash
 1  echo "$SHELL"
 ```
 
-### List installed shells
+#### List installed shells
 
 ```bash
 1  cat /etc/shells
 ```
 
-### Switch shells (temporary)
+#### Switch shells (temporary)
 
 ```bash
 1  zsh
@@ -106,7 +126,7 @@ User  →  Shell (CLI/GUI)  →  OS services (kernel + system calls)  →  hardw
 
 * This switch typically lasts for the session.
 
-### Change default shell (persistent)
+#### Change default shell (persistent)
 
 ```bash
 1  chsh -s /usr/bin/zsh
@@ -114,7 +134,7 @@ User  →  Shell (CLI/GUI)  →  OS services (kernel + system calls)  →  hardw
 
 * Requires logout/login (or a new terminal) to take effect.
 
-### Feature summary (practical reading)
+#### Feature summary (practical reading)
 
 * **Bash (Bourne Again Shell)**
 
@@ -138,9 +158,9 @@ User  →  Shell (CLI/GUI)  →  OS services (kernel + system calls)  →  hardw
 
 ---
 
-## Task 4 — Shell scripting building blocks
+### Task 4 — Shell scripting building blocks
 
-### 1) Shebang
+#### 1) Shebang
 
 The first line tells the OS which interpreter should execute the script.
 
@@ -148,13 +168,13 @@ The first line tells the OS which interpreter should execute the script.
 1  #!/bin/bash
 ```
 
-### 2) Make script executable
+#### 2) Make script executable
 
 ```bash
 1  chmod +x script.sh
 ```
 
-### 3) Run a script in the current directory
+#### 3) Run a script in the current directory
 
 ```bash
 1  ./script.sh
@@ -162,7 +182,7 @@ The first line tells the OS which interpreter should execute the script.
 
 * `./` matters because the current directory is usually **not** in `PATH`.
 
-### 4) Variables + input (`read`)
+#### 4) Variables + input (`read`)
 
 ```bash
 1  #!/bin/bash
@@ -171,7 +191,7 @@ The first line tells the OS which interpreter should execute the script.
 4  echo "Welcome, $name"
 ```
 
-### 5) Loops
+#### 5) Loops
 
 ```bash
 1  #!/bin/bash
@@ -180,7 +200,7 @@ The first line tells the OS which interpreter should execute the script.
 4  done
 ```
 
-### 6) Conditionals
+#### 6) Conditionals
 
 ```bash
 1  #!/bin/bash
@@ -193,7 +213,7 @@ The first line tells the OS which interpreter should execute the script.
 8  fi
 ```
 
-### 7) Comments
+#### 7) Comments
 
 ```bash
 1  # This is a comment. It is ignored by the interpreter.
@@ -207,15 +227,15 @@ The first line tells the OS which interpreter should execute the script.
 
 ---
 
-## Task 5 — “Locker script” pattern (variables + loop + conditional)
+### Task 5 — “Locker script” pattern (variables + loop + conditional)
 
-### What the script demonstrates
+#### What the script demonstrates
 
 * Collect multiple inputs using a loop.
 * Validate all required fields using logical AND (`&&`).
 * Print “success” only when all conditions match.
 
-### Readable refactor (same idea, more direct)
+#### Readable refactor (same idea, more direct)
 
 ```bash
 1  #!/bin/bash
@@ -239,13 +259,13 @@ The first line tells the OS which interpreter should execute the script.
 
 ---
 
-## Task 6 — Practical exercise: scan logs for a keyword
+### Task 6 — Practical exercise: scan logs for a keyword
 
-### Goal
+#### Goal
 
 Search for a target keyword (e.g., `thm-flag01-script`) across `*.log` files inside a directory (e.g., `/var/log`).
 
-### Script skeleton (robust version)
+#### Script skeleton (robust version)
 
 ```bash
 1  #!/usr/bin/env bash
@@ -269,7 +289,7 @@ Search for a target keyword (e.g., `thm-flag01-script`) across `*.log` files ins
 19 exit 1
 ```
 
-### Common pitfalls
+#### Common pitfalls
 
 * **Unquoted variables**: break on spaces or glob expansion.
 * **Accidental spaces in patterns**: `grep "FLAG "` ≠ `grep "FLAG"`.
@@ -278,7 +298,7 @@ Search for a target keyword (e.g., `thm-flag01-script`) across `*.log` files ins
 
 ---
 
-## Pitfalls & operational notes
+### Pitfalls & operational notes
 
 * Prefer `less` over `cat` for large outputs.
 * Prefer *exit codes* + `grep -q` for scripting logic.
@@ -287,7 +307,7 @@ Search for a target keyword (e.g., `thm-flag01-script`) across `*.log` files ins
 
 ---
 
-## Related tools
+## Related Tools
 
 * `less`, `head`, `tail -f` (file viewing)
 * `find`, `xargs` (file discovery pipelines)
@@ -296,7 +316,7 @@ Search for a target keyword (e.g., `thm-flag01-script`) across `*.log` files ins
 
 ---
 
-## Further reading
+## Further Reading
 
 * Bash reference and scripting patterns
 * Fish documentation (interactive features)

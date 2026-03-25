@@ -1,4 +1,22 @@
-# Windows Command Line (cmd.exe) — Study Notes
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, windows, cmd]
+source: TryHackMe - Windows Command Line
+platform: tryhackme
+room: Windows Command Line
+slug: windows-command-line
+path: TryHackMe/00-foundations/command-line/windows-command-line.md
+topic: 00-foundations
+domain: [foundations, windows]
+skills: [cmd-basics, triage]
+artifacts: [concept-notes, cookbook]
+sanitized: true
+---
+
+# Windows Command Line (cmd.exe)
 
 > Scope: beginner-level Windows **Command Prompt** (cmd.exe) usage as covered in the TryHackMe “Windows Command Line” room.
 
@@ -15,7 +33,7 @@ In this room, the focus is practical: **system info**, **network troubleshooting
 
 ---
 
-## Key concepts
+## Key Concepts
 
 ### 1) Path and command discovery
 
@@ -51,9 +69,9 @@ Even though this room is “basic Windows CLI”, the security meta-skill is the
 
 ---
 
-## Task 1 — CLI vs GUI basics
+### Task 1 — CLI vs GUI basics
 
-### Default command-line interpreter
+#### Default command-line interpreter
 
 * **cmd.exe** is the classic default Command Prompt interpreter.
 
@@ -63,15 +81,15 @@ Practical note:
 
 ---
 
-## Task 2 — Basic system information
+### Task 2 — Basic system information
 
-### Quick OS version
+#### Quick OS version
 
 ```bat
 ver
 ```
 
-### Rich system inventory
+#### Rich system inventory
 
 ```bat
 systeminfo
@@ -85,7 +103,7 @@ Typical fields you care about:
 * CPU and memory
 * Domain/workgroup context (in real environments)
 
-### Screen hygiene
+#### Screen hygiene
 
 ```bat
 cls
@@ -93,9 +111,9 @@ cls
 
 ---
 
-## Task 3 — Network troubleshooting
+### Task 3 — Network troubleshooting
 
-### Local network configuration
+#### Local network configuration
 
 Basic:
 
@@ -117,7 +135,7 @@ What to extract quickly:
 * DNS servers
 * Physical address (MAC)
 
-### Connectivity test
+#### Connectivity test
 
 ```bat
 ping example.com
@@ -128,7 +146,7 @@ Interpretation:
 * Replies → target reachable
 * 100% loss → either target unreachable, ICMP blocked, or network path issues
 
-### Path tracing
+#### Path tracing
 
 ```bat
 tracert example.com
@@ -139,7 +157,7 @@ Use it when:
 * Ping fails but you want to see where packets stop
 * Latency spikes and you want to spot the “bad hop”
 
-### DNS lookup
+#### DNS lookup
 
 ```bat
 nslookup example.com
@@ -151,7 +169,7 @@ Use it when:
 * A domain “doesn’t work” and you suspect DNS
 * You need the IP behind a hostname
 
-### Connection visibility
+#### Connection visibility
 
 Minimal (established only):
 
@@ -176,15 +194,15 @@ Security angle:
 
 ---
 
-## Task 4 — File and disk management
+### Task 4 — File and disk management
 
-### Where am I?
+#### Where am I?
 
 ```bat
 cd
 ```
 
-### List directory contents
+#### List directory contents
 
 ```bat
 dir
@@ -198,13 +216,13 @@ dir /a
 dir /s
 ```
 
-### Tree view
+#### Tree view
 
 ```bat
 tree
 ```
 
-### Navigation
+#### Navigation
 
 ```bat
 cd Documents
@@ -212,14 +230,14 @@ cd ..
 cd C:\Users\USER\Desktop
 ```
 
-### Create and remove directories
+#### Create and remove directories
 
 ```bat
 mkdir hello
 rmdir hello
 ```
 
-### View text files
+#### View text files
 
 ```bat
 type flag.txt
@@ -227,7 +245,7 @@ type flag.txt
 type bigfile.txt | more
 ```
 
-### Copy / move / delete
+#### Copy / move / delete
 
 ```bat
 copy test.txt test2.txt
@@ -239,7 +257,7 @@ rem or
  erase test2.txt
 ```
 
-### Wildcards
+#### Wildcards
 
 ```bat
 copy *.md C:\Markdown
@@ -251,15 +269,15 @@ Pitfall:
 
 ---
 
-## Task 5 — Task and process management
+### Task 5 — Task and process management
 
-### List processes
+#### List processes
 
 ```bat
 tasklist
 ```
 
-### Filter processes (critical skill)
+#### Filter processes (critical skill)
 
 ```bat
 tasklist /FI "imagename eq sshd.exe"
@@ -270,7 +288,7 @@ Common filters you’ll actually use:
 * `imagename eq <name>.exe`
 * `pid eq <number>`
 
-### Kill by PID
+#### Kill by PID
 
 ```bat
 taskkill /PID 1516
@@ -283,7 +301,7 @@ Operational note:
 
 ---
 
-## Task 6 — Useful extras (beyond the room)
+### Task 6 — Useful extras (beyond the room)
 
 These are common “admin hygiene” commands:
 
@@ -295,7 +313,7 @@ driverquery
 sfc /scannow
 ```
 
-### Shutdown / restart
+#### Shutdown / restart
 
 ```bat
 shutdown /s
@@ -305,7 +323,7 @@ shutdown /a
 
 ---
 
-## Quick command map
+### Quick command map
 
 | Goal                 | Command(s)                    | Why you’d use it                  |
 | -------------------- | ----------------------------- | --------------------------------- |
@@ -324,15 +342,15 @@ shutdown /a
 
 ---
 
-## Pitfalls and mental checklists
+### Pitfalls and mental checklists
 
-### When a command “does nothing”
+#### When a command “does nothing”
 
 * Are you in the right directory? (`cd`, `dir`)
 * Is the tool in PATH? (`set`, or run with full path)
 * Do you need admin rights? (common with networking/process inspection)
 
-### When networking tests “fail”
+#### When networking tests “fail”
 
 * Ping can be blocked by firewall rules; failure ≠ always “offline”.
 
@@ -347,16 +365,10 @@ ipconfig -> ping gateway -> ping target -> tracert -> nslookup -> netstat
 ## Takeaways
 
 * CLI skills are not about memorizing commands; they are about building a **repeatable workflow**.
-
 * The highest leverage tools in this room are:
-
-
   * Output control: `| more`, `/ ?`, `help`
-
   * Network triage: `ipconfig /all`, `ping`, `tracert`, `nslookup`, `netstat -abon`
-
   * Process triage: `tasklist /FI ...`, `taskkill /PID ...`
-
 
 ---
 

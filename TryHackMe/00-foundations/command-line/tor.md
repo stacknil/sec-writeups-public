@@ -1,8 +1,26 @@
-# TryHackMe – TOR, Proxychains & Tor Browser
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, tor, proxying]
+source: TryHackMe - Tor
+platform: tryhackme
+room: Tor
+slug: tor
+path: TryHackMe/00-foundations/command-line/tor.md
+topic: 00-foundations
+domain: [foundations, networking]
+skills: [proxying, recon]
+artifacts: [concept-notes, cookbook]
+sanitized: true
+---
+
+# TOR, Proxychains & Tor Browser
 
 ---
 
-## 0. Summary
+## Summary
 
 **Goal of the room**: learn how to route traffic through the Tor network for anonymity, how to chain proxies with `proxychains`, and how to use Tor Browser safely.
 
@@ -15,9 +33,11 @@
 
 ---
 
-## 1. Threat model & high‑level view
+## Key Concepts
 
-### 1.1 What Tor gives you
+### 1. Threat model & high‑level view
+
+#### 1.1 What Tor gives you
 
 Tor (The Onion Router) is a low‑latency anonymity network:
 
@@ -51,9 +71,9 @@ For security work: Tor is a way to **separate your testing IP space from your pe
 
 ---
 
-## 2. Unit 1 – Tor service basics (CLI)
+### 2. Unit 1 – Tor service basics (CLI)
 
-### 2.1 Install Tor on Debian/Ubuntu/Kali
+#### 2.1 Install Tor on Debian/Ubuntu/Kali
 
 ```bash
 sudo apt-get update
@@ -65,7 +85,7 @@ Core components:
 * `tor` – the daemon that talks to the Tor network.
 * `torsocks` – wrapper to transparently send a program’s traffic over Tor (alternative to `proxychains`).
 
-### 2.2 Service management
+#### 2.2 Service management
 
 ```bash
 # Start Tor
@@ -102,9 +122,9 @@ TORSOCKS_CONF_FILE=/etc/tor/torsocks.conf \
 
 ---
 
-## 3. Unit 2 – Proxychains
+### 3. Unit 2 – Proxychains
 
-### 3.1 Conceptual overview
+#### 3.1 Conceptual overview
 
 `proxychains` is a **user‑space shim** that intercepts TCP `connect()` calls from an application and forces them through one or more proxies (SOCKS4/5, HTTP, HTTPS).
 
@@ -122,7 +142,7 @@ Why it matters for offensive security:
 
 > Limitation: `proxychains` only handles **TCP**. Raw‑socket scans (e.g. `nmap -sS`, `ping`, many UDP tools) will not work through it.
 
-### 3.2 Install proxychains
+#### 3.2 Install proxychains
 
 ```bash
 sudo apt-get install proxychains -y
@@ -130,7 +150,7 @@ sudo apt-get install proxychains -y
 
 On some distros the binary is `proxychains4`, but config concepts are identical.
 
-### 3.3 Configure `/etc/proxychains.conf`
+#### 3.3 Configure `/etc/proxychains.conf`
 
 Open the config:
 
@@ -161,7 +181,7 @@ dynamic_chain
 * Use proxies **in order**, skipping dead ones.
 * More practical than `strict_chain` (which fails as soon as one proxy in the chain is down).
 
-2. **Prevent DNS leaks** – uncomment `proxy_dns`:
+1. **Prevent DNS leaks** – uncomment `proxy_dns`:
 
 ```conf
 proxy_dns  # resolve hostnames through the proxy chain
@@ -169,7 +189,7 @@ proxy_dns  # resolve hostnames through the proxy chain
 
 Without this, your system resolver (e.g. ISP DNS) might see all the domains you query, even though HTTP traffic goes through Tor.
 
-3. **Define Tor as a SOCKS5 proxy** – at the bottom of the file:
+1. **Define Tor as a SOCKS5 proxy** – at the bottom of the file:
 
 ```conf
 [ProxyList]
@@ -184,7 +204,7 @@ Save & exit:
 
 * In `nano`: `Ctrl+O` (write), `Enter`, then `Ctrl+X`.
 
-### 3.4 Using proxychains
+#### 3.4 Using proxychains
 
 Always prefix your command with `proxychains`:
 
@@ -210,7 +230,7 @@ Signs things are working:
 * The terminal shows `|D-chain| 127.0.0.1:9050 <=> <exit-ip>:443 <=> OK` lines.
 * Websites like `https://ifconfig.me` or `https://dnsleaktest.com` show a **Tor exit IP** and **non‑local DNS resolvers**.
 
-### 3.5 Common pitfalls
+#### 3.5 Common pitfalls
 
 * Forgetting to start the Tor service → connection timeouts.
 * Mis‑editing `/etc/proxychains.conf` (commenting out the `socks5` line) → traffic is not proxied.
@@ -219,7 +239,7 @@ Signs things are working:
 
 ---
 
-## 4. Unit 3 – Tor Browser
+### 4. Unit 3 – Tor Browser
 
 Tor Browser is a **pre‑configured Firefox + Tor** bundle maintained by the Tor Project.
 
@@ -229,7 +249,7 @@ Characteristics:
 * Uniform user‑agent and fingerprinting‑resistant settings to make users look similar.
 * Hardened privacy defaults (first‑party isolation, strict cookie policy, NoScript integration, etc.).
 
-### 4.1 Install (general idea)
+#### 4.1 Install (general idea)
 
 High‑level flow (host OS may differ):
 
@@ -239,7 +259,7 @@ High‑level flow (host OS may differ):
 
 On some Linux distros there is also a `torbrowser-launcher` package.
 
-### 4.2 Security Level: “Safer” (Level 2)
+#### 4.2 Security Level: “Safer” (Level 2)
 
 The room asks to set the security slider to **Level 2 – Safer**:
 
@@ -249,7 +269,7 @@ The room asks to set the security slider to **Level 2 – Safer**:
 
 Where: **hamburger menu → Settings → Privacy & Security → Security Level**.
 
-### 4.3 Onion services (hidden services)
+#### 4.3 Onion services (hidden services)
 
 * Sites accessible only inside the Tor network, identified by a `.onion` address.
 * Provide **mutual anonymity**: the user doesn’t know the physical location of the server, and the server doesn’t see the user’s real IP.
@@ -265,7 +285,7 @@ Use‑cases in offensive security:
 
 ---
 
-## 5. Operational hygiene for pentesters
+### 5. Operational hygiene for pentesters
 
 Some practical rules of thumb when using Tor + proxychains for **authorised testing**:
 
@@ -277,7 +297,7 @@ Some practical rules of thumb when using Tor + proxychains for **authorised test
 
 ---
 
-## 6. Quick command recap
+### 6. Quick command recap
 
 ```bash
 # Install
@@ -303,7 +323,7 @@ proxychains nmap -sT -Pn -n TARGET_IP
 
 ---
 
-## 7. EN–ZH technical glossary
+### 7. EN–ZH technical glossary
 
 | Term                           | 中文对应           | Notes                                                  |
 | ------------------------------ | -------------- | ------------------------------------------------------ |
