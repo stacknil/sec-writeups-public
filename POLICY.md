@@ -1,51 +1,86 @@
-# Publication Policy (sec-writeups-public)
+# Publication Policy
 
-This repository is public. Everything published here must be safe, compliant, and non-actionable.
+This repository is public.
 
-## 1) Allowed content
+Everything published here must be safe to share, compliant with platform rules, and non-actionable outside authorized lab contexts.
+
+## Publishing Standard
+
+The default publishing standard in this repo is:
+
+- sanitized by design
+- methodology-first
+- defensive where useful
+- safe for public reading
+
+The purpose of this repository is to document:
+
+- reasoning
+- methodology
+- engineering lessons
+- reusable security patterns
+
+It is not intended to be a weaponized exploitation archive.
+
+## Platform Scope
 
 ### TryHackMe
-- Sanitized case studies focusing on methodology and reasoning.
-- Defensive framing is required: remediation + detection ideas.
+
+- Sanitized case studies are allowed.
+- Notes should emphasize methodology, reasoning, and learning value.
+- Defensive framing is preferred when it adds remediation or detection value.
 
 ### Hack The Box
-- **Retired content only** (e.g., retired machines/challenges, or content explicitly allowed by HTB).
-- Write-ups are sanitized and report-like (no full exploit chain).
+
+- Retired content only, or content explicitly allowed by platform rules.
+- Public notes must still be sanitized and report-like.
+- Avoid publishing full exploit chains or copy-paste reproduction paths.
 
 ### pwn.college
-- **Meta-notes only**: concepts, tooling notes, general techniques.
-- **No challenge write-ups**, no step-by-step solutions, no scripts that solve specific tasks.
 
-## 2) Prohibited content (hard rules)
+- Meta-notes only.
+- Concepts, tooling notes, and general lessons are in scope.
+- Challenge write-ups, step-by-step solutions, and challenge-solving scripts are out of scope.
 
-- Live target identifiers: IPs/domains/usernames/emails linked to real systems
-- Any credentials or secrets: API keys, tokens, cookies, session IDs, SSH keys, VPN configs
-- Full exploit chains that enable one-click reproduction (especially RCE / privesc chains)
-- Publishing platform-restricted write-ups (e.g., pwn.college solutions)
+## Prohibited Content
 
-## 3) Sanitization standards
+Do not publish:
 
-All write-ups must:
-- Replace identifiers with placeholders (`TARGET_IP`, `SERVICE_X`, `USER_A`)
-- Remove command dumps unless they are necessary and harmless
-- Include:
-  - **root cause**
-  - **impact**
-  - **remediation**
-  - **detection ideas**
+- live target identifiers tied to real systems
+- credentials, tokens, cookies, API keys, SSH keys, or VPN material
+- full exploit chains that materially lower the barrier to reproduction
+- platform-restricted write-ups that are not allowed for public release
+- raw evidence dumps that preserve private or secret-bearing details
 
-## 4) Goal of publishing
+## Sanitization Rules
 
-The purpose is to demonstrate:
-- security methodology,
-- systems thinking,
-- clear reporting,
-- and generalizable learning outcomes.
+Public write-ups must:
 
-Not to provide offensive instructions.
+- replace live identifiers with canonical placeholders such as `TARGET_IP`, `TARGET_HOST`, `TARGET_URL`, and `USER_A`
+- use the canonical placeholder and redaction policy from [docs/placeholder-policy.md](docs/placeholder-policy.md)
+- remove or neutralize secrets and unnecessary raw evidence
+- preserve technical meaning without preserving sensitive context
 
-## 5) If unsure, do not publish
+Where relevant, public notes should still retain:
 
-When a piece of content is borderline:
-- keep it private, or
-- rewrite it as a high-level pattern note without actionable steps.
+- root cause
+- impact
+- remediation
+- detection or defensive notes
+
+## If You Are Unsure
+
+If a note feels borderline:
+
+- keep it private
+- rewrite it as a higher-level pattern note
+- or remove the sensitive sections and publish only the reusable lessons
+
+When in doubt, do not publish the raw version.
+
+## Related Docs
+
+- [SANITIZATION_CHECKLIST.md](SANITIZATION_CHECKLIST.md)
+- [docs/publication-workflow.md](docs/publication-workflow.md)
+- [docs/placeholder-policy.md](docs/placeholder-policy.md)
+- [templates/writeup_sanitized.md](templates/writeup_sanitized.md)

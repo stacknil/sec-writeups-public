@@ -1,31 +1,40 @@
-# Sanitization Checklist (pre-publish)
+# Sanitization Checklist
 
-## A) Scope & compliance
-- [ ] Authorized lab/training only (ROE stated)
-- [ ] HTB content is retired/allowed
-- [ ] pwn.college: meta-notes only (no challenge walkthrough)
+Use this checklist before publishing any public note or sanitized write-up.
 
-## B) Identifiers & secrets
-- [ ] No public IPs / real domains / real usernames
-- [ ] No tokens / cookies / session IDs / API keys
-- [ ] No SSH keys / VPN configs / private endpoints
-- [ ] Replace with placeholders: `TARGET_IP`, `example.com`, `USER_A`, `SERVICE_X`
+## Quick Pass
 
-## C) Actionability control
-- [ ] No complete exploit chain from initial access → root
-- [ ] Payloads are removed or reduced to non-weaponized form
-- [ ] Avoid “copy-paste to win” steps
+Before you publish, confirm all of the following:
 
-## D) Reporting quality
-- [ ] Executive summary present
-- [ ] Finding includes: root cause → impact → remediation
-- [ ] At least one detection idea (logs/alerts/controls)
-- [ ] Lessons learned generalized (pattern, not platform trivia)
+1. The source material is authorized for public release.
+2. The note uses the public-safe structure from [templates/writeup_sanitized.md](templates/writeup_sanitized.md), or is brought close to that standard.
+3. Live identifiers are replaced with canonical placeholders from [docs/placeholder-policy.md](docs/placeholder-policy.md).
+4. Secrets, tokens, flags, session material, and nonessential sensitive evidence are removed or neutralized.
+5. The note preserves technical meaning and defensive value without publishing a full exploit chain.
+6. Front matter follows the taxonomy rules described in [docs/taxonomy-closure.md](docs/taxonomy-closure.md).
+7. The note passes the required local validation checks.
+8. A final human review finds no names, IPs, URLs, hostnames, screenshots, attachments, or pasted output that should remain private.
 
-## E) Screenshots & outputs
-- [ ] Screenshots minimized and scrubbed (paths, usernames, IDs)
-- [ ] Tool outputs summarized (no full `nmap`/`linpeas` dumps)
-- [ ] Remove timestamps or unique markers when unnecessary
+## Required Local Checks
 
-## Final gate
-- [ ] If I hesitate: keep private and publish a pattern note instead
+```text
+python scripts/render_tags_doc.py --check
+python scripts/check_placeholders.py <changed files>
+python scripts/check_markdown.py
+python -m pre_commit run --files <changed files>
+```
+
+## Stop Conditions
+
+Stop and resolve governance first if:
+
+- you think a new placeholder is needed
+- you are about to introduce a new taxonomy value
+- the note still depends on private evidence to make sense
+- the content only works as a step-by-step attack recipe
+
+When that happens, use:
+
+- [docs/placeholder-closure.md](docs/placeholder-closure.md)
+- [docs/taxonomy-closure.md](docs/taxonomy-closure.md)
+- [docs/publication-workflow.md](docs/publication-workflow.md)

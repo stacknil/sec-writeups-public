@@ -1,119 +1,56 @@
-# TryHackMe Notes (Topic-first)
+# TryHackMe Meta Hub
 
-This folder is a **skills catalog**, not a course dump.
+This folder is the navigation and metadata layer for the public TryHackMe corpus.
 
-- Primary axis: **Topic / domain** (web, linux, windows, networking, blue-team, etc.)
-- Secondary axis: **Path / series** (stored as metadata in front-matter: `path:`)
-- Writing goal: **transferable patterns** + **reproducible command notes** (for myself)
+Use it when you want to:
 
-> All content is intended for authorized training labs only (TryHackMe/HTB/pwn.college).
-> No instructions should be used against systems without explicit permission.
+- browse the taxonomy
+- understand how notes are organized
+- find the room template
+- work on front matter or repo-wide metadata consistency
 
----
+## Start Here
 
-## Philosophy (Why Topic-first)
+| If you want to... | Open |
+| --- | --- |
+| browse canonical tags | [TAGS.md](TAGS.md) |
+| understand topic-first organization | [INDEX.md](INDEX.md) |
+| start a new room note | [TEMPLATE_room.md](TEMPLATE_room.md) |
+| understand taxonomy governance | [../../docs/taxonomy-closure.md](../../docs/taxonomy-closure.md) |
 
-Room counts grow fast. If folders follow the THM UI paths, notes become a "course timetable".
-Topic-first turns rooms into reusable building blocks:
+## What Each File Does
 
-- When I meet a new target/service, I search by **skill** (enum, permissions, services)
-- Not by "which path I happened to take"
+| File | Role |
+| --- | --- |
+| [README.md](README.md) | `_meta` landing page and quick navigation |
+| [TAGS.md](TAGS.md) | derived controlled vocabulary for front matter |
+| [INDEX.md](INDEX.md) | topic-first map and indexing guidance |
+| [TEMPLATE_room.md](TEMPLATE_room.md) | scaffold for new public-safe room notes |
 
-This also aligns with interviewing / real work: people ask about domains (web/linux/cloud),
-not about THM learning paths.
+## Topic-First Model
 
----
+The TryHackMe tree is organized as a reusable skills catalog, not a course dump.
 
-## Repository Rules (Non-negotiable)
+Primary axis:
 
-### 1) Folder naming
+- topic/domain
 
-- Use **kebab-case** for folders: `linux-fundamentals-part-1`
-- One room = one folder:
-  - `TryHackMe/<topic>/<room-slug>/README.md`
+Secondary axis:
 
-### 2) Metadata (front-matter)
+- path/series, stored in front matter
 
-Every room note starts with YAML front-matter:
+That means readers can browse by subject area first, then use front matter for finer retrieval.
 
-- `platform`, `room`, `slug`, `path`, `topic`
-- `domain`, `skills`, `artifacts`
-- `status`, `date`
+## Writing Rules That Matter Most
 
-This enables consistent GitHub search.
+- Keep public notes sanitized.
+- Use canonical placeholders from [../../docs/placeholder-policy.md](../../docs/placeholder-policy.md).
+- Use controlled taxonomy values from [TAGS.md](TAGS.md).
+- Prefer reusable reasoning and patterns over raw command history.
 
-### 3) INDEX as the source of truth
+## Related Repo Docs
 
-- Update `TryHackMe/_meta/INDEX.md` for each new room.
-- The table is the "database"; folders are storage.
-
-### 4) Writing style
-
-Prefer:
-
-- decision points (why I tried X, why it failed, what changed my hypothesis)
-- reusable patterns (checklists / minimal commands)
-- short "Takeaways" for transfer learning
-
-Avoid:
-
-- raw command-history dumps in public notes
-- copy-paste exploit chains
-- long screenshots-only writeups
-
----
-
-## Safe-writing (Sanitization)
-
-Use placeholders in public-facing notes:
-
-- IP: `TARGET_IP`
-- user: `USER_A`
-- domain: `example.com`
-- paths: `/home/user/...`
-- secrets/tokens: `[REDACTED]`
-
-Never publish:
-
-- real credentials, API keys, tokens
-- private target identifiers beyond training platforms
-- complete exploit chains that are easily replayable
-- doxxable context (school name, real location, unique IDs)
-
----
-
-## Public vs Private (Recommended split)
-
-- **Private repo**: full logs, full commands, full outputs, raw screenshots
-- **Public repo**: sanitized notes focusing on:
-  - methodology
-  - detection ideas
-  - remediation / hardening
-  - general patterns / checklists
-
-Platform-specific constraints (public):
-
-- HTB writeups: only retired / allowed content
-- pwn.college: meta-notes only (no challenge solutions)
-
----
-
-## Where things go (Topic map)
-
-- `00-foundations/`: CLI, Linux/Windows basics, intro security, learning-meta
-- `10-web/`: HTTP fundamentals, web enumeration, auth/session concepts
-- `20-linux/`: Linux enumeration/privesc patterns (pattern-level)
-- `30-windows/`: Windows/AD patterns (pattern-level)
-- `40-networking/`: scanning, DNS, routing, pcap basics
-- `80-blue-team/`: detection/logging/triage notes
-- `90-events/`: AoC, seasonal events
-
-If unsure, default to **00-foundations**.
-
----
-
-## Templates
-
-- Room note template: `TryHackMe/_meta/TEMPLATE_room.md`
-- Tag vocabulary: `TryHackMe/_meta/TAGS.md`
-- Master index: `TryHackMe/_meta/INDEX.md`
+- [../../README.md](../../README.md)
+- [../../POLICY.md](../../POLICY.md)
+- [../../SANITIZATION_CHECKLIST.md](../../SANITIZATION_CHECKLIST.md)
+- [../../docs/README.md](../../docs/README.md)
