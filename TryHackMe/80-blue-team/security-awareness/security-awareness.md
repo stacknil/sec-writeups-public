@@ -1,10 +1,28 @@
-# Security Awareness – Study Notes
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, blue-team, security-awareness]
+source: TryHackMe - Security Awareness
+platform: tryhackme
+room: Security Awareness
+slug: security-awareness
+path: TryHackMe/80-blue-team/security-awareness/security-awareness.md
+topic: 80-blue-team
+domain: [blueteam]
+skills: [awareness-training, user-risk]
+artifacts: [concept-notes]
+sanitized: true
+---
+
+# Security Awareness
 
 > TryHackMe room: **Security Awareness** – summary & Q/A.
 
 ---
 
-## 1. What is Security Awareness?
+## Summary
 
 **Security awareness** = understanding common cyber threats and adjusting everyday behaviour to reduce risk for yourself and your organisation.
 
@@ -19,9 +37,11 @@ Everyone: management, IT, HR, finance, interns, remote workers – *anyone* who 
 
 ---
 
-## 2. Why Security Awareness is Essential
+## Key Concepts
 
-### 2.1 Modern work patterns
+### 2. Why Security Awareness is Essential
+
+#### 2.1 Modern work patterns
 
 * **Remote work / BYOD** (bring-your-own-device) means more use of personal laptops and home networks.
 * Company data now flows through:
@@ -31,7 +51,7 @@ Everyone: management, IT, HR, finance, interns, remote workers – *anyone* who 
   * Messaging apps and video‑conferencing platforms
 * This widens the **attack surface** and weakens the clear boundary between "corporate" and "home" environments.
 
-### 2.2 Business impact of cyber attacks
+#### 2.2 Business impact of cyber attacks
 
 Typical consequences of a serious breach:
 
@@ -40,7 +60,7 @@ Typical consequences of a serious breach:
 * **Operational disruption** – systems offline, business unable to trade, loss of productivity.
 * **Reputational damage** – lost customer trust, partner hesitation, long‑term brand impact.
 
-### 2.3 Benefits of security awareness training
+#### 2.3 Benefits of security awareness training
 
 Security awareness training helps to:
 
@@ -57,9 +77,9 @@ Example results from Proofpoint case studies (after awareness training):
 
 ---
 
-## 3. Data and Account Security
+### 3. Data and Account Security
 
-### 3.1 What counts as sensitive data?
+#### 3.1 What counts as sensitive data?
 
 Typical sensitive data categories:
 
@@ -75,7 +95,7 @@ Different departments hold different parts of this:
 * Finance: customer billing, credit‑card and bank details.
 * IT / security: access logs, encryption keys, configuration backups.
 
-### 3.2 Top data breaches (infographic recap)
+#### 3.2 Top data breaches (infographic recap)
 
 Notable points from the “Top 10 data breaches” diagram:
 
@@ -91,7 +111,7 @@ Notable points from the “Top 10 data breaches” diagram:
 * **Q:** What data was leaked from **PlayStation** being hacked?
   **A:** **Names, addresses, email addresses, birth dates, passwords and logins.**
 
-### 3.3 Practical guidelines
+#### 3.3 Practical guidelines
 
 * Only store data you **actually need**, and delete it securely when no longer required.
 * Use strong, unique **passwords** for each account; use a **password manager** to keep track.
@@ -100,7 +120,7 @@ Notable points from the “Top 10 data breaches” diagram:
 
 ---
 
-## 4. Checking if you were in a breach
+### 4. Checking if you were in a breach
 
 Service example: **Have I Been Pwned** (HIBP).
 
@@ -122,7 +142,7 @@ Takeaway: leaked data is often used for **credential stuffing** and **targeted p
 
 ---
 
-## 5. Cyber Threat Actors
+### 5. Cyber Threat Actors
 
 **Cyber threat actor** = individual or group that intentionally attempts to exploit security weaknesses.
 
@@ -171,7 +191,7 @@ Main categories and motivations:
 
 ---
 
-## 6. Threat Actors – Mermaid Diagram
+### 6. Threat Actors – Mermaid Diagram
 
 ```mermaid
 flowchart LR
@@ -197,7 +217,7 @@ This diagram maps each actor group to its primary motivation.
 
 ---
 
-## 7. Personal Security Checklist (Quick Reference)
+### 7. Personal Security Checklist (Quick Reference)
 
 * Use a **password manager** and unique passwords.
 * Enable **MFA** on email, banking, social media, and work accounts.
@@ -209,7 +229,7 @@ This diagram maps each actor group to its primary motivation.
 
 ---
 
-## 8. Mini Glossary (EN / 简体中文)
+### 8. Mini Glossary (EN / 简体中文)
 
 * **Security awareness 安全意识** – understanding threats and behaving to reduce risk.
 * **Data breach 数据泄露** – unauthorised access, exfiltration or disclosure of data.

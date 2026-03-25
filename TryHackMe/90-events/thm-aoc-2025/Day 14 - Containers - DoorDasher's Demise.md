@@ -1,4 +1,22 @@
-# Containers - DoorDasher's Demise (Docker Socket Escape Lab Notes)
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-12
+tags: [security-writeup, tryhackme, aoc2025, containers]
+source: TryHackMe - Advent of Cyber 2025 Day 14
+platform: tryhackme
+room: Advent of Cyber 2025 Day 14 - Containers - DoorDasher's Demise
+slug: aoc-2025-day-14-containers-doordashers-demise
+path: TryHackMe/90-events/thm-aoc-2025/Day 14 - Containers - DoorDasher's Demise.md
+topic: 90-events
+domain: [cloud]
+skills: [containers, threat-modeling]
+artifacts: [lab-notes]
+sanitized: true
+---
+
+# Advent of Cyber 2025 Day 14 - Containers - DoorDasher's Demise
 
 ## Summary
 
@@ -107,7 +125,7 @@ cat /flag.txt
 
 ---
 
-## Attack Surface Analysis (what actually went wrong)
+## Attack Surface Analysis
 
 ### Root cause
 
@@ -171,7 +189,7 @@ This turns “app compromise inside a container” into “platform compromise�
 
 ---
 
-## Quick Q&A (from the lab)
+## Quick Q&A
 
 * **Command that lists running containers:** `docker ps`
 * **File that defines build instructions for an image:** `Dockerfile`

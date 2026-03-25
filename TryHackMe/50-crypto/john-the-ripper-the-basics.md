@@ -1,18 +1,24 @@
 ---
-
-platform: tryhackme
-room: John the Ripper: The Basics
-slug: john-the-ripper-the-basics
-path: notes/50-crypto/john-the-ripper-the-basics.md
-topic: 50-crypto
-domain: [security-labs, password-security, crypto-basics]
-skills: [hash-cracking, hash-identification, wordlists, jtr-workflows, archive-cracking, ssh-key-cracking]
-artifacts: [lab-notes, pattern-cards, cookbook]
+type: resource-note
 status: done
-date: 2026-02-23
+created: 2026-02-23
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, john-the-ripper, crypto]
+source: "TryHackMe - John the Ripper: The Basics"
+platform: tryhackme
+room: "John the Ripper: The Basics"
+slug: john-the-ripper-the-basics
+path: TryHackMe/50-crypto/john-the-ripper-the-basics.md
+topic: 50-crypto
+domain: [authentication, crypto]
+skills: [hash-cracking, hash-recognition, wordlists, jtr-workflows, archive-cracking, ssh-key-cracking]
+artifacts: [lab-notes, pattern-card, cookbook]
+sanitized: true
 ---
 
-0. Summary
+# John the Ripper: The Basics
+
+## Summary
 
 * John the Ripper (JtR) is an offline password cracking toolkit: it does not “reverse” hashes; it guesses inputs and compares digests.
 * The workflow is consistent across targets: identify format → convert (if needed) → choose attack mode (wordlist/single/rules) → run → validate → record.
@@ -20,34 +26,34 @@ date: 2026-02-23
 * In real engagements, cracking is optional: sometimes you can use alternative routes (e.g., pass-the-hash). In labs, cracking is used to learn formats and workflows.
 * Safe-writing note: this document avoids flags and exact cracked secrets; commands use placeholders.
 
-1. Key Concepts
+## Key Concepts
 
-1.1 Hash cracking mental model (offline guessing)
+### 1.1 Hash cracking mental model (offline guessing)
 
 * Hash functions are one-way in practice: you cannot “decrypt a hash”.
 * Cracking works by generating candidate passwords (from a dictionary, rules, or brute-force), hashing them with the same format/parameters, and checking for a match.
 
-1.2 Modes you’ll actually use
+### 1.2 Modes you’ll actually use
 
 * Wordlist mode: fast, scalable, depends on wordlist quality.
 * Single crack mode (`--single`): “word mangling” based on username/GECOS metadata.
 * Rules (`--rules` / `--rule=`): systematic mutation of wordlist entries.
 
-1.3 Why formats matter
+### 1.3 Why formats matter
 
 * JtR can auto-detect, but mis-detection is common.
 * Correct `--format` is often the difference between “no hashes loaded” vs a working run.
 * Many “plain” digests are named as `raw-<algo>` in JtR (example: `raw-md5`, `raw-sha1`, `raw-sha256`).
 
-1.4 Wordlists
+### 1.4 Wordlists
 
 * A dictionary attack is only as good as its candidate set.
 * `rockyou.txt` is a standard baseline for learning.
 * SecLists is a common source for specialized lists.
 
-2. Pattern Cards
+## Pattern Cards
 
-2.1 Universal cracking workflow card
+### 2.1 Universal cracking workflow card
 
 * Step A — Identify
 
@@ -65,13 +71,13 @@ date: 2026-02-23
   * Use `john --show <hashfile>` to print recovered credentials.
   * Sanity-check: can you actually unlock/decrypt/auth with the recovered secret?
 
-2.2 “No hashes loaded” triage card
+### 2.2 “No hashes loaded” triage card
 
 * Wrong `--format` (most common).
 * Bad input file format (missing username prefix for `--single`, wrong converter output).
 * Unsupported hash type in your build (core John vs Jumbo John).
 
-2.3 “Auto-detect failed” recovery card
+### 2.3 “Auto-detect failed” recovery card
 
 * List formats, grep your candidate:
 
@@ -83,25 +89,25 @@ date: 2026-02-23
   * Windows SAM/NTDS: NT hash / NTLM.
   * Linux shadow: `$id$...` prefixes imply specific schemes.
 
-2.4 Safe-writing/public-note card
+### 2.4 Safe-writing/public-note card
 
 * Do not publish flags, full recovered passwords, or step-by-step outputs.
-* Use placeholders: `<HASH>`, `<PASSWORD>`, `<TARGET_IP>`, `<USER>`.
+* Use placeholders: `<HASH>`, `PASSWORD_REDACTED`, `TARGET_IP`, `USER_A`.
 * Publish methodology + mitigations instead.
 
-3. Command Cookbook (placeholders only)
+## Command Cookbook
 
-3.1 Baseline: wordlist cracking
+### 3.1 Baseline: wordlist cracking
 
 ```bash
 # simplest
-john --wordlist=/usr/share/wordlists/rockyou.txt <HASHFILE>
+john --wordlist=/usr/share/wordlists/rockyou.txt /path/to/file.txt
 
 # show recovered results
-john --show <HASHFILE>
+john --show /path/to/file.txt
 ```
 
-3.2 Format-specific cracking
+### 3.2 Format-specific cracking
 
 ```bash
 # list supported formats
@@ -111,15 +117,15 @@ john --list=formats
 john --list=formats | grep -iF "md5"
 
 # specify format explicitly
-john --format=<FORMAT> --wordlist=/usr/share/wordlists/rockyou.txt <HASHFILE>
+john --format=<FORMAT> --wordlist=/usr/share/wordlists/rockyou.txt /path/to/file.txt
 
 # typical raw digests
-john --format=raw-md5    --wordlist=/usr/share/wordlists/rockyou.txt <HASHFILE>
-john --format=raw-sha1   --wordlist=/usr/share/wordlists/rockyou.txt <HASHFILE>
-john --format=raw-sha256 --wordlist=/usr/share/wordlists/rockyou.txt <HASHFILE>
+john --format=raw-md5    --wordlist=/usr/share/wordlists/rockyou.txt /path/to/file.txt
+john --format=raw-sha1   --wordlist=/usr/share/wordlists/rockyou.txt /path/to/file.txt
+john --format=raw-sha256 --wordlist=/usr/share/wordlists/rockyou.txt /path/to/file.txt
 ```
 
-3.3 Windows authentication hashes (NT hash / NTLM)
+### 3.3 Windows authentication hashes (NT hash / NTLM)
 
 ```bash
 # crack NT hashes dumped from SAM/NTDS (lab-only unless authorized)
@@ -127,7 +133,7 @@ john --format=NT --wordlist=/usr/share/wordlists/rockyou.txt ntlm.txt
 john --show ntlm.txt
 ```
 
-3.4 Linux `/etc/shadow` cracking with `unshadow`
+### 3.4 Linux `/etc/shadow` cracking with `unshadow`
 
 ```bash
 # combine passwd + shadow into John-friendly format
@@ -141,7 +147,7 @@ john --format=sha512crypt --wordlist=/usr/share/wordlists/rockyou.txt unshadowed
 john --show unshadowed.txt
 ```
 
-3.5 Single crack mode (word mangling)
+### 3.5 Single crack mode (word mangling)
 
 Input requirement: prepend username to hash.
 
@@ -156,11 +162,11 @@ joker:<HASH>
 Run:
 
 ```bash
-john --single --format=<FORMAT> <HASHFILE>
-john --show <HASHFILE>
+john --single --format=<FORMAT> /path/to/file.txt
+john --show /path/to/file.txt
 ```
 
-3.6 Custom rules (high-level)
+### 3.6 Custom rules (high-level)
 
 * Rules live in `john.conf` (path varies by install; common locations include `/etc/john/john.conf` or `/opt/john/john.conf`).
 * Create a rule block:
@@ -174,10 +180,10 @@ cAz"[0-9][!$%@]"
 Use:
 
 ```bash
-john --wordlist=/usr/share/wordlists/rockyou.txt --rule=THMRules <HASHFILE>
+john --wordlist=/usr/share/wordlists/rockyou.txt --rule=THMRules /path/to/file.txt
 ```
 
-3.7 Cracking password-protected ZIP archives
+### 3.7 Cracking password-protected ZIP archives
 
 ```bash
 # convert zip → hash representation
@@ -188,10 +194,10 @@ john --wordlist=/usr/share/wordlists/rockyou.txt zip_hash.txt
 john --show zip_hash.txt
 
 # validate (example)
-unzip -P "<PASSWORD>" secure.zip
+unzip -P "PASSWORD_REDACTED" secure.zip
 ```
 
-3.8 Cracking password-protected RAR archives
+### 3.8 Cracking password-protected RAR archives
 
 ```bash
 rar2john secure.rar > rar_hash.txt
@@ -199,10 +205,10 @@ john --wordlist=/usr/share/wordlists/rockyou.txt rar_hash.txt
 john --show rar_hash.txt
 
 # validate (tooling varies)
-unrar x -p"<PASSWORD>" secure.rar
+unrar x -p"PASSWORD_REDACTED" secure.rar
 ```
 
-3.9 Cracking encrypted SSH private keys (`id_rsa`)
+### 3.9 Cracking encrypted SSH private keys (`id_rsa`)
 
 ```bash
 # converter varies by environment
@@ -216,10 +222,10 @@ john --show id_rsa_hash.txt
 
 # validate (lab-only)
 chmod 600 id_rsa
-ssh -i id_rsa <USER>@<TARGET_IP>
+ssh -i id_rsa USER_A@TARGET_IP
 ```
 
-3.10 Operational tips
+### 3.10 Operational tips
 
 ```bash
 # show status while running
@@ -229,17 +235,17 @@ john --status
 john --restore
 
 # keep runs separated
-john --session=<NAME> --wordlist=... <HASHFILE>
+john --session=<NAME> --wordlist=... /path/to/file.txt
 ```
 
 (Exact session/pot behavior can differ by build. If something surprises you, check `john --help` and your local docs.)
 
-4. Evidence (sanitized; assets/)
+## Evidence
 
 * This note is based on the room narrative and a walkthrough transcript provided by the user.
 * If you later add screenshots, store under `assets/` and remove flags/secrets.
 
-5. Defensive Notes (what this teaches on blue team)
+## Defensive Notes (what this teaches on blue team)
 
 * Password storage:
 
@@ -257,20 +263,20 @@ john --session=<NAME> --wordlist=... <HASHFILE>
 
   * Predictable “complexity patterns” (CapFirst + Digit + Symbol) are exploitable; encourage passphrases and MFA.
 
-6. Takeaways
+## Takeaways
 
 * JtR is less about “clever cracking” and more about disciplined workflow: correct format + correct input + good candidate generation.
 * Converters are the hidden superpower: many targets are cracked by first translating them into John-readable hash representations.
 * Single mode and rules exist to exploit human predictability; use them when you have context (username/GECOS/policy).
 
-7. References (verify and pin in your repo)
+## References
 
 * Openwall / John the Ripper official documentation and wiki pages.
 * Jumbo John build/install docs.
 * SecLists repository (wordlists).
 * TryHackMe room page: John the Ripper: The Basics.
 
-CN–EN Glossary (mini)
+## CN–EN Glossary (mini)
 
 * John the Ripper (JtR): John the Ripper 哈希破解工具
 * Jumbo John: Jumbo 版 John（包含更多转换工具）

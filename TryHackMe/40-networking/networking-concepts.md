@@ -1,17 +1,28 @@
 ---
+type: resource-note
+status: done
+created: 2026-01-18
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, networking, fundamentals]
+source: TryHackMe - Networking Concepts
 platform: tryhackme
-room: "Networking Concepts"
+room: Networking Concepts
 slug: networking-concepts
-path: "Network-Fundamentals"
-topic: "40-networking"
-domain: ["networking"]
-skills: ["osi-model", "tcp-ip", "ip-subnetting", "tcp-udp", "telnet"]
-artifacts: ["concept-notes", "cookbook"]
-status: "done"
-date: 2026-01-18
+path: TryHackMe/40-networking/networking-concepts.md
+topic: 40-networking
+domain: [networking]
+skills: [osi-model, tcp-ip, ip-subnetting, tcp-udp, telnet]
+artifacts: [concept-notes, cookbook]
+sanitized: true
 ---
 
-# Networking Concepts (TryHackMe)
+# Networking Concepts
+
+## Summary
+
+* **What this room trains:** mental model of how data moves from an app to the wire (OSI + TCP/IP), and how to reason about addresses, ports, and encapsulation.
+* **Main concepts:** OSI 7 layers vs TCP/IP stack, MAC vs IP, private vs public IP, routing, UDP vs TCP, TCP handshake, encapsulation, basic TCP interaction via `telnet`.
+* **What I will reuse elsewhere:** quickly classifying a symptom by layer (“L2 vs L3 vs L4”), reading packet captures, validating subnet ranges, and testing open TCP ports without heavy tooling.
 
 ## EN–ZH Glossary (quick)
 
@@ -34,13 +45,7 @@ date: 2026-01-18
 | Encapsulation                            | 封装                 | Each layer wraps data with its own header (and sometimes trailer)                |
 | Telnet                                   | 远程终端协议 / telnet 工具 | A simple TCP client; useful to “talk” to open TCP ports                          |
 
-## 0) Summary 
-
-* **What this room trains:** mental model of how data moves from an app to the wire (OSI + TCP/IP), and how to reason about addresses, ports, and encapsulation.
-* **Main concepts:** OSI 7 layers vs TCP/IP stack, MAC vs IP, private vs public IP, routing, UDP vs TCP, TCP handshake, encapsulation, basic TCP interaction via `telnet`.
-* **What I will reuse elsewhere:** quickly classifying a symptom by layer (“L2 vs L3 vs L4”), reading packet captures, validating subnet ranges, and testing open TCP ports without heavy tooling.
-
-## 1) Key Concepts 
+## Key Concepts
 
 ### 1.1 OSI model (7 layers) as a debugging lens
 
@@ -173,7 +178,7 @@ Security note:
 
 * Telnet transmits data in plaintext. Use SSH for real administration.
 
-## 2) Pattern Cards 
+## Pattern Cards
 
 ### Pattern 1 — Map a symptom to a layer
 
@@ -224,12 +229,12 @@ Security note:
   * cleartext works → proceed with protocol-aware tooling
   * no readable output → might be encrypted (TLS) or binary protocol
 
-## 3) Command Cookbook (only what I actually used)
+## Command Cookbook
 
 > Keep commands reproducible. Use placeholders.
 
 ```bash
-export T=MACHINE_IP
+export T=TARGET_IP
 
 # (Linux) inspect interface + IP configuration
 ip a s
@@ -260,7 +265,7 @@ Notes:
   * `link/ether` shows the MAC address
 * Telnet exit: `Ctrl + ]` then `quit`.
 
-## 4) Evidence
+## Evidence
 
 * Store screenshots/outputs under `assets/`.
 * Remove usernames, tokens, and real public IPs/domains.
@@ -274,13 +279,13 @@ Suggested asset filenames :
 * `assets/tcp-3way-handshake.png` — SYN/SYN-ACK/ACK diagram
 * `assets/encapsulation-stack.png` — headers added per layer
 
-## 5) Takeaways
+## Takeaways
 
 * **1 thing I would do faster next time:** map any observation to an OSI layer immediately (it reduces random debugging).
 * **1 check I keep forgetting:** verify the subnet prefix (`/24`, `/16`, etc.) before assuming two hosts can talk directly.
 * **1 reference worth re-reading:** TCP connection setup and what packet captures show at each layer during handshake.
 
-## 6) References
+## References
 
 * RFC 1122 — Requirements for Internet Hosts: Communication Layers (TCP/IP model grounding).
 * RFC 1918 — Address Allocation for Private Internets (private IPv4 ranges).

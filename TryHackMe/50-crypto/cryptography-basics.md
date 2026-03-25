@@ -1,20 +1,24 @@
 ---
-
-platform: TryHackMe
+type: resource-note
+status: done
+created: 2026-02-15
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, cryptography, basics]
+source: TryHackMe - Cryptography Basics
+platform: tryhackme
 room: Cryptography Basics
 slug: cryptography-basics
-path: 50-crypto/cryptography-basics.md
+path: TryHackMe/50-crypto/cryptography-basics.md
 topic: 50-crypto
-domain: [crypto-basics, math-fundamentals]
-skills: [symmetric-crypto, asymmetric-crypto, xor, modulo, caesar-cipher]
-artifacts: concept-notes
-status: done
-date: 2026-02-15
+domain: [crypto, foundations]
+skills: [symmetric-crypto, public-key-crypto, xor, modulo, caesar-cipher]
+artifacts: [concept-notes]
+sanitized: true
 ---
 
-# Cryptography Basics – room notes
+# Cryptography Basics
 
-## 0. Summary
+## Summary
 
 * Cryptography = techniques for secure communication in the presence of adversaries; it protects confidentiality, integrity, and authenticity.
 * Modern systems use crypto everywhere: web logins, SSH, online banking, medical and payment data handling.
@@ -27,7 +31,7 @@ date: 2026-02-15
 
 ---
 
-## 1. Key Concepts
+## Key Concepts
 
 ### 1.1 Why cryptography matters
 
@@ -160,7 +164,7 @@ Summary characters:
 
 ---
 
-## 2. Pattern Cards (generalisable ideas)
+## Pattern Cards
 
 ### Pattern 2.1 – Threat model and policy
 
@@ -258,7 +262,7 @@ Note:
 
 ---
 
-## 4. Command cookbook (minimal examples)
+## Command Cookbook
 
 Only a few quick local experiments to internalise concepts; replace placeholders as needed.
 
@@ -298,10 +302,9 @@ openssl enc -aes-256-cbc -salt -pbkdf2 -in secret.txt -out secret.txt.enc
 openssl enc -d -aes-256-cbc -salt -pbkdf2 -in secret.txt.enc -out secret.txt.dec
 ```
 
-
 ---
 
-## 6. Takeaways
+## Takeaways
 
 * Cryptography is not optional plumbing; it is the foundation of trust on untrusted networks.
 * You must distinguish clearly between:

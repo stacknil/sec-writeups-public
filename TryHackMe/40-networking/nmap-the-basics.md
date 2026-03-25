@@ -1,24 +1,30 @@
 ---
-
+type: resource-note
+status: done
+created: 2026-02-14
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, nmap, networking]
+source: "TryHackMe - Nmap: The Basics"
 platform: tryhackme
 room: "Nmap: The Basics"
 slug: nmap-the-basics
-path: notes/tryhackme/20-networking/nmap-the-basics.md
+path: TryHackMe/40-networking/nmap-the-basics.md
 topic: 40-networking
-domain: [network-scanning]
+domain: [networking]
 skills: [nmap, host-discovery, port-scanning, service-fingerprinting]
-artifacts: [concept-notes, command-cookbook, pattern-cards]
-status: done
-date: 2026-02-14
+artifacts: [concept-notes, cookbook, pattern-card]
+sanitized: true
 ---
 
-## 0) Summary
+# Nmap: The Basics
+
+## Summary
 
 * Nmap is a flexible network scanner for (1) discovering live hosts and (2) enumerating services on TCP/UDP ports.
 * Core workflow: target specification → host discovery → port scanning → version/OS detection → output control.
 * Practical knobs: scan type (`-sS/-sT/-sU`), host discovery (`-sn/-Pn`), port scope (`-F/-p`), timing (`-T*`, rate/parallelism), reporting (`-o*`, `-v/-d`).
 
-## 1) Key Concepts (plain language)
+## Key Concepts
 
 ### Target specification
 
@@ -77,7 +83,7 @@ date: 2026-02-14
 * Running with sudo/root unlocks more scan types.
 * When run as a local (non-root) user, Nmap defaults to **TCP connect scan** (`-sT`) instead of SYN scan.
 
-## 2) Pattern Cards (generalizable)
+## Pattern Cards
 
 ### Pattern: “Local vs Remote discovery”
 
@@ -100,9 +106,9 @@ date: 2026-02-14
 2. `-F` or small `-p` ranges to get quick service hints.
 3. Expand with `-p-` and add `-sV/-O` only when justified.
 
-## 3) Command Cookbook (placeholders only)
+## Command Cookbook
 
-> Replace `TARGET_SUBNET`, `TARGET_RANGE`, `TARGET_HOST`, and `MACHINE_IP` with your lab values.
+> Replace `TARGET_SUBNET`, `TARGET_RANGE`, `TARGET_HOST`, and `TARGET_IP` with your lab values.
 
 ### Target listing (no scan)
 
@@ -122,75 +128,75 @@ sudo nmap -sn TARGET_HOST
 
 ```bash
 # Connect scan
-sudo nmap -sT MACHINE_IP
+sudo nmap -sT TARGET_IP
 
 # SYN scan (stealth)
-sudo nmap -sS MACHINE_IP
+sudo nmap -sS TARGET_IP
 ```
 
 ### UDP scanning
 
 ```bash
-sudo nmap -sU MACHINE_IP
+sudo nmap -sU TARGET_IP
 ```
 
 ### Port scope control
 
 ```bash
-sudo nmap -sS MACHINE_IP -F
-sudo nmap -sS MACHINE_IP -p1-1023
-sudo nmap -sS MACHINE_IP -p10-1024
-sudo nmap -sS MACHINE_IP -p-
+sudo nmap -sS TARGET_IP -F
+sudo nmap -sS TARGET_IP -p1-1023
+sudo nmap -sS TARGET_IP -p10-1024
+sudo nmap -sS TARGET_IP -p-
 ```
 
 ### Version / OS detection
 
 ```bash
-sudo nmap -sS -sV MACHINE_IP
-sudo nmap -sS -O  MACHINE_IP
-sudo nmap -A      MACHINE_IP
+sudo nmap -sS -sV TARGET_IP
+sudo nmap -sS -O  TARGET_IP
+sudo nmap -A      TARGET_IP
 ```
 
 ### Force scanning “down” hosts
 
 ```bash
-sudo nmap -Pn MACHINE_IP
+sudo nmap -Pn TARGET_IP
 ```
 
 ### Timing templates
 
 ```bash
-sudo nmap -sS MACHINE_IP -F -T0   # paranoid
-sudo nmap -sS MACHINE_IP -F -T1   # sneaky
-sudo nmap -sS MACHINE_IP -F -T2   # polite
-sudo nmap -sS MACHINE_IP -F -T3   # normal
-sudo nmap -sS MACHINE_IP -F -T4   # aggressive
-sudo nmap -sS MACHINE_IP -F -T5   # insane
+sudo nmap -sS TARGET_IP -F -T0   # paranoid
+sudo nmap -sS TARGET_IP -F -T1   # sneaky
+sudo nmap -sS TARGET_IP -F -T2   # polite
+sudo nmap -sS TARGET_IP -F -T3   # normal
+sudo nmap -sS TARGET_IP -F -T4   # aggressive
+sudo nmap -sS TARGET_IP -F -T5   # insane
 ```
 
 ### Parallelism / rate / host timeout
 
 ```bash
-sudo nmap -sS MACHINE_IP --min-parallelism 10 --max-parallelism 100
-sudo nmap -sS MACHINE_IP --min-rate 100 --max-rate 1000
-sudo nmap -sS MACHINE_IP --host-timeout 30s
+sudo nmap -sS TARGET_IP --min-parallelism 10 --max-parallelism 100
+sudo nmap -sS TARGET_IP --min-rate 100 --max-rate 1000
+sudo nmap -sS TARGET_IP --host-timeout 30s
 ```
 
 ### Output and troubleshooting
 
 ```bash
 # Verbose / debug
-sudo nmap -sS MACHINE_IP -v
-sudo nmap -sS MACHINE_IP -d
+sudo nmap -sS TARGET_IP -v
+sudo nmap -sS TARGET_IP -d
 
 # Save reports
-sudo nmap -sS MACHINE_IP -oN report.nmap
-sudo nmap -sS MACHINE_IP -oX report.xml
-sudo nmap -sS MACHINE_IP -oG report.gnmap
-sudo nmap -sS MACHINE_IP -oA report_basename
+sudo nmap -sS TARGET_IP -oN report.nmap
+sudo nmap -sS TARGET_IP -oX report.xml
+sudo nmap -sS TARGET_IP -oG report.gnmap
+sudo nmap -sS TARGET_IP -oA report_basename
 ```
 
-## 4) Minimal diagrams
+## Minimal Diagrams
 
 ### Scan pipeline (high level)
 
@@ -238,12 +244,12 @@ sequenceDiagram
 * OS/version detection is probabilistic. Treat it as a hypothesis, not ground truth.
 * Speed can trade reliability for noise. `-T5` is not “better”; it is just more aggressive.
 
-## 7) Takeaways
+## Takeaways
 
 * Nmap’s value is composability: scan type + scope + timing + output.
 * If you can articulate your question (“who is online?”, “who is listening?”, “what version?”), Nmap has a dedicated switch cluster for it.
 
-## 8) References
+## References
 
 ```text
 Nmap Reference Guide (man pages):
