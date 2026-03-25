@@ -1,51 +1,53 @@
-# Introductory Researching – Notes
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, research, methodology]
+source: TryHackMe - Introductory Researching
+platform: tryhackme
+room: Introductory Researching
+slug: introductory-researching
+path: TryHackMe/00-foundations/learning-meta/introductory-researching.md
+topic: 00-foundations
+domain: [foundations]
+skills: [recon, reporting, triage]
+artifacts: [concept-notes, cookbook]
+sanitized: true
+---
 
-## 1. Why research skill matters
+# Introductory Researching
+
+## Summary
 
 In hacking and security work you constantly meet things you do **not** know yet:
-
-
 
 * new services, protocols, CMSs
 * strange file formats (images, logs, binaries)
 
-
 * unfamiliar tools and error messages
-
-
 
 Nobody “knows everything”. The real core skill is:
 
-
-
 > Turn an unknown into a chain of questions you can answer with open sources, documentation, and experimentation.
-
-
 
 If you can research efficiently, you can:
 
-
-
 * understand how a target system works
-
 
 * locate known vulnerabilities and public exploits
 
-
 * learn syntax/options of tools on the fly
-
 
 * debug your own mistakes instead of getting stuck
 
-
-
 This room trains a minimal research methodology that scales from CTF to real-world pentesting.
-
-
 
 ---
 
-## 2. Generic research workflow
+## Key Concepts
+
+### 2. Generic research workflow
 
 A repeatable loop:
 
@@ -64,66 +66,51 @@ flowchart LR
 
 * Start from a **clear question**, even if it’s vague: “hide data in images”, “fuel cms rce”, “netcat listen port”.
 
-
 * Skim results to extract **keywords / names** (e.g. *steganography*, *searchsploit*, *CVE*).
-
 
 * Pivot your search using those new terms.
 
-
 * Prefer **primary sources** first (docs, man pages, vendor advisories), then blogs / writeups as examples.
-
 
 * Always test commands in a safe environment and adjust.
 
-
 * Write down **minimal notes**: question → key terms → useful commands → pitfalls.
-
-
 
 ---
 
-## 3. Case study – hidden data in an image
+### 3. Case study – hidden data in an image
 
-### Problem
+#### Problem
 
 You download a suspicious JPEG from a CTF target and suspect hidden data.
 
-
-
-### Step 1 – Describe the problem in plain language
+#### Step 1 – Describe the problem in plain language
 
 Search: `hiding things inside images` → quickly learn the term **steganography**.
 
-
 New keyword: `steganography` → re‑search for: `steganography tools jpeg ctf`.
 
-
-### Step 2 – Discover tools
+#### Step 2 – Discover tools
 
 You hit a curated list of CTF stego tools (e.g. 0xrick’s list) and notice **steghide**:
-
 
 * supports JPEG/PNG/BMP, WAV/AU
 * can both embed and extract data
 
 Now the task becomes: *“Install and use steghide on Kali/Ubuntu.”*
 
-
-### Step 3 – Install via package manager
+#### Step 3 – Install via package manager
 
 New keyword: `apt` → search: `apt install package` → learn the generic pattern
-
 
 ```bash
 sudo apt-get update
 sudo apt-get install steghide
 ```
 
-### Step 4 – Use the tool
+#### Step 4 – Use the tool
 
 The list and `man steghide` tell you two crucial commands:
-
 
 ```bash
 # Show if there is embedded data
@@ -135,27 +122,22 @@ steghide extract -sf suspicious.jpg
 
 If a passphrase is required, you then research `stegcracker`, wordlists, or look in the CTF for hints.
 
-
-### Outcome
+#### Outcome
 
 From **zero** knowledge to a working command sequence, purely by:
-
 
 1. Turning the situation into search queries.
 
 2. Mining new terminology.
 3. Pivoting until you hit concrete tools and syntax.
 
-
 This is exactly the pattern you will reuse with *any* unfamiliar topic.
-
 
 ---
 
-## 4. Vulnerability searching
+### 4. Vulnerability searching
 
 In real engagements or CTFs you will often identify specific software:
-
 
 * WordPress plugin X.Y.Z
 * FuelCMS 1.4.1
@@ -163,8 +145,7 @@ In real engagements or CTFs you will often identify specific software:
 
 The research goal then becomes: **“Does this exact software + version have known vulnerabilities or public exploits?”**
 
-
-### 4.1 Main data sources
+#### 4.1 Main data sources
 
 * **CVE / MITRE** – global identifier space for vulnerabilities. Format: `CVE-YYYY-NNNNN`.
 
@@ -174,7 +155,6 @@ The research goal then becomes: **“Does this exact software + version have kno
 
 * **searchsploit** – CLI wrapper around an offline copy of ExploitDB (ships with Kali).
 
-
 Typical workflow:
 
 1. **Fingerprint the application**
@@ -183,11 +163,9 @@ Typical workflow:
 
    * Use tools like `whatweb`, `wpscan`, `nmap --script http-enum`, etc.
 
-
 2. **Search by product and version**
 
    * On ExploitDB web or with searchsploit:
-
 
      ```bash
      searchsploit "fuel cms"
@@ -204,23 +182,19 @@ Typical workflow:
 
      * required conditions (auth / unauth, local / remote)
 
-
 4. **Cross‑check in NVD / vendor advisories**
 
    * Confirm severity.
    * See if patches or config mitigations exist.
-
 
 5. **Decide use‑case**
 
    * In CTF: exploit directly.
    * In real pentest: respect scope, PoC minimally, then report.
 
-
-### 4.2 Example Q&A from the room
+#### 4.2 Example Q&A from the room
 
 Some specific CVE lookups practised in this room:
-
 
 * 2020 XSS in **WPForms** → `CVE-2020-10385`
 
@@ -230,18 +204,15 @@ Some specific CVE lookups practised in this room:
 
 * 2020 buffer overflow in **sudo** (pwfeedback) → `CVE-2019-18634` (discovered 2019, actively discussed/exploited 2020)
 
-
 The important thing is not to memorise the IDs, but to be fluent at **finding** them.
-
 
 ---
 
-## 5. Linux manual pages as local docs
+### 5. Linux manual pages as local docs
 
 On Linux, `man` is your built‑in documentation browser.
 
-
-### 5.1 Basic usage
+#### 5.1 Basic usage
 
 ```bash
 man ssh        # full manual for OpenSSH client
@@ -255,27 +226,24 @@ Inside `man`:
 
 * `Space` / `PgDn` / `PgUp` – scroll
 
-
 * `/pattern` – search forward
 * `n` – next match
 * `q` – quit
 
 You can also pipe a man page to `grep` for quick searches:
 
-
 ```bash
 man ssh | grep -i "version"
 ```
 
-### 5.2 Switches used in this room
+#### 5.2 Switches used in this room
 
 These came directly from the manuals:
-
 
 * **SCP – copy a directory recursively**
 
   ```bash
-  scp -r dir/ user@host:/path/
+  scp -r dir/ USER_A@TARGET_HOST:/path/
   ```
 
 * **fdisk – list partitions**
@@ -294,7 +262,6 @@ These came directly from the manuals:
 
   Common patterns (implementation‑dependent):
 
-
   ```bash
   # Classic syntax
   nc -l -p 12345
@@ -305,10 +272,9 @@ These came directly from the manuals:
 
 Again, the key idea: **when in doubt, ask `man` before you ask the internet.**
 
-
 ---
 
-## 6. Practical research tips
+### 6. Practical research tips
 
 1. **Extract keywords.**
 
@@ -316,13 +282,11 @@ Again, the key idea: **when in doubt, ask `man` before you ask the internet.**
 
    * Example: `“Burp Suite mode repeat request”` → *Burp Repeater*.
 
-
 2. **Prefer layered queries.**
 
    * Start broad: `hide data inside jpeg`.
 
    * Then targeted: `jpeg steganography extract tool`, `steghide extract`, `stegsolve ctf`.
-
 
 3. **Use diverse sources.**
 
@@ -330,13 +294,11 @@ Again, the key idea: **when in doubt, ask `man` before you ask the internet.**
    * Vendor advisories, NVD, MITRE.
    * Blogs / writeups / walkthroughs for concrete command sequences.
 
-
 4. **Treat writeups as tutorials, not answer keys.**
 
    * Read *why* a step works, not just *what* to copy.
 
    * Re‑implement on a different target if possible.
-
 
 5. **Record your own mini‑cheatsheet.**
 
@@ -354,15 +316,13 @@ Again, the key idea: **when in doubt, ask `man` before you ask the internet.**
 
    * Cross‑validate sensitive actions (e.g. destructive SQL, file‑system changes).
 
-
 ---
 
-## 7. Micro‑reference – Q&A from the room
+### 7. Micro‑reference – Q&A from the room
 
 This section just collects the short factual answers Practised in the room.
 
-
-### 7.1 General security / systems
+#### 7.1 General security / systems
 
 * Burp Suite mode to manually resend/modify requests repeatedly: **Repeater**.
 
@@ -372,11 +332,9 @@ This section just collects the short factual answers Practised in the room.
 
 * Shorthand number base often used around binary (base‑2): **hexadecimal (base‑16)**.
 
-
 * Password hashes starting with `$6$` are **SHA‑512 crypt** hashes (glibc `crypt` format).
 
-
-### 7.2 Tool syntax
+#### 7.2 Tool syntax
 
 * `scp -r` – copy a directory recursively.
 
@@ -386,10 +344,9 @@ This section just collects the short factual answers Practised in the room.
 
 * `nc -lvnp 12345` – typical listener pattern for CTFs.
 
-
 ---
 
-## 8. Glossary (EN–ZH)
+### 8. Glossary (EN–ZH)
 
 | Term (EN)                                  | 简体中文解释             |
 | ------------------------------------------ | ------------------ |

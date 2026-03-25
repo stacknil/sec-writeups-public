@@ -1,18 +1,24 @@
 ---
-
+type: resource-note
+status: done
+created: 2026-02-28
+updated: 2026-03-12
+tags: [security-writeup, tryhackme, javascript, web]
+source: TryHackMe - JavaScript Essentials
 platform: tryhackme
 room: JavaScript Essentials
 slug: javascript-essentials
-path: notes/10-web/javascript-essentials.md
+path: TryHackMe/10-web/javascript-essentials.md
 topic: 10-web
-domain: [javascript, client-side-security]
-skills: [js-basics, script-integration, dialog-functions, control-flow-review, minification-obfuscation, source-analysis]
-artifacts: [concept-notes, pattern-cards, cookbook]
-status: done
-date: 2026-02-28
+domain: [web]
+skills: [javascript-basics, control-flow, minification-obfuscation, source-analysis]
+artifacts: [concept-notes, pattern-card, cookbook]
+sanitized: true
 ---
 
-0. Summary
+# JavaScript Essentials
+
+## Summary
 
 * JavaScript (JS) is the browser’s main scripting language for client-side interactivity. It works with HTML and CSS rather than replacing them.
 * Core building blocks in this room are variables, data types, functions, loops, conditional statements, and browser dialogue functions.
@@ -20,9 +26,9 @@ date: 2026-02-28
 * From a security perspective, any logic enforced only in client-side JS is untrusted and potentially bypassable.
 * Minification and obfuscation make code less readable, but they do **not** make it secret. Browser tooling and source maps can undo much of the difficulty.
 
-1. Key Concepts
+## Key Concepts
 
-1.1 What JavaScript is doing in a web app
+### 1.1 What JavaScript is doing in a web app
 
 JavaScript is usually the layer that adds behavior to the front end:
 
@@ -45,7 +51,7 @@ flowchart LR
   JS[JavaScript\nbehavior] --> UI
 ```
 
-1.2 Variables and data types
+### 1.2 Variables and data types
 
 JS variables store values under names you can reuse later.
 
@@ -76,7 +82,7 @@ Practical default:
 * use `let` when reassignment is expected
 * avoid `var` in modern code unless you have a specific reason
 
-1.3 Functions
+### 1.3 Functions
 
 A function groups reusable logic into one callable unit.
 
@@ -94,7 +100,7 @@ Why it matters:
 * improves readability
 * isolates behavior for testing or review
 
-1.4 Loops
+### 1.4 Loops
 
 Loops repeat code while a condition remains true.
 
@@ -109,7 +115,7 @@ Security review angle:
 * unbounded or poorly controlled loops can create denial-of-service-like browser behavior
 * repeated dialog calls are a simple nuisance example
 
-1.5 Control flow
+### 1.5 Control flow
 
 Control flow determines which code path executes.
 
@@ -124,9 +130,9 @@ Security takeaway:
 * if an access decision exists only in browser-side JS, a user can often inspect, modify, or bypass it
 * client-side control flow is useful for UX, not as a security boundary
 
-2. Integrating JavaScript in HTML
+### Integrating JavaScript in HTML
 
-2.1 Internal JavaScript
+#### 2.1 Internal JavaScript
 
 Internal JS is written directly inside the HTML document using `<script>`.
 
@@ -150,7 +156,7 @@ Cons:
 * mixes structure and behavior
 * scales poorly in larger projects
 
-2.2 External JavaScript
+#### 2.2 External JavaScript
 
 External JS is stored in a separate file and loaded with `src`.
 
@@ -171,7 +177,7 @@ Cons:
 * introduces dependency management issues
 * third-party external scripts expand attack surface
 
-2.3 How to tell internal vs external quickly
+#### 2.3 How to tell internal vs external quickly
 
 In page source or DevTools:
 
@@ -183,7 +189,7 @@ For pentest or code review work, always inspect both:
 * inline scripts in HTML
 * linked `.js` files
 
-3. Browser Dialogue Functions
+### Browser Dialogue Functions
 
 JS provides built-in browser dialogue APIs:
 
@@ -191,7 +197,7 @@ JS provides built-in browser dialogue APIs:
 * `prompt()`
 * `confirm()`
 
-3.1 `alert()`
+#### 3.1 `alert()`
 
 Displays a message and waits for user dismissal.
 
@@ -204,7 +210,7 @@ Security angle:
 * can be abused for nuisance or proof-of-execution demos
 * frequent use in training also overlaps with XSS proof-of-concept patterns
 
-3.2 `prompt()`
+#### 3.2 `prompt()`
 
 Requests input from the user and returns entered text or `null`.
 
@@ -217,7 +223,7 @@ Security angle:
 * any input collected must be treated as untrusted
 * never confuse browser-side prompts with secure authentication logic
 
-3.3 `confirm()`
+#### 3.3 `confirm()`
 
 Shows OK/Cancel choices and returns `true` or `false`.
 
@@ -233,7 +239,7 @@ Important browser behavior note:
 
 * browsers may suppress or alter dialog behavior in some situations (for example tab switches or anti-abuse measures), so code that depends on them is brittle
 
-4. Request-Response Cycle and JS
+### Request-Response Cycle and JS
 
 Although this room is about JS basics, the browser-side code still sits inside the web request-response cycle:
 
@@ -255,9 +261,9 @@ sequenceDiagram
 
 This is why JS is so visible to users and testers: it is delivered to the client.
 
-5. Client-Side Security Implications
+### Client-Side Security Implications
 
-5.1 Client-side validation is not trust
+#### 5.1 Client-side validation is not trust
 
 The room’s most important security lesson is this:
 
@@ -273,7 +279,7 @@ If validation exists only in JS, a user can:
 
 So browser-side checks should be treated as convenience, not protection.
 
-5.2 Login logic in JS can be bypassed
+#### 5.2 Login logic in JS can be bypassed
 
 If a login page “protects” access using only browser-side condition checks, that logic is exposed to the user and can be altered.
 
@@ -282,7 +288,7 @@ Review rule:
 * authentication and authorization must be enforced on the server
 * anything enforced only in the browser is presentation logic, not security logic
 
-5.3 Untrusted libraries are supply-chain risk
+#### 5.3 Untrusted libraries are supply-chain risk
 
 Adding a third-party script means executing someone else’s code in your application’s trust boundary.
 
@@ -298,7 +304,7 @@ Safer practice:
 * restrict script origins with CSP
 * avoid unnecessary third-party JS
 
-5.4 Hardcoded secrets are exposure, not storage
+#### 5.4 Hardcoded secrets are exposure, not storage
 
 Never place secrets in shipped client-side JS:
 
@@ -309,9 +315,9 @@ Never place secrets in shipped client-side JS:
 
 If the browser can download it, the user can inspect it.
 
-6. Minification, Obfuscation, and Source Review
+### Minification, Obfuscation, and Source Review
 
-6.1 Minification
+#### 6.1 Minification
 
 Minification reduces file size by removing:
 
@@ -324,7 +330,7 @@ Goal:
 
 * performance and faster load times
 
-6.2 Obfuscation
+#### 6.2 Obfuscation
 
 Obfuscation tries to make code harder for humans to understand by:
 
@@ -336,7 +342,7 @@ Goal:
 
 * raise reverse-engineering cost
 
-6.3 What minification/obfuscation do **not** do
+#### 6.3 What minification/obfuscation do **not** do
 
 They do **not** provide real secrecy.
 
@@ -353,9 +359,9 @@ Correct security reading:
 * obfuscate only as a weak friction layer
 * do not claim obfuscation is a security control
 
-7. Pattern Cards
+## Pattern Cards
 
-7.1 JS review card
+### 7.1 JS review card
 
 When reading client-side JS, ask:
 
@@ -365,7 +371,7 @@ When reading client-side JS, ask:
 * Are there hidden endpoints, tokens, or feature flags?
 * Is any security decision enforced only in client-side code?
 
-7.2 Script sourcing card
+### 7.2 Script sourcing card
 
 For each `<script>`:
 
@@ -375,7 +381,7 @@ For each `<script>`:
 * restricted by CSP?
 * actually needed?
 
-7.3 Obfuscated file review card
+### 7.3 Obfuscated file review card
 
 If JS is unreadable:
 
@@ -384,9 +390,9 @@ If JS is unreadable:
 * check for source maps
 * compare runtime behavior in DevTools
 
-8. Command / Inspection Cookbook
+## Command Cookbook
 
-8.1 Simple browser console examples
+### 8.1 Simple browser console examples
 
 ```javascript
 let x = 5;
@@ -400,7 +406,7 @@ confirm("Do you want to proceed?");
 prompt("What is your name?");
 ```
 
-8.2 What to inspect in DevTools
+### 8.2 What to inspect in DevTools
 
 Open DevTools and check:
 
@@ -417,13 +423,13 @@ Open DevTools and check:
 
   * watch DOM changes caused by scripts
 
-8.3 Safe review workflow for a page using JS
+### 8.3 Safe review workflow for a page using JS
 
 ```text
 View page source -> identify script tags -> open DevTools -> inspect Sources -> trace DOM changes -> watch Network -> decide what is client-only vs server-enforced
 ```
 
-9. Pitfalls
+## Pitfalls
 
 * Treating `alert`, `prompt`, or `confirm` as secure workflow controls.
 * Assuming minified code is “protected”.
@@ -431,14 +437,14 @@ View page source -> identify script tags -> open DevTools -> inspect Sources -> 
 * Shipping secrets in browser-downloaded JS.
 * Importing third-party libraries without trust review.
 
-10. Takeaways
+## Takeaways
 
 * JavaScript is essential for browser interactivity, but everything shipped to the browser must be treated as inspectable and modifiable by the user.
 * The biggest security mistake in beginner web apps is trusting client-side logic for enforcement.
 * Minification improves performance; obfuscation slows casual reading; neither replaces secure architecture.
 * For web security work, JS review is not optional. It often reveals hidden endpoints, business logic, and weak trust assumptions.
 
-11. References
+## References
 
 * MDN JavaScript Guide: grammar, types, and declarations
 * MDN `<script>` element / `HTMLScriptElement.src`
@@ -448,7 +454,7 @@ View page source -> identify script tags -> open DevTools -> inspect Sources -> 
 * OWASP AJAX Security Cheat Sheet
 * OWASP Cross-Site Scripting Prevention Cheat Sheet
 
-CN–EN Glossary (mini)
+## CN–EN Glossary (mini)
 
 * JavaScript (JS): JavaScript 脚本语言
 * Variable: 变量

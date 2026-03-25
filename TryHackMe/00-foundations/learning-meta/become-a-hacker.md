@@ -1,6 +1,24 @@
-# Become a Hacker – Room Notes
+---
+type: resource-note
+status: done
+created: 2026-03-11
+updated: 2026-03-11
+tags: [security-writeup, tryhackme, web, attacker-mindset]
+source: TryHackMe - Become a Hacker
+platform: tryhackme
+room: Become a Hacker
+slug: become-a-hacker
+path: TryHackMe/00-foundations/learning-meta/become-a-hacker.md
+topic: 00-foundations
+domain: [foundations, web]
+skills: [recon, web-enum, reporting]
+artifacts: [concept-notes, pattern-card]
+sanitized: true
+---
 
-## 0. Threat‑model & Mindset
+# Become a Hacker
+
+## Summary
 
 **Offensive security** is about deliberately breaking into systems to uncover weaknesses *before* real attackers do.
 
@@ -24,16 +42,15 @@ Our job in this room: simulate what a basic web attacker would do.
 
 ---
 
-## 1. Reconnaissance: Finding Hidden Pages
+## Key Concepts
+
+### 1. Reconnaissance: Finding Hidden Pages
 
 We start by **enumerating content** – discovering URLs that the normal navigation does not show.
 
-
-### 1.1 Manual guessing in the browser
+#### 1.1 Manual guessing in the browser
 
 We control the browser address bar and try common paths:
-
-
 
 ```text
 http://www.onlineshop.thm/sitemap
@@ -54,10 +71,9 @@ Process:
 
 This technique is called **directory / resource brute‑forcing** by hand. It’s slow but useful with a very short wordlist.
 
-
 ---
 
-### 1.2 Automated discovery with Gobuster
+#### 1.2 Automated discovery with Gobuster
 
 When the wordlist is large, we automate.
 
@@ -93,11 +109,11 @@ Security lesson:
 
 ---
 
-## 2. Exploitation: Breaking Weak Authentication
+### 2. Exploitation: Breaking Weak Authentication
 
 We discovered a hidden **login page**. Next goal: get valid credentials.
 
-### 2.1 Manual password guessing
+#### 2.1 Manual password guessing
 
 Common pattern:
 
@@ -121,7 +137,7 @@ Risk:
 
 ---
 
-### 2.2 Automated password brute‑force with Hydra
+#### 2.2 Automated password brute‑force with Hydra
 
 Manual tries do not scale. For large password lists, we use **Hydra**.
 
@@ -148,9 +164,7 @@ Breakdown:
 
 * `-V` – verbose; prints each attempt.
 
-
 Hydra runs through the wordlist, sends POST requests, and stops when it finds a working password.
-
 
 Security lesson:
 
@@ -161,87 +175,45 @@ Security lesson:
 
   * Multi‑factor authentication where possible.
 
-
-
-
 ---
 
-## 3. Reporting: From Hack to Hardening
+### 3. Reporting: From Hack to Hardening
 
 What we achieved:
 
 1. Enumerated hidden content (manual + Gobuster).
 
-
-
 2. Identified a sensitive `/login` page not meant for public users.
-
-
 
 3. Broke into the admin area using weak credentials (manual + Hydra).
 
-
-
-
 When acting as a *professional* offensive security tester, next steps would be:
-
-
-
 
 * **Document findings**
 
   * Hidden admin endpoint discoverable via wordlists.
 
-
-
-
   * Admin account protected by extremely weak password.
-
-
-
-
 
 * **Assess impact**
 
   * Full control of user data and admin functions.
 
-
-
-
   * Potential for data theft, account takeover, or service disruption.
-
-
-
-
 
 * **Recommend fixes**
 
   * Restrict access to admin pages (IP allow‑lists, VPN, SSO, etc.).
 
-
-
-
   * Enforce strong password policy and disable default accounts.
-
-
-
 
   * Implement account lockout / CAPTCHA / rate‑limiting.
 
-
-
-
-
   * Monitor logs for brute‑force attempts.
-
-
-
 
 ---
 
-## 4. Mini Diagram – High‑Level Flow
-
-
+### 4. Mini Diagram – High‑Level Flow
 
 ```text
 [ Browser / Gobuster ]  -- enumerate URLs -->  [/admin, /login, ...]
@@ -262,18 +234,14 @@ When acting as a *professional* offensive security tester, next steps would be:
 
 ---
 
-## 5. Offensive vs Defensive View
+### 5. Offensive vs Defensive View
 
 From the **offensive** side:
 
 * Goal: get in.
 * Tools: Gobuster, Hydra, browser, wordlists.
 
-
-
 * Mindset: assume pages and passwords are guessable.
-
-
 
 From the **defensive** side:
 
@@ -283,10 +251,9 @@ From the **defensive** side:
 
 * Mindset: attackers will automate everything that can be automated.
 
-
 ---
 
-## 6. Terminology Glossary (EN–ZH)
+### 6. Terminology Glossary (EN–ZH)
 
 * Offensive security — 进攻性安全
 * Defensive security — 防御性安全
