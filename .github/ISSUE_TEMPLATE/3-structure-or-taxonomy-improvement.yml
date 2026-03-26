@@ -1,0 +1,50 @@
+name: Structure / taxonomy improvement
+description: Suggest improvements to note organization, metadata, naming, or taxonomy
+title: "[Structure] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for repository structure, classification, front matter, or taxonomy improvements.
+
+  - type: textarea
+    id: current_problem
+    attributes:
+      label: Current structure problem
+      description: What is inconsistent, confusing, duplicated, or hard to navigate?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed_change
+    attributes:
+      label: Proposed improvement
+      description: Describe the structure, naming, taxonomy, or metadata change you recommend.
+    validations:
+      required: true
+
+  - type: textarea
+    id: affected_scope
+    attributes:
+      label: Affected scope
+      description: Which folders, note families, tags, or templates are affected?
+      placeholder: e.g. TryHackMe notes, front matter schema, taxonomy tags
+    validations:
+      required: true
+
+  - type: dropdown
+    id: change_size
+    attributes:
+      label: Expected change size
+      options:
+        - Small local cleanup
+        - Medium multi-file cleanup
+        - Large repo-wide change
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Additional context
+      description: Link related examples or explain migration concerns if needed.

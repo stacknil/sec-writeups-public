@@ -1,0 +1,50 @@
+name: Content correction
+description: Report a factual, wording, or note-level correctness issue
+title: "[Content] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for corrections to published repository content.
+
+  - type: input
+    id: location
+    attributes:
+      label: Affected file or path
+      placeholder: e.g. TryHackMe/room-name/README.md
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is wrong?
+      description: Describe the incorrect or misleading content.
+      placeholder: Explain the problem clearly and specifically.
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggested_fix
+    attributes:
+      label: Suggested correction
+      description: Provide a corrected wording, interpretation, or replacement if possible.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: impact
+    attributes:
+      label: Does this affect the technical conclusion?
+      options:
+        - Yes
+        - No
+        - Unclear
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Extra context
+      description: Add references, screenshots, or explanation if needed.

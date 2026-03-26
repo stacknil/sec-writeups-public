@@ -1,0 +1,58 @@
+name: Publication safety concern
+description: Report possible unsafe publication, failed sanitization, or exposed sensitive detail
+title: "[Safety] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not paste secrets or sensitive details into this form.
+        If necessary, describe the problem at a high level only.
+
+  - type: input
+    id: location
+    attributes:
+      label: Affected file or path
+      placeholder: e.g. notes/path/file.md
+    validations:
+      required: true
+
+  - type: dropdown
+    id: risk_type
+    attributes:
+      label: Risk type
+      options:
+        - Unsanitized identifier
+        - Real target or infrastructure reference
+        - Sensitive screenshot or artifact
+        - Dangerous procedural detail
+        - Placeholder failure
+        - Accidental private material
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: concern
+    attributes:
+      label: Describe the concern
+      description: Describe the issue without posting sensitive content directly.
+      placeholder: Explain why this may exceed the repository's publication boundary.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: urgency
+    attributes:
+      label: Estimated urgency
+      options:
+        - High
+        - Medium
+        - Low
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggested_action
+    attributes:
+      label: Suggested remediation
+      description: Removal, rewrite, placeholder replacement, redaction, etc.
