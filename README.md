@@ -8,8 +8,10 @@ Public, sanitized security write-ups from authorized labs and training platforms
 
 Current public snapshot:
 
-- `98` active TryHackMe notes
-- `9` organized learning tracks
+- `111` active public notes
+- `100` active TryHackMe notes
+- `11` topic-organized notes under `notes/`
+- `9` organized TryHackMe learning tracks
 - public governance for taxonomy, placeholders, publication, and maintenance
 
 Best fit for readers who want:
@@ -36,11 +38,11 @@ The emphasis is on:
 
 ## What You Will Find
 
-The live public corpus is currently centered on **TryHackMe** and organized by learning track.
+The live public corpus is currently centered on **TryHackMe** and supplemented by a smaller topic-organized `notes/` tree.
 
 | Track | Notes | Focus |
-| --- | --- |
-| [TryHackMe/00-foundations](TryHackMe/00-foundations) | `28` | intro security, research workflow, tooling basics |
+| --- | --- | --- |
+| [TryHackMe/00-foundations](TryHackMe/00-foundations) | `29` | intro security, research workflow, tooling basics |
 | [TryHackMe/10-web](TryHackMe/10-web) | `8` | web fundamentals, HTTP, JavaScript, app testing basics |
 | [TryHackMe/20-linux](TryHackMe/20-linux) | `3` | Linux fundamentals |
 | [TryHackMe/30-windows](TryHackMe/30-windows) | `4` | Windows fundamentals |
@@ -48,7 +50,11 @@ The live public corpus is currently centered on **TryHackMe** and organized by l
 | [TryHackMe/50-crypto](TryHackMe/50-crypto) | `4` | hashing, public-key crypto, cracking basics |
 | [TryHackMe/60-forensics](TryHackMe/60-forensics) | `1` | introductory forensic tooling |
 | [TryHackMe/80-blue-team](TryHackMe/80-blue-team) | `6` | SIEM, detection, analyst notes |
-| [TryHackMe/90-events](TryHackMe/90-events) | `31` | event and challenge write-ups, sanitized for publication |
+| [TryHackMe/90-events](TryHackMe/90-events) | `32` | event and challenge write-ups, sanitized for publication |
+
+Additional organized notes outside the TryHackMe tree:
+
+- `notes/` currently contains `11` active public notes
 
 ## Start Here
 
@@ -136,6 +142,7 @@ Start here before publishing:
 ## Maintainer Quick Links
 
 - Docs hub: [docs/README.md](docs/README.md)
+- Maintenance quick reference: [docs/maintenance-quick-reference.md](docs/maintenance-quick-reference.md)
 - Canonical taxonomy source: [`schemas/taxonomy.json`](schemas/taxonomy.json)
 - Derived tag document: [`TryHackMe/_meta/TAGS.md`](TryHackMe/_meta/TAGS.md)
 - Taxonomy closure/state: [docs/taxonomy-closure.md](docs/taxonomy-closure.md)
@@ -161,6 +168,7 @@ Run these before publishing or merging materially edited public notes:
 
 ```text
 python scripts/render_tags_doc.py --check
+python scripts/render_readme_snapshot.py --check
 python scripts/check_placeholders.py <changed files>
 python scripts/check_markdown.py
 python -m pre_commit run --files <changed files>
@@ -170,7 +178,9 @@ Manual audit helpers:
 
 - Full-repo placeholder audit:
   `python scripts/check_placeholders.py --report reports/placeholder-audit.txt`
-- Manual markdownlint debt audit:
+- Local tracked-file markdownlint debt audit:
+  `python scripts/generate_markdownlint_debt.py`
+- Artifact-backed remote markdownlint debt audit:
   GitHub Actions -> `Markdownlint Debt Audit`
 
 ## Scope Boundary

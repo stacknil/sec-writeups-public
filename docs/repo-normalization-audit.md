@@ -2,30 +2,44 @@
 
 Audit date: 2026-03-14
 
+## Status
+
+This document is historical reference only.
+
+It records an early full-repo audit before the later taxonomy closure, placeholder closure, README snapshot automation, and markdownlint maintenance convergence work.
+
+For current operating state, use:
+
+* [docs/maintenance-checkpoint.md](maintenance-checkpoint.md)
+* [docs/placeholder-closure.md](placeholder-closure.md)
+* [docs/taxonomy-closure.md](taxonomy-closure.md)
+
+Keep the remainder of this file as a point-in-time audit snapshot, not as the current repository baseline.
+
 ## Scope
 
 This audit inventories every Markdown file in the repository, then evaluates the active knowledge-base note corpus for:
 
-- front matter schema drift against `schemas/frontmatter.schema.json`
-- controlled-vocabulary drift against `TryHackMe/_meta/TAGS.md`
-- empty or redundant metadata fields
-- safe-writing placeholder consistency
+* front matter schema drift against `schemas/frontmatter.schema.json`
+* controlled-vocabulary drift against `TryHackMe/_meta/TAGS.md`
+* empty or redundant metadata fields
+* safe-writing placeholder consistency
 
 This report does not rewrite any note body prose.
 
 ## Method
 
-- Inventory scope: every `*.md` file in the repository
-- Active note corpus for metadata analysis: `TryHackMe/**/*.md` excluding `TryHackMe/_meta/**`, plus `notes/**/*.md`
-- Front matter validator: `python scripts/check_markdown.py`
-- Schema source: `schemas/frontmatter.schema.json`
-- Controlled vocabulary source: `TryHackMe/_meta/TAGS.md`
-- Placeholder scan: consistency-only regex scan for canonical placeholders and common alternates
+* Inventory scope: every `*.md` file in the repository
+* Active note corpus for metadata analysis: `TryHackMe/**/*.md` excluding `TryHackMe/_meta/**`, plus `notes/**/*.md`
+* Front matter validator: `python scripts/check_markdown.py`
+* Schema source: `schemas/frontmatter.schema.json`
+* Controlled vocabulary source: `TryHackMe/_meta/TAGS.md`
+* Placeholder scan: consistency-only regex scan for canonical placeholders and common alternates
 
 Operational note:
 
-- Placeholder consistency here means style consistency, not a full secret/leak audit.
-- `reports/**` is inventoried because it is Markdown, but it is not treated as part of the active canonical note corpus.
+* Placeholder consistency here means style consistency, not a full secret/leak audit.
+* `reports/**` is inventoried because it is Markdown, but it is not treated as part of the active canonical note corpus.
 
 ## 1. Inventory
 
@@ -70,8 +84,8 @@ Current schema result for the active note corpus:
 
 Interpretation:
 
-- The active note corpus currently passes the working schema and the repository structural checks.
-- There is no active validator-level schema drift.
+* The active note corpus currently passes the working schema and the repository structural checks.
+* There is no active validator-level schema drift.
 
 Observed front matter shapes:
 
@@ -92,8 +106,8 @@ Field presence summary:
 
 Assessment:
 
-- The schema is stable at the validator level.
-- The remaining schema question is not breakage; it is shape policy:
+* The schema is stable at the validator level.
+* The remaining schema question is not breakage; it is shape policy:
   one dominant TryHackMe schema, one sparse optional-description variant, and one lean `notes/**` variant.
 
 ## 3. Controlled-Vocabulary Drift Against `TAGS.md`
@@ -165,8 +179,8 @@ Highest-drift files against `TAGS.md`:
 
 Interpretation:
 
-- Vocabulary drift is now a taxonomy policy issue, not a typo-only issue.
-- `TAGS.md` is significantly narrower than the vocabulary already used across active notes.
+* Vocabulary drift is now a taxonomy policy issue, not a typo-only issue.
+* `TAGS.md` is significantly narrower than the vocabulary already used across active notes.
 
 ## 4. Empty or Redundant Metadata Fields
 
@@ -180,8 +194,8 @@ Present-but-empty front matter fields in the active note corpus:
 
 Interpretation:
 
-- The earlier empty-field backlog has already been cleaned up.
-- There is no active empty-field repair work left in the note corpus.
+* The earlier empty-field backlog has already been cleaned up.
+* There is no active empty-field repair work left in the note corpus.
 
 ### Redundant or low-signal metadata candidates
 
@@ -199,8 +213,8 @@ Current redundant or highly derivable patterns:
 
 Interpretation:
 
-- There is no empty-field drift now.
-- The main metadata cleanup question has shifted from “remove empty fields” to “decide which derivable or constant fields are still worth carrying.”
+* There is no empty-field drift now.
+* The main metadata cleanup question has shifted from “remove empty fields” to “decide which derivable or constant fields are still worth carrying.”
 
 ## 5. Safe-Writing Placeholder Consistency
 
@@ -234,35 +248,35 @@ Notes mixing multiple placeholder families:
 
 Interpretation:
 
-- Placeholder usage is safe-style oriented, but not yet canonicalized.
-- The clearest inconsistency is user placeholder policy:
+* Placeholder usage is safe-style oriented, but not yet canonicalized.
+* The clearest inconsistency is user placeholder policy:
   `USER_A` is the documented exemplar, but the active corpus currently uses generic `USER` / `USER_ID` variants instead.
 
 ## 6. Findings Grouped by Risk
 
 ### Safe auto-fix
 
-- No active front matter fields are currently present-but-empty.
-- No active note fails the current front matter schema or structural validator.
-- There is no high-confidence metadata-only cleanup backlog left that can be applied blindly without a policy decision.
+* No active front matter fields are currently present-but-empty.
+* No active note fails the current front matter schema or structural validator.
+* There is no high-confidence metadata-only cleanup backlog left that can be applied blindly without a policy decision.
 
 ### Review-needed
 
-- `TAGS.md` is materially out of sync with active usage:
+* `TAGS.md` is materially out of sync with active usage:
   37 out-of-vocabulary `domain` values, 187 out-of-vocabulary `skills`, and 1 out-of-vocabulary `artifact`.
-- The repository still carries three valid front matter shapes:
+* The repository still carries three valid front matter shapes:
   standard TryHackMe, TryHackMe plus `description`, and the lean `notes/**` variant.
-- Several metadata fields look redundant or derivable (`path`, `topic`, `platform`, `sanitized`, `type`), but removing them would affect downstream tooling and should not be done without an explicit schema decision.
-- Placeholder conventions are inconsistent across note bodies.
+* Several metadata fields look redundant or derivable (`path`, `topic`, `platform`, `sanitized`, `type`), but removing them would affect downstream tooling and should not be done without an explicit schema decision.
+* Placeholder conventions are inconsistent across note bodies.
   Normalizing `MACHINE_IP` / `ATTACKER_IP` / `ATTACKBOX_IP` / `USER` / `HOST` into one canonical set would require prose and example edits.
-- `room-notes` appears once in `TryHackMe/90-events/love-at-first-breach-2026/speed-chatter.md` and needs an explicit artifact-policy decision.
-- `date` appears only once and duplicates `created` on `notes/00-foundations/security-engineer-intro.md`; whether it survives depends on the `notes/**` schema decision.
+* `room-notes` appears once in `TryHackMe/90-events/love-at-first-breach-2026/speed-chatter.md` and needs an explicit artifact-policy decision.
+* `date` appears only once and duplicates `created` on `notes/00-foundations/security-engineer-intro.md`; whether it survives depends on the `notes/**` schema decision.
 
 ### Do-not-touch
 
-- `reports/**`, especially `reports/quarantine/**`, because those files are archive or staging material rather than active canonical notes.
-- Active note bodies for placeholder canonicalization until the repository agrees on the canonical placeholder set.
-- Public/private publishing boundary material (`POLICY.md`, `SANITIZATION_CHECKLIST.md`, and related policy docs) unless a separate policy review is requested.
+* `reports/**`, especially `reports/quarantine/**`, because those files are archive or staging material rather than active canonical notes.
+* Active note bodies for placeholder canonicalization until the repository agrees on the canonical placeholder set.
+* Public/private publishing boundary material (`POLICY.md`, `SANITIZATION_CHECKLIST.md`, and related policy docs) unless a separate policy review is requested.
 
 ## Recommended Next Step
 

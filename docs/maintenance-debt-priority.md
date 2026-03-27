@@ -1,17 +1,33 @@
 # Maintenance Debt Priority
 
-Date: 2026-03-24
+Date: 2026-03-27
 
-## Audit Inputs
+## Status
 
-This priority list is based on the latest current audit outputs:
+This document is now historical reference only.
 
-* Markdownlint debt report: `reports/markdownlint-debt.txt`
-* Placeholder audit report: `reports/placeholder-audit.txt`
+It records the earlier batch-priority plan from the high-debt phase and is superseded by:
 
-Current baseline:
+* [docs/maintenance-checkpoint.md](maintenance-checkpoint.md)
 
-* `reports/markdownlint-debt.txt` shows **1579 markdownlint findings across 84 files** in full-repo debt scope.
+Current state on 2026-03-27:
+
+* active-note markdownlint is clean
+* tracked repo-wide markdownlint debt is clean
+* the prioritized cleanup batches described below are no longer an active backlog
+
+Keep the remainder of this file as historical maintenance context, not as the current execution plan.
+
+## Historical Audit Inputs
+
+This priority list was based on the then-current audit outputs:
+
+* historical markdownlint debt snapshot
+* historical placeholder audit snapshot
+
+Historical baseline at planning time:
+
+* the markdownlint debt snapshot showed **1579 markdownlint findings across 84 files** in full-repo debt scope
 * The active-note subset accounts for **52 files with findings**.
 * The markdownlint debt is dominated by mechanical issues:
   * `MD012` multiple consecutive blank lines
@@ -19,10 +35,10 @@ Current baseline:
   * `MD022` blanks around headings
   * `MD031` blanks around fenced code blocks
   * `MD032` blanks around lists
-* `reports/placeholder-audit.txt` is clean:
+* the placeholder audit snapshot was already clean:
   * `All placeholder checks passed for 109 Markdown file(s).`
 
-This means the highest-friction maintenance debt is currently **markdownlint-only**, not placeholder debt.
+At that point, the highest-friction maintenance debt was **markdownlint-only**, not placeholder debt.
 
 ## Prioritization Logic
 

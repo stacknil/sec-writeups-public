@@ -1,11 +1,22 @@
 # Taxonomy Decision Log
 
+Date: 2026-03-27
+
+## Summary
+
+This document is the decision source for taxonomy changes derived from earlier normalization review.
+
+Use it together with:
+
+* [docs/taxonomy-closure.md](taxonomy-closure.md) for the current converged state
+* [docs/taxonomy-governance.md](taxonomy-governance.md) for the ongoing update rules
+
 ## Scope
 
-- Source reviewed: `docs/taxonomy-normalization-plan.md`.
-- Scope of this log: every value previously marked `review-needed` in that plan.
-- These are proposed decisions only. No note bodies or front matter are changed by this document.
-- Decision meanings: `merge-to-existing` collapses to an already-established canonical value, `promote-into-taxonomy` keeps the value as a first-class canonical term, and `drop-as-noise` removes it from future taxonomy use.
+* Source reviewed: `docs/taxonomy-normalization-plan.md`.
+* Scope of this log: every value previously marked `review-needed` in that plan.
+* These are proposed decisions only. No note bodies or front matter are changed by this document.
+* Decision meanings: `merge-to-existing` collapses to an already-established canonical value, `promote-into-taxonomy` keeps the value as a first-class canonical term, and `drop-as-noise` removes it from future taxonomy use.
 
 ## Family Summary
 
@@ -27,8 +38,8 @@
 
 ## Networking Fundamentals
 
-- Decision split: `24` promote, `2` merge, `0` drop.
-- Values are ordered by frequency first, then alphabetically within the same frequency band.
+* Decision split: `24` promote, `2` merge, `0` drop.
+* Values are ordered by frequency first, then alphabetically within the same frequency band.
 
 | Field | Value | Count | Decision | Rationale |
 | --- | --- | ---: | --- | --- |
@@ -61,8 +72,8 @@
 
 ## Identity, Crypto, And Passwords
 
-- Decision split: `21` promote, `4` merge, `0` drop.
-- Values are ordered by frequency first, then alphabetically within the same frequency band.
+* Decision split: `21` promote, `4` merge, `0` drop.
+* Values are ordered by frequency first, then alphabetically within the same frequency band.
 
 | Field | Value | Count | Decision | Rationale |
 | --- | --- | ---: | --- | --- |
@@ -94,8 +105,8 @@
 
 ## Governance, Risk, And Security Engineering
 
-- Decision split: `18` promote, `2` merge, `1` drop.
-- Values are ordered by frequency first, then alphabetically within the same frequency band.
+* Decision split: `18` promote, `2` merge, `1` drop.
+* Values are ordered by frequency first, then alphabetically within the same frequency band.
 
 | Field | Value | Count | Decision | Rationale |
 | --- | --- | ---: | --- | --- |
@@ -123,8 +134,8 @@
 
 ## Programming And Scripting
 
-- Decision split: `14` promote, `4` merge, `0` drop.
-- Values are ordered by frequency first, then alphabetically within the same frequency band.
+* Decision split: `14` promote, `4` merge, `0` drop.
+* Values are ordered by frequency first, then alphabetically within the same frequency band.
 
 | Field | Value | Count | Decision | Rationale |
 | --- | --- | ---: | --- | --- |
@@ -149,8 +160,8 @@
 
 ## Blue Team, Detection, And DFIR
 
-- Decision split: `13` promote, `3` merge, `0` drop.
-- Values are ordered by frequency first, then alphabetically within the same frequency band.
+* Decision split: `13` promote, `3` merge, `0` drop.
+* Values are ordered by frequency first, then alphabetically within the same frequency band.
 
 | Field | Value | Count | Decision | Rationale |
 | --- | --- | ---: | --- | --- |
@@ -173,8 +184,8 @@
 
 ## Web And Application Security
 
-- Decision split: `16` promote, `1` merge, `0` drop.
-- Values are ordered by frequency first, then alphabetically within the same frequency band.
+* Decision split: `16` promote, `1` merge, `0` drop.
+* Values are ordered by frequency first, then alphabetically within the same frequency band.
 
 | Field | Value | Count | Decision | Rationale |
 | --- | --- | ---: | --- | --- |
@@ -198,8 +209,8 @@
 
 ## Systems And Platform Basics
 
-- Decision split: `12` promote, `1` merge, `0` drop.
-- Values are ordered by frequency first, then alphabetically within the same frequency band.
+* Decision split: `12` promote, `1` merge, `0` drop.
+* Values are ordered by frequency first, then alphabetically within the same frequency band.
 
 | Field | Value | Count | Decision | Rationale |
 | --- | --- | ---: | --- | --- |
@@ -219,8 +230,8 @@
 
 ## Data Representation And Transformation
 
-- Decision split: `7` promote, `5` merge, `1` drop.
-- Values are ordered by frequency first, then alphabetically within the same frequency band.
+* Decision split: `7` promote, `5` merge, `1` drop.
+* Values are ordered by frequency first, then alphabetically within the same frequency band.
 
 | Field | Value | Count | Decision | Rationale |
 | --- | --- | ---: | --- | --- |
@@ -240,8 +251,8 @@
 
 ## Web Recon And OSINT
 
-- Decision split: `9` promote, `3` merge, `0` drop.
-- Values are ordered by frequency first, then alphabetically within the same frequency band.
+* Decision split: `9` promote, `3` merge, `0` drop.
+* Values are ordered by frequency first, then alphabetically within the same frequency band.
 
 | Field | Value | Count | Decision | Rationale |
 | --- | --- | ---: | --- | --- |
@@ -260,8 +271,8 @@
 
 ## Packet Capture And Traffic Analysis
 
-- Decision split: `6` promote, `4` merge, `0` drop.
-- Values are ordered by frequency first, then alphabetically within the same frequency band.
+* Decision split: `6` promote, `4` merge, `0` drop.
+* Values are ordered by frequency first, then alphabetically within the same frequency band.
 
 | Field | Value | Count | Decision | Rationale |
 | --- | --- | ---: | --- | --- |
@@ -278,8 +289,8 @@
 
 ## Offensive Tooling And Exploitation
 
-- Decision split: `5` promote, `3` merge, `1` drop.
-- Values are ordered by frequency first, then alphabetically within the same frequency band.
+* Decision split: `5` promote, `3` merge, `1` drop.
+* Values are ordered by frequency first, then alphabetically within the same frequency band.
 
 | Field | Value | Count | Decision | Rationale |
 | --- | --- | ---: | --- | --- |
@@ -295,8 +306,8 @@
 
 ## Cloud, IAM, And Containers
 
-- Decision split: `5` promote, `0` merge, `0` drop.
-- Values are ordered by frequency first, then alphabetically within the same frequency band.
+* Decision split: `5` promote, `0` merge, `0` drop.
+* Values are ordered by frequency first, then alphabetically within the same frequency band.
 
 | Field | Value | Count | Decision | Rationale |
 | --- | --- | ---: | --- | --- |
@@ -308,8 +319,8 @@
 
 ## Research And Learning Meta
 
-- Decision split: `1` promote, `0` merge, `3` drop.
-- Values are ordered by frequency first, then alphabetically within the same frequency band.
+* Decision split: `1` promote, `0` merge, `3` drop.
+* Values are ordered by frequency first, then alphabetically within the same frequency band.
 
 | Field | Value | Count | Decision | Rationale |
 | --- | --- | ---: | --- | --- |

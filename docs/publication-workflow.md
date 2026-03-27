@@ -101,17 +101,26 @@ Before publishing, run the repo checks used by normal maintenance work:
 
 ```text
 python scripts/render_tags_doc.py --check
+python scripts/render_readme_snapshot.py --check
 python scripts/check_placeholders.py <changed files>
 python scripts/check_markdown.py
 python -m pre_commit run --files <changed files>
 ```
 
+Optional maintainer checkpoint when you want a repo-wide markdownlint audit instead of changed-files-only validation:
+
+```text
+python scripts/generate_markdownlint_debt.py
+```
+
 These checks fit together as follows:
 
 * `render_tags_doc.py --check` protects taxonomy-derived documentation
+* `render_readme_snapshot.py --check` protects the derived repository snapshot in `README.md`
 * `check_placeholders.py` protects the public-safe placeholder boundary
 * `check_markdown.py` protects front matter and markdown consistency
 * `pre_commit` runs the changed-files enforcement layer used by the repo workflow
+* `generate_markdownlint_debt.py` provides a manual tracked-file repo-wide markdownlint baseline when needed
 
 ## Step 6: Perform A Human Publication Review
 

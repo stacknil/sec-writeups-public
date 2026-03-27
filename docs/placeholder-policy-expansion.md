@@ -2,13 +2,25 @@
 
 Date: 2026-03-24
 
+## Status
+
+This document is now historical reference only for the active public-note corpus.
+
+It records the review that confirmed no remaining active `add to policy` cases after the March 2026 policy-expansion work.
+
+For the current placeholder operating surface, use:
+
+* [docs/placeholder-closure.md](placeholder-closure.md)
+* [docs/placeholder-policy.md](placeholder-policy.md)
+* [scripts/check_placeholders.py](../scripts/check_placeholders.py)
+
 ## Summary
 
 This review checked the current placeholder governance state against:
 
-* [docs/placeholder-policy.md](/D:/OneDrive/2/10%20Projects/p-sec-write-ups/docs/placeholder-policy.md)
-* [docs/placeholder-execution-backlog.md](/D:/OneDrive/2/10%20Projects/p-sec-write-ups/docs/placeholder-execution-backlog.md)
-* [docs/placeholder-false-positive-triage.md](/D:/OneDrive/2/10%20Projects/p-sec-write-ups/docs/placeholder-false-positive-triage.md)
+* [docs/placeholder-policy.md](placeholder-policy.md)
+* [docs/placeholder-execution-backlog.md](placeholder-execution-backlog.md)
+* [docs/placeholder-false-positive-triage.md](placeholder-false-positive-triage.md)
 
 Result:
 
@@ -21,8 +33,8 @@ Result:
 
 Current triage state:
 
-* [docs/placeholder-false-positive-triage.md](/D:/OneDrive/2/10%20Projects/p-sec-write-ups/docs/placeholder-false-positive-triage.md) explicitly states: "No remaining active-note cases are currently classified as `add to policy`."
-* [docs/placeholder-execution-backlog.md](/D:/OneDrive/2/10%20Projects/p-sec-write-ups/docs/placeholder-execution-backlog.md) still retains some historical ambiguity notes for auditability, but those are no longer the active classification source for policy expansion.
+* [docs/placeholder-false-positive-triage.md](placeholder-false-positive-triage.md) explicitly states: "No remaining active-note cases are currently classified as `add to policy`."
+* [docs/placeholder-execution-backlog.md](placeholder-execution-backlog.md) still retains some historical ambiguity notes for auditability, but those are no longer the active classification source for policy expansion.
 
 Because there are no remaining `add to policy` cases, there is nothing in this pass to convert into either:
 
@@ -34,7 +46,7 @@ Because there are no remaining `add to policy` cases, there is nothing in this p
 None.
 
 The last material policy-expansion items were already incorporated into
-[docs/placeholder-policy.md](/D:/OneDrive/2/10%20Projects/p-sec-write-ups/docs/placeholder-policy.md):
+[docs/placeholder-policy.md](placeholder-policy.md):
 
 * `ADMIN_IP`
 * `GATEWAY_MAC`
@@ -52,9 +64,9 @@ These are already part of the canonical policy and therefore are not remaining e
 None.
 
 The current exemption track is already captured in
-[docs/placeholder-false-positive-triage.md](/D:/OneDrive/2/10%20Projects/p-sec-write-ups/docs/placeholder-false-positive-triage.md)
+[docs/placeholder-false-positive-triage.md](placeholder-false-positive-triage.md)
 and reflected in
-[docs/placeholder-policy.md](/D:/OneDrive/2/10%20Projects/p-sec-write-ups/docs/placeholder-policy.md)
+[docs/placeholder-policy.md](placeholder-policy.md)
 under "Literal Identifiers That Should Stay Literal."
 
 ## Still Too Ambiguous And Intentionally Deferred

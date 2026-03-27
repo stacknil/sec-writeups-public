@@ -2,15 +2,27 @@
 
 Date: 2026-03-19
 
+## Status
+
+This document is now historical reference only for the active public-note corpus.
+
+The placeholder checker is clean on active notes, and the pass sequencing captured here is retained mainly for auditability of how closure was reached.
+
+For the current placeholder operating surface, use:
+
+* [docs/placeholder-closure.md](placeholder-closure.md)
+* [docs/placeholder-policy.md](placeholder-policy.md)
+* [scripts/check_placeholders.py](../scripts/check_placeholders.py)
+
 ## Summary
 
-- Current status: after the 2026-03-19 admin/MAC add-to-policy pass, `python scripts/check_placeholders.py` is clean for the active public-note corpus.
-- Baseline from the 2026-03-18 raw checker audit: `python scripts/check_placeholders.py` reported **123 issues across 23 active public notes** before later policy and checker tuning.
-- Completed passes:
-  - **Pass 2: platform-branded alias cleanup** is complete. No active notes currently contain `MACHINE_IP`, `THM_IP`, `ATTACKBOX_IP`, `YOUR_DOMAIN`, or `USERNAME_A`.
-  - **Pass 3: story-specific secret placeholder cleanup** is complete for the targeted legacy set (`TOKEN_SOCMAS`, `CUPID_MASTER_KEY_2024_XOXO`, `FLAG_FINAL`, `FLAG_RED`).
-- Historical remaining-work notes below are retained for auditability; they no longer describe the current active-note state.
-- No **platform-branded alias leftovers** remain in active public notes.
+* Current status: after the 2026-03-19 admin/MAC add-to-policy pass, `python scripts/check_placeholders.py` is clean for the active public-note corpus.
+* Baseline from the 2026-03-18 raw checker audit: `python scripts/check_placeholders.py` reported **123 issues across 23 active public notes** before later policy and checker tuning.
+* Completed passes:
+  * **Pass 2: platform-branded alias cleanup** is complete. No active notes currently contain `MACHINE_IP`, `THM_IP`, `ATTACKBOX_IP`, `YOUR_DOMAIN`, or `USERNAME_A`.
+  * **Pass 3: story-specific secret placeholder cleanup** is complete for the targeted legacy set (`TOKEN_SOCMAS`, `CUPID_MASTER_KEY_2024_XOXO`, `FLAG_FINAL`, `FLAG_RED`).
+* Historical remaining-work notes below are retained for auditability; they do not describe the current active-note state.
+* No **platform-branded alias leftovers** remain in active public notes.
 
 ## Pass Status
 
@@ -24,25 +36,25 @@ Date: 2026-03-19
 ## Recommended Execution Order
 
 1. **Low-ambiguity generic mappings**
-   - Clear the easiest remaining obvious replacements first: `DOMAIN`, `USER`, `HOST`, `user@host`, `IP_ADDRESS`, `REMOTE_HOST`.
-   - Target files: `networking-core-protocols.md`, `public-key-cryptography-basics.md`, `introductory-researching.md`, `linux-fundamentals/partII.md`, `linux-fundamentals/partIII.md`.
+   * Clear the easiest remaining obvious replacements first: `DOMAIN`, `USER`, `HOST`, `user@host`, `IP_ADDRESS`, `REMOTE_HOST`.
+   * Target files: `networking-core-protocols.md`, `public-key-cryptography-basics.md`, `introductory-researching.md`, `linux-fundamentals/partII.md`, `linux-fundamentals/partIII.md`.
 2. **Angle-bracket leftovers with clear canonical targets**
-   - Focus next on notes where the bracket style is the main debt and the canonical target is predictable enough to convert safely.
-   - Highest-value examples: crypto/how-to notes such as `hashing-basics.md` and `john-the-ripper-the-basics.md`.
+   * Focus next on notes where the bracket style is the main debt and the canonical target is predictable enough to convert safely.
+   * Highest-value examples: crypto/how-to notes such as `hashing-basics.md` and `john-the-ripper-the-basics.md`.
 3. **Policy-backed redaction / digest cleanup**
-   - Normalize the newly-settled policy items:
-     - `<REDACTED>` -> `VALUE_REDACTED` where no more specific `*_REDACTED` family fits
-     - `SAME_MD5_HASH` -> `SAME_HASH_VALUE`
-   - Target files: `valenfind.md`, `when-hearts-collide.md`, and any remaining prose references that still quote the old room token.
+   * Normalize the newly-settled policy items:
+     * `<REDACTED>` -> `VALUE_REDACTED` where no more specific `*_REDACTED` family fits
+     * `SAME_MD5_HASH` -> `SAME_HASH_VALUE`
+   * Target files: `valenfind.md`, `when-hearts-collide.md`, and any remaining prose references that still quote the old room token.
 4. **Ambiguous semantic placeholder review**
-   - Triage note-local semantic tokens that may need either a context-specific mapping or a policy addition before safe normalization.
-   - Target files: `firewall-fundamentals.md`, `02-intro-to-LAN.md`, `networking-essentials.md`, `when-hearts-collide.md`, `Day 19 - ICS Modbus - Claus for Concern.md`.
+   * Triage note-local semantic tokens that may need either a context-specific mapping or a policy addition before safe normalization.
+   * Target files: `firewall-fundamentals.md`, `02-intro-to-LAN.md`, `networking-essentials.md`, `when-hearts-collide.md`, `Day 19 - ICS Modbus - Claus for Concern.md`.
 5. **False positive / exempt literal review**
-   - Audit checker hits that are likely not placeholders at all, then decide whether to document exemptions or adjust the checker.
-   - Target files: `tor.md`, `google-dorking.md`, `active-director-basic.md`, `security-awareness.md`, `Day 03 - Splunk Basics - Did you SIEM?.md`.
+   * Audit checker hits that are likely not placeholders at all, then decide whether to document exemptions or adjust the checker.
+   * Target files: `tor.md`, `google-dorking.md`, `active-director-basic.md`, `security-awareness.md`, `Day 03 - Splunk Basics - Did you SIEM?.md`.
 6. **Reserved ambiguous tokens explicitly deferred in earlier passes**
-   - Keep these for last unless policy changes first.
-   - Examples: `<EXPECTED_USER>`, `<FILE>`, `<IFACE>`, `<SID>`, `<ACCOUNT_ID>`, `<FORMAT>`, `<HASH>`.
+   * Keep these for last unless policy changes first.
+   * Examples: `<EXPECTED_USER>`, `<FILE>`, `<IFACE>`, `<SID>`, `<ACCOUNT_ID>`, `<FORMAT>`, `<HASH>`.
 
 ## Remaining File Backlog
 
@@ -74,11 +86,11 @@ Date: 2026-03-19
 
 ## Notes For The Next Pass
 
-- The remaining backlog is no longer dominated by platform or story-themed drift. It is now mostly a mix of:
-  - low-ambiguity generic cleanups,
-  - reserved ambiguous placeholder decisions,
-  - and checker false-positive triage.
-- Before editing the highest-ambiguity files, decide whether the canonical policy should grow to include:
-  - MAC-address example placeholders,
-  - OT/ICS note-local variable conventions,
-  - and whether bracketed placeholders on the reserved do-not-touch list should become explicit checker exemptions.
+* The remaining backlog is no longer dominated by platform or story-themed drift. It is now mostly a mix of:
+  * low-ambiguity generic cleanups,
+  * reserved ambiguous placeholder decisions,
+  * and checker false-positive triage.
+* Before editing the highest-ambiguity files, decide whether the canonical policy should grow to include:
+  * MAC-address example placeholders,
+  * OT/ICS note-local variable conventions,
+  * and whether bracketed placeholders on the reserved do-not-touch list should become explicit checker exemptions.

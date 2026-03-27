@@ -1,25 +1,41 @@
 # Taxonomy Normalization Plan
 
+Date: 2026-03-27
+
+## Status
+
+This document is historical reference only.
+
+It records the earlier drift-analysis and action-shaping work that fed into the later taxonomy decision log, execution backlog, and closure state.
+
+For the current taxonomy operating surface, use:
+
+* [docs/taxonomy-closure.md](taxonomy-closure.md)
+* [docs/taxonomy-decision-log.md](taxonomy-decision-log.md)
+* [docs/taxonomy-execution-backlog.md](taxonomy-execution-backlog.md)
+
+Keep the remainder of this file as planning history, not as the current taxonomy baseline.
+
 ## Scope
 
-- Compared active notes under `TryHackMe/` and `notes/`, excluding `_meta`, using the same root selection as `scripts/check_markdown.py`.
-- Active notes scanned: `93` Markdown files with YAML front matter.
-- Authority baseline for this report: `TryHackMe/_meta/TAGS.md`.
-- Secondary reference: `schemas/taxonomy.json`, used only to separate documentation drift from truly invalid metadata.
+* Compared active notes under `TryHackMe/` and `notes/`, excluding `_meta`, using the same root selection as `scripts/check_markdown.py`.
+* Active notes scanned: `93` Markdown files with YAML front matter.
+* Authority baseline for this report: `TryHackMe/_meta/TAGS.md`.
+* Secondary reference: `schemas/taxonomy.json`, used only to separate documentation drift from truly invalid metadata.
 
 ## Headline Findings
 
-- Relative to `TAGS.md`, there are `261` out-of-vocabulary tag occurrences across `225` unique values.
-- Breakdown: `domain` = `46` occurrences / `37` unique, `skills` = `214` / `187`, `artifacts` = `1` / `1`.
-- Every drifted value found in notes is already allowed by `schemas/taxonomy.json`: `domain` `37/37`, `skills` `187/187`, `artifacts` `1/1`.
-- This means the current problem is primarily **taxonomy drift between `TAGS.md` and the enforced schema**, not invalid note metadata.
-- Proposed action mix by unique value: `31` safe auto-fix, `189` review-needed, `5` reject/remove.
+* Relative to `TAGS.md`, there are `261` out-of-vocabulary tag occurrences across `225` unique values.
+* Breakdown: `domain` = `46` occurrences / `37` unique, `skills` = `214` / `187`, `artifacts` = `1` / `1`.
+* Every drifted value found in notes is already allowed by `schemas/taxonomy.json`: `domain` `37/37`, `skills` `187/187`, `artifacts` `1/1`.
+* This means the current problem is primarily **taxonomy drift between `TAGS.md` and the enforced schema**, not invalid note metadata.
+* Proposed action mix by unique value: `31` safe auto-fix, `189` review-needed, `5` reject/remove.
 
 ## Interpretation Of Actions
 
-- `safe auto-fix`: the drifted value can be normalized directly to an existing `TAGS.md` value with low semantic risk.
-- `review-needed`: either the value is useful enough to keep and add into `TAGS.md`, or it can collapse to a broader `TAGS.md` value only after a manual review.
-- `reject/remove`: the value is too generic, duplicates another taxonomy signal, or fits better in another field than the current one.
+* `safe auto-fix`: the drifted value can be normalized directly to an existing `TAGS.md` value with low semantic risk.
+* `review-needed`: either the value is useful enough to keep and add into `TAGS.md`, or it can collapse to a broader `TAGS.md` value only after a manual review.
+* `reject/remove`: the value is too generic, duplicates another taxonomy signal, or fits better in another field than the current one.
 
 ## Recommended Order
 
@@ -277,7 +293,7 @@
 
 ## Notes
 
-- `domain` drift is mostly coarse-category mismatch. Those values usually compress cleanly back to the smaller public domain list in `TAGS.md`.
-- `skills` drift is mostly **schema-approved specialization**. If you want to preserve retrieval quality, many of those values should be documented in `TAGS.md` instead of flattened away.
-- The only artifact drift found was `room-notes`, which is a strong candidate to normalize to `lab-notes`.
-- `TAGS.md` currently functions as a public-facing subset, while `schemas/taxonomy.json` functions as the actual enforced vocabulary. Long-term, those two sources should either be merged or explicitly documented as `core` vs `extended` taxonomy.
+* `domain` drift is mostly coarse-category mismatch. Those values usually compress cleanly back to the smaller public domain list in `TAGS.md`.
+* `skills` drift is mostly **schema-approved specialization**. If you want to preserve retrieval quality, many of those values should be documented in `TAGS.md` instead of flattened away.
+* The only artifact drift found was `room-notes`, which is a strong candidate to normalize to `lab-notes`.
+* `TAGS.md` currently functions as a public-facing subset, while `schemas/taxonomy.json` functions as the actual enforced vocabulary. Long-term, those two sources should either be merged or explicitly documented as `core` vs `extended` taxonomy.

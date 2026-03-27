@@ -1,6 +1,6 @@
 # Placeholder Closure
 
-Date: 2026-03-24
+Date: 2026-03-27
 
 ## Summary
 
@@ -8,17 +8,17 @@ The placeholder governance track for the public repo is now closed in a converge
 
 Current source of truth:
 
-* Canonical placeholder source: [docs/placeholder-policy.md](/D:/OneDrive/2%20/10%20Projects/p-sec-write-ups/docs/placeholder-policy.md)
-* Enforcement checker: [scripts/check_placeholders.py](/D:/OneDrive/2%20/10%20Projects/p-sec-write-ups/scripts/check_placeholders.py)
+* Canonical placeholder source: [docs/placeholder-policy.md](placeholder-policy.md)
+* Enforcement checker: [scripts/check_placeholders.py](../scripts/check_placeholders.py)
 * Triage / historical decision support:
-  * [docs/placeholder-convergence-audit.md](/D:/OneDrive/2%20/10%20Projects/p-sec-write-ups/docs/placeholder-convergence-audit.md)
-  * [docs/placeholder-execution-backlog.md](/D:/OneDrive/2%20/10%20Projects/p-sec-write-ups/docs/placeholder-execution-backlog.md)
-  * [docs/placeholder-false-positive-triage.md](/D:/OneDrive/2%20/10%20Projects/p-sec-write-ups/docs/placeholder-false-positive-triage.md)
-  * [docs/placeholder-policy-expansion.md](/D:/OneDrive/2%20/10%20Projects/p-sec-write-ups/docs/placeholder-policy-expansion.md)
+* [docs/placeholder-convergence-audit.md](placeholder-convergence-audit.md)
+* [docs/placeholder-execution-backlog.md](placeholder-execution-backlog.md)
+* [docs/placeholder-false-positive-triage.md](placeholder-false-positive-triage.md)
+* [docs/placeholder-policy-expansion.md](placeholder-policy-expansion.md)
 
 ## Canonical Placeholder Source
 
-[docs/placeholder-policy.md](/D:/OneDrive/2%20/10%20Projects/p-sec-write-ups/docs/placeholder-policy.md)
+[docs/placeholder-policy.md](placeholder-policy.md)
 is the canonical placeholder source for public writeups in this repository.
 
 That document defines:
@@ -51,10 +51,10 @@ Supporting validation:
 
 The current active-note baseline is converged.
 
-As of this closure pass:
+As of the current closure state:
 
 * the placeholder checker passes on the active public-note corpus
-* the latest full audit reports: `All placeholder checks passed for 109 Markdown file(s).`
+* the latest full audit reports: `All placeholder checks passed for 111 Markdown file(s).`
 * the reusable sanitized template now points maintainers to the canonical policy and checker workflow
 
 ## Future Process For New Placeholders
@@ -67,8 +67,8 @@ If a future public note appears to need a placeholder that is not already covere
    * a new canonical semantic placeholder
    * a neutral redaction placeholder
    * an explicit exempt literal that should stay literal
-4. Update [docs/placeholder-policy.md](/D:/OneDrive/2%20/10%20Projects/p-sec-write-ups/docs/placeholder-policy.md) before editing notes to use the new form.
-5. Update [scripts/check_placeholders.py](/D:/OneDrive/2%20/10%20Projects/p-sec-write-ups/scripts/check_placeholders.py) only if enforcement or exemptions must change.
+4. Update [docs/placeholder-policy.md](placeholder-policy.md) before editing notes to use the new form.
+5. Update [scripts/check_placeholders.py](../scripts/check_placeholders.py) only if enforcement or exemptions must change.
 6. Re-run changed-files validation and, when policy/checker behavior changes, re-run the full placeholder audit.
 
 ## Maintainer Note

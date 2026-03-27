@@ -1,88 +1,92 @@
 # Maintenance Checkpoint
 
-Date: 2026-03-25
+Date: 2026-03-27
 
-## Audit Status
+## Current State
 
-The remote markdownlint debt workflow is now present on default branch `main` and visible through GitHub Actions:
+The markdownlint maintenance model is now fully converged around two lanes:
 
-* workflow file on `main`: `.github/workflows/markdownlint-debt.yml`
+* normal day-to-day enforcement through changed-files validation on active notes
+* manual repo-wide debt auditing through a dedicated helper script and matching GitHub Actions workflow
+
+Current working state:
+
+* active-note markdownlint is clean
+* tracked Markdown repo-wide debt is clean
+* the local helper and the remote workflow now use the same core audit path
+
+## Operator Commands
+
+Normal changed-files validation remains:
+
+```text
+python scripts/render_readme_snapshot.py --check
+python scripts/check_markdown.py
+python -m pre_commit run --files <changed files>
+```
+
+Manual repo-wide markdownlint debt auditing now uses:
+
+```text
+python scripts/generate_markdownlint_debt.py
+```
+
+Default output path:
+
+* `reports/markdownlint-debt-current-local.txt`
+
+GitHub Actions still exposes the manual artifact workflow through:
+
+* workflow file: `.github/workflows/markdownlint-debt.yml`
 * workflow name: `Markdownlint Debt Audit`
 * trigger: `workflow_dispatch`
-* verified by: `gh workflow list -a`
+* artifact/report target: `reports/markdownlint-debt.txt`
 
-Artifact-based auditing is therefore restored.
+## Current Baseline
 
-## Official Baseline
+Current local maintenance baseline on 2026-03-27:
 
-The new formal markdownlint debt baseline comes from the successful remote run on `main`:
+* `python scripts/check_markdown.py` passed for `111` active-note Markdown files
+* `python scripts/generate_markdownlint_debt.py` linted `137` tracked Markdown files
+* tracked repo-wide result: `Summary: 0 error(s)`
 
-* workflow run: `23525508132`
-* result: `success`
-* artifact: `markdownlint-debt-report`
-* local baseline copy: `reports/markdownlint-debt.txt`
+This means the repo is currently clean in both of its intended modes:
 
-Current formal baseline:
-
-* `1090` markdownlint findings
-* `70` files with findings
-* `66` active notes with findings
-
-Most common rules in the official baseline:
-
-* `MD012` — `759`
-* `MD029` — `123`
-* `MD007` — `59`
-* `MD032` — `36`
-* `MD041` — `27`
-* `MD022` — `25`
-
-## Highest-Friction Files
-
-The current top active-note hotspots in the official remote baseline are:
-
-* `TryHackMe/10-web/how-the-web-works/02-HTTP-in-detailed.md` — `214`
-* `TryHackMe/00-foundations/intro-cybersecurity/search-skills.md` — `154`
-* `TryHackMe/30-windows/windows-fundamentals/1.md` — `69`
-* `TryHackMe/00-foundations/learning-meta/introductory-researching.md` — `63`
-* `TryHackMe/90-events/thm-aoc-2025/Day 02 – Phishing - Merry Clickmas.md` — `54`
-* `TryHackMe/00-foundations/learning-meta/become-a-hacker.md` — `53`
-* `TryHackMe/40-networking/network-fundamentals/01-what-is-networking.md` — `51`
+* derived README snapshot checks
+* active-note changed-files enforcement
+* manual tracked-file repo-wide debt audit
 
 ## Decision
-
-The repo is now formally switched to **opportunistic markdownlint maintenance** as the default mode.
 
 Effective operating mode:
 
 * keep changed-files lint enforcement as the normal control plane
 * perform markdownlint cleanup opportunistically when a file is already being touched
-* reserve manual batch cleanup for rare, clearly clustered hotspots
+* reserve repo-wide debt auditing for manual checkpoints or maintenance verification
 
 Rationale:
 
 * changed-files enforcement is already in place and is the right default control plane
-* the manual debt workflow now provides a reliable repo-wide checkpoint when needed
-* remaining debt can be monitored from the official baseline without making scheduled batch cleanup the default habit
-* targeted batch cleanup remains available as an exception, not the standard mode
+* the manual debt workflow now has a stable local entry point and matching CI path
+* the derived README snapshot is now checked alongside ordinary note maintenance
+* local generated debt reports stay out of version control
+* repo-wide auditing stays available without turning every note edit into a whole-repo lint exercise
 
-## Optional Exception Batch
+## Practical Notes
 
-If the repo owner wants an explicit exception batch later, the next high-value cluster is still:
+Operational details that now matter:
 
-1. `TryHackMe/10-web/how-the-web-works/02-HTTP-in-detailed.md`
-2. `TryHackMe/00-foundations/intro-cybersecurity/search-skills.md`
-3. `TryHackMe/30-windows/windows-fundamentals/1.md`
-4. `TryHackMe/00-foundations/learning-meta/introductory-researching.md`
-5. `TryHackMe/00-foundations/learning-meta/become-a-hacker.md`
-
-That cluster remains the most efficient manual batch if opportunistic cleanup proves too slow.
+* local/generated debt snapshots are intentionally ignored through `.gitignore`
+* the repo-wide helper reads tracked Markdown from `git ls-files`
+* the helper works around Windows command-length and quoted-path edge cases automatically
+* the helper also avoids the `markdownlint-cli2` config filename limitation by writing a temporary supported config name
+* the root README snapshot can be refreshed from tracked-note counts instead of hand-editing note totals
 
 ## Follow-up
 
-The intended manual workflow loop is now:
+The intended maintenance loop is now:
 
-1. trigger `Markdownlint Debt Audit`
-2. download the `markdownlint-debt-report` artifact
-3. compare it against the last checkpoint or baseline report
-4. decide whether any new targeted cleanup batch is justified
+1. refresh and verify `README.md` when tracked note inventory changes
+2. use changed-files validation during normal editing
+3. run `python scripts/generate_markdownlint_debt.py` when a manual repo-wide checkpoint is useful
+4. use `Markdownlint Debt Audit` in GitHub Actions when an artifact-backed remote checkpoint is useful

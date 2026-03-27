@@ -4,12 +4,15 @@ name: Markdown Validation
 'on':
   push:
     paths:
+      - "README.md"
       - "TryHackMe/**/*.md"
       - "TryHackMe/_meta/TAGS.md"
       - "notes/**/*.md"
       - "schemas/**/*.json"
       - "scripts/check_markdown.py"
+      - "scripts/render_readme_snapshot.py"
       - "scripts/render_tags_doc.py"
+      - "scripts/generate_markdownlint_debt.py"
       - "scripts/run_markdownlint.py"
       - "requirements-lint.txt"
       - ".markdownlint-cli2.jsonc"
@@ -19,12 +22,15 @@ name: Markdown Validation
       - ".github/workflows/markdownlint-debt.yml"
   pull_request:
     paths:
+      - "README.md"
       - "TryHackMe/**/*.md"
       - "TryHackMe/_meta/TAGS.md"
       - "notes/**/*.md"
       - "schemas/**/*.json"
       - "scripts/check_markdown.py"
+      - "scripts/render_readme_snapshot.py"
       - "scripts/render_tags_doc.py"
+      - "scripts/generate_markdownlint_debt.py"
       - "scripts/run_markdownlint.py"
       - "requirements-lint.txt"
       - ".markdownlint-cli2.jsonc"
@@ -55,6 +61,9 @@ jobs:
 
       - name: Verify TAGS.md is in sync with taxonomy.json
         run: python scripts/render_tags_doc.py --check
+
+      - name: Verify README.md snapshot is in sync with tracked notes
+        run: python scripts/render_readme_snapshot.py --check
 
       - name: Run Markdown checks
         run: python scripts/check_markdown.py

@@ -1,5 +1,21 @@
 # Taxonomy Execution Backlog
 
+Date: 2026-03-27
+
+## Status
+
+This document is now historical reference only.
+
+Its remaining-work model reflected an earlier transition state. The specific residual items described here are no longer present in the live schema, and the active-note corpus currently passes the taxonomy/front matter checks.
+
+For the current taxonomy operating surface, use:
+
+* [docs/taxonomy-closure.md](taxonomy-closure.md)
+* [docs/taxonomy-decision-log.md](taxonomy-decision-log.md)
+* [docs/taxonomy-governance.md](taxonomy-governance.md)
+
+Keep the remainder of this file as backlog history, not as the current taxonomy execution queue.
+
 ## Summary
 
 Based on the current repo state, **11 of 13 taxonomy families appear already executed or fully aligned** with `docs/taxonomy-decision-log.md`.

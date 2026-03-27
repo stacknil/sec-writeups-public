@@ -2,26 +2,38 @@
 
 Date: 2026-03-19
 
+## Status
+
+This document is now historical reference only for the active public-note corpus.
+
+Its classifications and policy decisions were used to converge the checker and close the active-note placeholder backlog.
+
+For the current placeholder operating surface, use:
+
+* [docs/placeholder-closure.md](placeholder-closure.md)
+* [docs/placeholder-policy.md](placeholder-policy.md)
+* [scripts/check_placeholders.py](../scripts/check_placeholders.py)
+
 ## Summary
 
-- Baseline from the 2026-03-18 grouped audit: `python scripts/check_placeholders.py` reported **107 issues across 23 active public notes** after collapsing paired placeholder hits into underlying cases.
-- The raw checker output double-counts some cases because an angle-bracket token such as `<TOKEN>` is often reported twice:
-  - once for the bracketed form
-  - once for the inner uppercase token
-- After grouping those paired reports into underlying cases, the remaining signal falls into three buckets:
-  - a **small normalize-now set** with clear canonical replacements
-  - a **policy-decision set** of genuinely ambiguous semantic placeholders
-  - a **large exemption set** made up of instructional metavariables, literal search strings, diagram node IDs, env vars, and code variable identifiers
-- Recommendation:
-  - Normalize the clear generic placeholder debt first.
-  - Add a small number of missing semantic families to policy only where the note meaning really depends on them.
-  - Exempt instructional metavariables and literal identifiers in the checker rather than forcing note rewrites.
-- Policy decisions completed on 2026-03-19:
-  - Generic evidence redaction now lands on `VALUE_REDACTED`.
-  - Same-digest sample output now lands on `SAME_HASH_VALUE`.
-  - Admin/source-IP allowlist examples now land on `ADMIN_IP`.
-  - Diagram-facing MAC placeholders now land on `MAC_A`, `MAC_B`, `MAC_C`, `MAC_R`, and `GATEWAY_MAC`.
-- Checker exemption pass completed on 2026-03-19 for the currently triaged literal/metavariable set; remaining active checker findings are now primarily policy gaps rather than known false positives.
+* Baseline from the 2026-03-18 grouped audit: `python scripts/check_placeholders.py` reported **107 issues across 23 active public notes** after collapsing paired placeholder hits into underlying cases.
+* The raw checker output double-counts some cases because an angle-bracket token such as `<TOKEN>` is often reported twice:
+  * once for the bracketed form
+  * once for the inner uppercase token
+* After grouping those paired reports into underlying cases, the remaining signal falls into three buckets:
+  * a **small normalize-now set** with clear canonical replacements
+  * a **policy-decision set** of genuinely ambiguous semantic placeholders
+  * a **large exemption set** made up of instructional metavariables, literal search strings, diagram node IDs, env vars, and code variable identifiers
+* Recommendation:
+  * Normalize the clear generic placeholder debt first.
+  * Add a small number of missing semantic families to policy only where the note meaning really depends on them.
+  * Exempt instructional metavariables and literal identifiers in the checker rather than forcing note rewrites.
+* Policy decisions completed on 2026-03-19:
+  * Generic evidence redaction now lands on `VALUE_REDACTED`.
+  * Same-digest sample output now lands on `SAME_HASH_VALUE`.
+  * Admin/source-IP allowlist examples now land on `ADMIN_IP`.
+  * Diagram-facing MAC placeholders now land on `MAC_A`, `MAC_B`, `MAC_C`, `MAC_R`, and `GATEWAY_MAC`.
+* Checker exemption pass completed on 2026-03-19 for the currently triaged literal/metavariable set; remaining active checker findings are now primarily policy gaps rather than known false positives.
 
 ## Classification Guide
 
@@ -75,9 +87,9 @@ No remaining active-note cases are currently classified as `add to policy`; the 
 
 ## Implementation Notes
 
-- Checker tuning should prefer **token-family exemptions** over file-by-file suppressions where the pattern is structural:
-  - reserved instructional metavariables in angle brackets
-  - Mermaid node identifiers
-  - local shell/code variable identifiers used in examples
-- The main normalize-now work is now small enough to run as a focused cleanup pass without mixing in policy design.
-- There are no remaining active-corpus policy-gap findings after the 2026-03-19 admin/MAC placeholder decisions.
+* Checker tuning should prefer **token-family exemptions** over file-by-file suppressions where the pattern is structural:
+  * reserved instructional metavariables in angle brackets
+  * Mermaid node identifiers
+  * local shell/code variable identifiers used in examples
+* The main normalize-now work is now small enough to run as a focused cleanup pass without mixing in policy design.
+* There are no remaining active-corpus policy-gap findings after the 2026-03-19 admin/MAC placeholder decisions.

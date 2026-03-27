@@ -1,0 +1,15 @@
+# Python caches
+__pycache__/
+*.py[cod]
+
+# Local lint scratch files
+precommit-batch*.txt
+
+# Local/generated markdownlint reports
+reports/markdownlint-active-current-*.txt
+reports/markdownlint-debt-current-*.txt
+reports/markdownlint-debt-remote-*/
+reports/quarantine/
+
+# Local dated maintenance reports
+reports/20??-??-??-*.md

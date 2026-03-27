@@ -2,6 +2,16 @@
 
 Date: 2026-03-18
 
+## Status
+
+This document is a point-in-time audit snapshot.
+
+For the current placeholder operating surface, use:
+
+* [docs/placeholder-closure.md](placeholder-closure.md)
+* [docs/placeholder-policy.md](placeholder-policy.md)
+* [scripts/check_placeholders.py](../scripts/check_placeholders.py)
+
 ## Summary
 
 This audit reviewed active-note bodies and front matter under `TryHackMe/` and `notes/` to identify the placeholder styles currently used in public-safe writing.

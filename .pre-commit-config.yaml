@@ -9,6 +9,14 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+      - id: validate-readme-snapshot
+        name: validate-readme-snapshot
+        entry: python scripts/render_readme_snapshot.py --check
+        language: system
+        pass_filenames: false
+        files: >-
+          ^(README\.md|TryHackMe/(?!_meta/).+\.md|notes/.+\.md|
+          scripts/render_readme_snapshot\.py)$
       - id: validate-frontmatter
         name: validate-frontmatter
         entry: python scripts/check_markdown.py

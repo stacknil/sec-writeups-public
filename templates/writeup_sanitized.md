@@ -33,7 +33,7 @@ sanitized: true
 
 - Authorized lab or training target only.
 - Replace live identifiers with canonical placeholders such as `TARGET_IP`, `TARGET_HOST`, `TARGET_URL`, `USER_A`, and `API_KEY_REDACTED`.
-- Follow [docs/placeholder-policy.md](/D:/OneDrive/2%20/10%20Projects/p-sec-write-ups/docs/placeholder-policy.md) and validate materially edited public notes with `python scripts/check_placeholders.py <changed files>`.
+- Follow [docs/placeholder-policy.md](../docs/placeholder-policy.md) and validate materially edited public notes with `python scripts/check_placeholders.py <changed files>`.
 - Exclude secrets, full exploit chains, and customer-specific data.
 - Publish reasoning, decision points, and defensive takeaways instead of raw command spam.
 

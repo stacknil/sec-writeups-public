@@ -2,6 +2,16 @@
 
 Date: 2026-03-18
 
+## Summary
+
+The taxonomy governance track for the public repo is now closed in a converged state.
+
+Current source of truth:
+
+* canonical taxonomy source: `schemas/taxonomy.json`
+* derived taxonomy reference: `TryHackMe/_meta/TAGS.md`
+* enforcement path: `python scripts/check_markdown.py` plus `python scripts/render_tags_doc.py --check`
+
 ## Canonical Sources
 
 * `schemas/taxonomy.json` is the canonical taxonomy source.

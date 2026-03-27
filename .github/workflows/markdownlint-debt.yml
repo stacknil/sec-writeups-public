@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   markdownlint-debt:
-    name: Full Active-Note Markdownlint Debt Audit
+    name: Full Tracked-Markdown Markdownlint Debt Audit
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -31,11 +31,8 @@ jobs:
         run: |
           set +e
           mkdir -p reports
-          temp_config="${RUNNER_TEMP}/markdownlint-debt.markdownlint-cli2.jsonc"
-          cp .markdownlint-cli2-debt.jsonc "${temp_config}"
-          python scripts/run_markdownlint.py \
-            --config "${temp_config}" \
-            > reports/markdownlint-debt.txt 2>&1
+          python scripts/generate_markdownlint_debt.py \
+            --output reports/markdownlint-debt.txt
           status=$?
           echo "exit_code=${status}" >> "${GITHUB_OUTPUT}"
           {
