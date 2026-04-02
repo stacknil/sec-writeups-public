@@ -25,316 +25,276 @@
       "token": "com/stacknil/sec-writeups-public/blob/main/SUPPORT"
     },
     {
+      "entropy": 4.0431,
+      "file": ".github/workflows/markdown-lint.yml",
+      "fingerprint": "7797f68e897bb3ad980d6b81d6df2543c5eb7e3b0bd74da11a888d95b3fe99e5",
+      "kind": "high_entropy",
+      "line": 15,
+      "token": "scripts/generate_markdownlint_debt"
+    },
+    {
       "entropy": 4.1232,
       "file": ".github/workflows/markdown-lint.yml",
-      "fingerprint": "60329a30d7f1ebbe8ab2db0babaa572369e914cb2dd2b0af5c553009e6530dbf",
+      "fingerprint": "f0638db95d4e047feef6ddb8bca2213b2db2d1fa61e3d5d50206d736a8a09e9a",
       "kind": "high_entropy",
-      "line": 18,
+      "line": 21,
       "token": "github/workflows/markdown-lint"
     },
     {
       "entropy": 4.1973,
       "file": ".github/workflows/markdown-lint.yml",
-      "fingerprint": "7f8734d25d9c4c39995601b80345b603f999a586189a3f9e0ead89d53457cffe",
+      "fingerprint": "b5b930c0b9a6364efbf0f93294820f08876a537ecf70e2b064ef92ba5f00bac6",
       "kind": "high_entropy",
-      "line": 19,
+      "line": 22,
       "token": "github/workflows/markdownlint-debt"
     },
     {
-      "entropy": 4.1232,
+      "entropy": 4.0431,
       "file": ".github/workflows/markdown-lint.yml",
-      "fingerprint": "236caf7ec2f65709e22ce0028905153ea8048d97c397823b21b8c6fe5f5acb15",
+      "fingerprint": "b1d407f9bb4a1bdf9d64b67272b61d1e7b8b9643febcbaf923efb0007a03b3d9",
       "kind": "high_entropy",
       "line": 33,
+      "token": "scripts/generate_markdownlint_debt"
+    },
+    {
+      "entropy": 4.1232,
+      "file": ".github/workflows/markdown-lint.yml",
+      "fingerprint": "a1589be8822056bc19df692f4ba082714219a0ffee13bac7eb27a6bb38c5a27a",
+      "kind": "high_entropy",
+      "line": 39,
       "token": "github/workflows/markdown-lint"
     },
     {
       "entropy": 4.1973,
       "file": ".github/workflows/markdown-lint.yml",
-      "fingerprint": "7a17f0e82a9df81dcfc522d6f91fe4f01fda1c795371411e35aa2e12083dd8de",
+      "fingerprint": "67128a648fcdb79f2936b0de859a5d23e1773545f9fd45571fa4946a7812673d",
+      "kind": "high_entropy",
+      "line": 40,
+      "token": "github/workflows/markdownlint-debt"
+    },
+    {
+      "entropy": 4.0431,
+      "file": ".github/workflows/markdownlint-debt.yml",
+      "fingerprint": "3ff1d571c754f19e6f600b65c46ee25c00d21f442a6d84915566e6948c7f6f99",
       "kind": "high_entropy",
       "line": 34,
-      "token": "github/workflows/markdownlint-debt"
+      "token": "scripts/generate_markdownlint_debt"
+    },
+    {
+      "entropy": 4.0067,
+      "file": ".gitignore",
+      "fingerprint": "39a445498396d1550821a4f841e100ea7aa54a28be9cf2accf08c49e41f029ff",
+      "kind": "high_entropy",
+      "line": 9,
+      "token": "reports/markdownlint-active-current-"
+    },
+    {
+      "entropy": 4.0431,
+      "file": "docs/maintenance-checkpoint.md",
+      "fingerprint": "8cf8c3f0f3173c8d701eca502f8493e82e503bceb4f41fe1b00c9afb0ae0e42c",
+      "kind": "high_entropy",
+      "line": 31,
+      "token": "scripts/generate_markdownlint_debt"
+    },
+    {
+      "entropy": 4.0191,
+      "file": "docs/maintenance-checkpoint.md",
+      "fingerprint": "46e1e7a2f5609f57959aa98c77ef38c61d1f78c4a489973593c1912c88885b14",
+      "kind": "high_entropy",
+      "line": 36,
+      "token": "reports/markdownlint-debt-current-local"
     },
     {
       "entropy": 4.1973,
       "file": "docs/maintenance-checkpoint.md",
-      "fingerprint": "2ddbaaddc8e72df870728a5d9d56a248f8f7b268cf8297462d1a05d516562425",
+      "fingerprint": "8551294980f0a0f269ffd5e00f18418aa9afd089e250d03774b8462a5bc67830",
       "kind": "high_entropy",
-      "line": 9,
+      "line": 40,
       "token": "github/workflows/markdownlint-debt"
     },
     {
-      "entropy": 4.3721,
+      "entropy": 4.0431,
       "file": "docs/maintenance-checkpoint.md",
-      "fingerprint": "9b0ea9b3eaec000e40eaaf2b4bbd8dea49789a8b228b4dbe110a4c16a5403702",
-      "kind": "high_entropy",
-      "line": 44,
-      "token": "TryHackMe/10-web/how-the-web-works/02-HTTP-in-detailed"
-    },
-    {
-      "entropy": 4.3321,
-      "file": "docs/maintenance-checkpoint.md",
-      "fingerprint": "f2e41307486329183ccd8d76bfa4aa136979e5f512b66ed211260f34b1b437fe",
-      "kind": "high_entropy",
-      "line": 45,
-      "token": "TryHackMe/00-foundations/intro-cybersecurity/search-skills"
-    },
-    {
-      "entropy": 4.4258,
-      "file": "docs/maintenance-checkpoint.md",
-      "fingerprint": "719cda14eb98b725514280416b7da7951b70221ed5a08ced36c6a8b4ee49a942",
-      "kind": "high_entropy",
-      "line": 46,
-      "token": "TryHackMe/30-windows/windows-fundamentals/1"
-    },
-    {
-      "entropy": 4.3185,
-      "file": "docs/maintenance-checkpoint.md",
-      "fingerprint": "c0010c7c75e18bb135e6187dda492ec79ec6e09cfa69ba3f7667056174e2da34",
-      "kind": "high_entropy",
-      "line": 47,
-      "token": "TryHackMe/00-foundations/learning-meta/introductory-researching"
-    },
-    {
-      "entropy": 4.3638,
-      "file": "docs/maintenance-checkpoint.md",
-      "fingerprint": "63a24a1b5e26955a906c20998b0c34b53fc62c12aaaf535957df9dc7edda63d5",
-      "kind": "high_entropy",
-      "line": 48,
-      "token": "TryHackMe/90-events/thm-aoc-2025/Day"
-    },
-    {
-      "entropy": 4.3468,
-      "file": "docs/maintenance-checkpoint.md",
-      "fingerprint": "252f1d3505976b1e0d56073b25bb72e5120540eeb2fa5ba6bcb4e696a5f21fb9",
-      "kind": "high_entropy",
-      "line": 49,
-      "token": "TryHackMe/00-foundations/learning-meta/become-a-hacker"
-    },
-    {
-      "entropy": 4.427,
-      "file": "docs/maintenance-checkpoint.md",
-      "fingerprint": "f2a53ec7658f3681c9800a9dd00191d4fff1fd8ffa2c48fa518c16476f371603",
+      "fingerprint": "de1d7860519b67a7b90ff9b7ea6ef5fb3cd5b1caea6bc3f40c465fc962547cd0",
       "kind": "high_entropy",
       "line": 50,
-      "token": "TryHackMe/40-networking/network-fundamentals/01-what-is-networking"
+      "token": "scripts/generate_markdownlint_debt"
     },
     {
-      "entropy": 4.3721,
+      "entropy": 4.0431,
       "file": "docs/maintenance-checkpoint.md",
-      "fingerprint": "6dd85c0d2387cfd9bdfbe32c9f60f22f94841d9ebab5e505e14b09fe28c8dd40",
+      "fingerprint": "b8c1792670255abb8681ba4fac55597912fc6d5773c46212e888c30da025e126",
       "kind": "high_entropy",
-      "line": 73,
-      "token": "TryHackMe/10-web/how-the-web-works/02-HTTP-in-detailed"
-    },
-    {
-      "entropy": 4.3321,
-      "file": "docs/maintenance-checkpoint.md",
-      "fingerprint": "6795928db7ba52c9319134054a49676ec849b55b8135c0301638d911cbc98503",
-      "kind": "high_entropy",
-      "line": 74,
-      "token": "TryHackMe/00-foundations/intro-cybersecurity/search-skills"
-    },
-    {
-      "entropy": 4.4258,
-      "file": "docs/maintenance-checkpoint.md",
-      "fingerprint": "029fc0d21adefacbf47e797355bda2ab6a52fd613ab14c8b104ccce434a77297",
-      "kind": "high_entropy",
-      "line": 75,
-      "token": "TryHackMe/30-windows/windows-fundamentals/1"
-    },
-    {
-      "entropy": 4.3185,
-      "file": "docs/maintenance-checkpoint.md",
-      "fingerprint": "611f8c17251972f1ef35ce70dacfb60d313592f7fa196562b32656b301b7b747",
-      "kind": "high_entropy",
-      "line": 76,
-      "token": "TryHackMe/00-foundations/learning-meta/introductory-researching"
-    },
-    {
-      "entropy": 4.3468,
-      "file": "docs/maintenance-checkpoint.md",
-      "fingerprint": "2958a61fed4ad50430a6cd30187afdaa8d5ecf5c0bdc2b623123f6eb76f21fd1",
-      "kind": "high_entropy",
-      "line": 77,
-      "token": "TryHackMe/00-foundations/learning-meta/become-a-hacker"
+      "line": 91,
+      "token": "scripts/generate_markdownlint_debt"
     },
     {
       "entropy": 4.3721,
       "file": "docs/maintenance-debt-priority.md",
-      "fingerprint": "d98e65b044300f591d2e9cdf35644b4019e7892d28ba8caf95c4d87673589922",
+      "fingerprint": "4f58c09f980098b4b684a0044632025da88644a170f3e06375e73dd4ae4aedf9",
       "kind": "high_entropy",
-      "line": 43,
+      "line": 59,
       "token": "TryHackMe/10-web/how-the-web-works/02-HTTP-in-detailed"
     },
     {
       "entropy": 4.3321,
       "file": "docs/maintenance-debt-priority.md",
-      "fingerprint": "d0d674e64c3345e01cefb6380a6a4427513774e4361fbbecb3fa52ec9803bd73",
+      "fingerprint": "84fa0d00deaa313c2d83216dc1ee412db66faaa6a96642f26f11a44d7eb605e4",
       "kind": "high_entropy",
-      "line": 44,
+      "line": 60,
       "token": "TryHackMe/00-foundations/intro-cybersecurity/search-skills"
     },
     {
       "entropy": 4.4258,
       "file": "docs/maintenance-debt-priority.md",
-      "fingerprint": "00da672088e1e72cc9dfa2c5a7e85e1c8042dbf0c46d38cf306ff67db136953e",
+      "fingerprint": "db70e1a8632ad7ac80b0e13f541d8f2f28bbeb54439470b8e5c3595bd7653adb",
       "kind": "high_entropy",
-      "line": 45,
+      "line": 61,
       "token": "TryHackMe/30-windows/windows-fundamentals/1"
     },
     {
       "entropy": 4.3185,
       "file": "docs/maintenance-debt-priority.md",
-      "fingerprint": "3b6b4e1163af97b5055ec6d755f4cd65ffa7e85c3799c5a7e24d1443f4f6ee31",
+      "fingerprint": "232440cb549a3d1035c549f0db6eca0da386f62246be45717056bc275a62dfd1",
       "kind": "high_entropy",
-      "line": 46,
+      "line": 62,
       "token": "TryHackMe/00-foundations/learning-meta/introductory-researching"
     },
     {
       "entropy": 4.3468,
       "file": "docs/maintenance-debt-priority.md",
-      "fingerprint": "03e9d5c2f2d517583624f53f91b5126805d01d50ddafc080dd1a70c0fd0f08ef",
+      "fingerprint": "38f79d9670b0cad9fa4180f47cd7519dbe84149218b0f1305c16809dc5f83843",
       "kind": "high_entropy",
-      "line": 47,
+      "line": 63,
       "token": "TryHackMe/00-foundations/learning-meta/become-a-hacker"
     },
     {
       "entropy": 4.427,
       "file": "docs/maintenance-debt-priority.md",
-      "fingerprint": "67904c144c4a98cd38eaa78d93b93a7cb797811fac4fa3596c068d93c2dfbce7",
+      "fingerprint": "18b39f59d735f2b06afdddadd03e1f34b32e9ebcaf119c99b5d2c12176beb5d5",
       "kind": "high_entropy",
-      "line": 48,
+      "line": 64,
       "token": "TryHackMe/40-networking/network-fundamentals/01-what-is-networking"
     },
     {
       "entropy": 4.2009,
       "file": "docs/maintenance-debt-priority.md",
-      "fingerprint": "afd83a493e32dae034d8fb3e44585a0ce39e7587e9fa00b3b90757d446b1bbbc",
+      "fingerprint": "9f0bad74ece6a81102cd7f26661bdbda480661f83a43dc61124ba71454432903",
       "kind": "high_entropy",
-      "line": 49,
+      "line": 65,
       "token": "TryHackMe/00-foundations/intro-cybersecurity/offensive-security-intro"
     },
     {
       "entropy": 4.3721,
       "file": "docs/maintenance-debt-priority.md",
-      "fingerprint": "b2aa6179d12d3be477a9a75c97a4290037bfd4a71133a4beeb77d7ba74956916",
-      "kind": "high_entropy",
-      "line": 68,
-      "token": "TryHackMe/10-web/how-the-web-works/02-HTTP-in-detailed"
-    },
-    {
-      "entropy": 4.3321,
-      "file": "docs/maintenance-debt-priority.md",
-      "fingerprint": "689e489cbc2233b8ef1ea221cb5656db45603e8b3c60dfe6caaa83a7aec2ffab",
-      "kind": "high_entropy",
-      "line": 69,
-      "token": "TryHackMe/00-foundations/intro-cybersecurity/search-skills"
-    },
-    {
-      "entropy": 4.4258,
-      "file": "docs/maintenance-debt-priority.md",
-      "fingerprint": "d80e66c34cdc3f34dd12b3c5142199a83c0fbc97709c029fb3e487c807fc9f47",
-      "kind": "high_entropy",
-      "line": 70,
-      "token": "TryHackMe/30-windows/windows-fundamentals/1"
-    },
-    {
-      "entropy": 4.3185,
-      "file": "docs/maintenance-debt-priority.md",
-      "fingerprint": "74af0c17a65439350504172e28451d1b78030ba122ba7584ed8dfa88a67aad42",
-      "kind": "high_entropy",
-      "line": 71,
-      "token": "TryHackMe/00-foundations/learning-meta/introductory-researching"
-    },
-    {
-      "entropy": 4.3468,
-      "file": "docs/maintenance-debt-priority.md",
-      "fingerprint": "297766c478f589581ba09b865f49004dbd1603f958f86fe5626d35f6c8d9312c",
-      "kind": "high_entropy",
-      "line": 72,
-      "token": "TryHackMe/00-foundations/learning-meta/become-a-hacker"
-    },
-    {
-      "entropy": 4.427,
-      "file": "docs/maintenance-debt-priority.md",
-      "fingerprint": "0edfd3ce53cdaa7c92c4257d62f33db171764b8f890e51d6b9c3c0ffdd49d0a3",
-      "kind": "high_entropy",
-      "line": 83,
-      "token": "TryHackMe/40-networking/network-fundamentals/01-what-is-networking"
-    },
-    {
-      "entropy": 4.2009,
-      "file": "docs/maintenance-debt-priority.md",
-      "fingerprint": "4d1af03fb248b6f8e68ae6d23144b8b8a9421a844168a3de3d65166828aee22c",
+      "fingerprint": "95ed2c39c3fc0e11c983a817ea3a8f71f7f419e93634771f927f1d675e8cbd8f",
       "kind": "high_entropy",
       "line": 84,
+      "token": "TryHackMe/10-web/how-the-web-works/02-HTTP-in-detailed"
+    },
+    {
+      "entropy": 4.3321,
+      "file": "docs/maintenance-debt-priority.md",
+      "fingerprint": "c45a05340d5e295cc7dc39dc53a027c0abcb25ba78a809b8c5921a4b241e4d3a",
+      "kind": "high_entropy",
+      "line": 85,
+      "token": "TryHackMe/00-foundations/intro-cybersecurity/search-skills"
+    },
+    {
+      "entropy": 4.4258,
+      "file": "docs/maintenance-debt-priority.md",
+      "fingerprint": "2731e76c73b2455d459031ba670a4b6df067123555ca023468de6695cde1c5e9",
+      "kind": "high_entropy",
+      "line": 86,
+      "token": "TryHackMe/30-windows/windows-fundamentals/1"
+    },
+    {
+      "entropy": 4.3185,
+      "file": "docs/maintenance-debt-priority.md",
+      "fingerprint": "ccd6ef1ccca7496f30c2abe100da08c883b548f4617e13a770e4c31fabb2fa7e",
+      "kind": "high_entropy",
+      "line": 87,
+      "token": "TryHackMe/00-foundations/learning-meta/introductory-researching"
+    },
+    {
+      "entropy": 4.3468,
+      "file": "docs/maintenance-debt-priority.md",
+      "fingerprint": "83dd1e912957df111e4ecd0a5de725cd1f634b92c3255062c6e0a8bed4917cb2",
+      "kind": "high_entropy",
+      "line": 88,
+      "token": "TryHackMe/00-foundations/learning-meta/become-a-hacker"
+    },
+    {
+      "entropy": 4.427,
+      "file": "docs/maintenance-debt-priority.md",
+      "fingerprint": "151ad7b9ce54404c2e4749713869dd7bb18aefcbcea7cebb3332650fc463f698",
+      "kind": "high_entropy",
+      "line": 99,
+      "token": "TryHackMe/40-networking/network-fundamentals/01-what-is-networking"
+    },
+    {
+      "entropy": 4.2009,
+      "file": "docs/maintenance-debt-priority.md",
+      "fingerprint": "0985abd0c3e4547a0087413121cbb288219b504532e0cd3ee4d44bf90e058ff0",
+      "kind": "high_entropy",
+      "line": 100,
       "token": "TryHackMe/00-foundations/intro-cybersecurity/offensive-security-intro"
     },
     {
       "entropy": 4.4258,
       "file": "docs/maintenance-debt-priority.md",
-      "fingerprint": "15a0b15c1dbac69bc62a5024b2e86591bff9668e973524f8be6147dfbc937887",
+      "fingerprint": "e0c1853486a4de8a148f1160e357a6c71446c250866e975a0e7f6a1eb487410a",
       "kind": "high_entropy",
-      "line": 97,
+      "line": 113,
       "token": "TryHackMe/30-windows/windows-fundamentals/2"
     },
     {
       "entropy": 4.2042,
       "file": "docs/maintenance-debt-priority.md",
-      "fingerprint": "d1be96c2a46b9e8c93c4a6e2aaf99a21b8334f04680796c6daaf5f843149741d",
+      "fingerprint": "381ab88afd06344e248611d191709b7350af00280f8575a9346f93e5ec46a291",
       "kind": "high_entropy",
-      "line": 98,
+      "line": 114,
       "token": "TryHackMe/00-foundations/intro-cybersecurity/defensive-security-intro"
     },
     {
       "entropy": 4.4172,
       "file": "docs/maintenance-debt-priority.md",
-      "fingerprint": "78196f0ca1a4884efb2d12d0408d3185be1063b2bb94956edd00574c2ac7a693",
+      "fingerprint": "8a5754db4a41bf098b4bf2e4f5f3ce9fd06f8a7ab041bb9f4631d9144d7fc192",
       "kind": "high_entropy",
-      "line": 99,
+      "line": 115,
       "token": "TryHackMe/10-web/how-the-web-works/01-DNS-in-detail"
     },
     {
       "entropy": 4.2135,
       "file": "docs/maintenance-debt-priority.md",
-      "fingerprint": "acfd407381185caea0c04063408b8fb4fe5ddbb93f4a3c09f42f345183162933",
+      "fingerprint": "579ab7e05abf7c60988f7639e567cf1dcd95be61fa47acae820f2e9743460948",
       "kind": "high_entropy",
-      "line": 100,
+      "line": 116,
       "token": "TryHackMe/80-blue-team/jr-analyst-intro/jr-analyst-intro"
     },
     {
-      "entropy": 4.1342,
-      "file": "docs/placeholder-closure.md",
-      "fingerprint": "e37579f4ff2747b012bf720fc2b86f356b1def0ebd8c9c7ebbb2ac6e4ca48099",
+      "entropy": 4.0431,
+      "file": "docs/maintenance-quick-reference.md",
+      "fingerprint": "634f45910b47a00004e301d416f20c0eb5882b9ff179d2e8e8bae6c36af7172b",
       "kind": "high_entropy",
-      "line": 11,
-      "token": "20Projects/p-sec-write-ups/docs/placeholder-policy"
+      "line": 62,
+      "token": "scripts/generate_markdownlint_debt"
     },
     {
-      "entropy": 4.128,
-      "file": "docs/placeholder-closure.md",
-      "fingerprint": "3bf72ac31a08d1276715e23a87f29dcb86da12f98d9915582a2dad5fa2bee46e",
+      "entropy": 4.0191,
+      "file": "docs/maintenance-quick-reference.md",
+      "fingerprint": "cb30f608ae11031d646e8f9933f06e08440dfb002941c1e9f8ff045f2f8dfb8c",
       "kind": "high_entropy",
-      "line": 12,
-      "token": "20Projects/p-sec-write-ups/scripts/check_placeholders"
+      "line": 67,
+      "token": "reports/markdownlint-debt-current-local"
     },
     {
-      "entropy": 4.2235,
-      "file": "docs/placeholder-closure.md",
-      "fingerprint": "3e6cb06a280c667c36d6456cb8ec538690d1e119bb9c9fd7d55b264e243849e2",
+      "entropy": 4.0431,
+      "file": "docs/maintenance-quick-reference.md",
+      "fingerprint": "9046a534c883fbd46e36ff7ec53cd2d90a9d2c73fe487fdc451571122b9d9335",
       "kind": "high_entropy",
-      "line": 14,
-      "token": "20Projects/p-sec-write-ups/docs/placeholder-convergence-audit"
-    },
-    {
-      "entropy": 4.3216,
-      "file": "docs/placeholder-closure.md",
-      "fingerprint": "65c042f4da9c8e26bcaf79c31243585f9b988a813949c6c1b19dccf8f560ecc0",
-      "kind": "high_entropy",
-      "line": 15,
-      "token": "20Projects/p-sec-write-ups/docs/placeholder-execution-backlog"
+      "line": 72,
+      "token": "scripts/generate_markdownlint_debt"
     },
     {
       "entropy": 4.0653,
@@ -345,500 +305,396 @@
       "token": "docs/placeholder-execution-backlog"
     },
     {
-      "entropy": 4.1872,
-      "file": "docs/placeholder-closure.md",
-      "fingerprint": "2690840a7e99b626c20f8492835cfec533f6f53fd5b82f26aa4594e842ea007d",
-      "kind": "high_entropy",
-      "line": 16,
-      "token": "20Projects/p-sec-write-ups/docs/placeholder-false-positive-triage"
-    },
-    {
-      "entropy": 4.2306,
-      "file": "docs/placeholder-closure.md",
-      "fingerprint": "a080de0f0b7bbbc04e6954a11c428cecf6f71ca12001fe61187a6be811db47e6",
-      "kind": "high_entropy",
-      "line": 17,
-      "token": "20Projects/p-sec-write-ups/docs/placeholder-policy-expansion"
-    },
-    {
-      "entropy": 4.1342,
-      "file": "docs/placeholder-closure.md",
-      "fingerprint": "43fda0e3fd3a92f0848ae1bbf9d953bb1474bbc964102814d4c530cbb9d187cf",
-      "kind": "high_entropy",
-      "line": 21,
-      "token": "20Projects/p-sec-write-ups/docs/placeholder-policy"
-    },
-    {
-      "entropy": 4.1342,
-      "file": "docs/placeholder-closure.md",
-      "fingerprint": "b8a83fb67f138a49423dd493e7b14eaef102b5a0104479a7a2790f0e53204cea",
-      "kind": "high_entropy",
-      "line": 70,
-      "token": "20Projects/p-sec-write-ups/docs/placeholder-policy"
-    },
-    {
-      "entropy": 4.128,
-      "file": "docs/placeholder-closure.md",
-      "fingerprint": "05ae8429b239fdf5b76c47b70bf5878298b97f990e663ed11b380c50ff9adb2d",
-      "kind": "high_entropy",
-      "line": 71,
-      "token": "20Projects/p-sec-write-ups/scripts/check_placeholders"
-    },
-    {
       "entropy": 4.0851,
       "file": "docs/placeholder-convergence-audit.md",
-      "fingerprint": "b21338dceb45a2b4f2173c052877bc571ba40e654b6c8c3e7eee59476ee38426",
+      "fingerprint": "f1be0853589be18386249e8a1ec8baf9ff6288e7c4747ef6fc091d70220fbafb",
       "kind": "high_entropy",
-      "line": 16,
+      "line": 26,
       "token": "CUPID_MASTER_KEY_2024_XOXO"
     },
     {
       "entropy": 4.0851,
       "file": "docs/placeholder-convergence-audit.md",
-      "fingerprint": "aeae7c481fdedec0e8fa8829641494690d5c44952a10900f44091875fa8c7c55",
+      "fingerprint": "b3251036bf2e2f6edfeaaf6cc4fa65fce175d56e7c7adfd5e27632fbaefb57eb",
       "kind": "high_entropy",
-      "line": 119,
+      "line": 129,
       "token": "CUPID_MASTER_KEY_2024_XOXO"
     },
     {
       "entropy": 4.0851,
       "file": "docs/placeholder-execution-backlog.md",
-      "fingerprint": "90a60078cb211a0117f85ab45951cce2418dc55bc0179d9caddebc7fda0a3d18",
+      "fingerprint": "e65012433d106e0878943cf4ee6c4c0ef3ae67c6daf21784059cb7fcf495eeb2",
       "kind": "high_entropy",
-      "line": 11,
+      "line": 23,
       "token": "CUPID_MASTER_KEY_2024_XOXO"
     },
     {
       "entropy": 4.386,
       "file": "docs/placeholder-execution-backlog.md",
-      "fingerprint": "e62a3559d7a22459f18364a9cdd0ffd338c41bb71e8e7e5ec08a5ee861bc030c",
+      "fingerprint": "40c01fc9bde0d595a2a6b77cf95b4f5ffae1d96221367be1ce12044d32cc2af5",
       "kind": "high_entropy",
-      "line": 51,
+      "line": 63,
       "token": "TryHackMe/00-foundations/command-line/linux-shells"
     },
     {
       "entropy": 4.2963,
       "file": "docs/placeholder-execution-backlog.md",
-      "fingerprint": "103d597afc4c997f002ebf93148ee11197588615237c3db8a81ccd2b485bda42",
+      "fingerprint": "e264c0b871c32b07846d5fc126c30ec3889c7c0707efa56356c676c202098b36",
       "kind": "high_entropy",
-      "line": 52,
+      "line": 64,
       "token": "TryHackMe/00-foundations/command-line/tor"
     },
     {
       "entropy": 4.3185,
       "file": "docs/placeholder-execution-backlog.md",
-      "fingerprint": "8d2546ef553ec52a09503f2139bc0378a0e644839f92ccab970ddc3e60c41215",
+      "fingerprint": "cbf5695767792854ac0de7e2e22fd0a5a93e59c359627565d76481424a3e2a7f",
       "kind": "high_entropy",
-      "line": 53,
+      "line": 65,
       "token": "TryHackMe/00-foundations/learning-meta/introductory-researching"
     },
     {
       "entropy": 4.3282,
       "file": "docs/placeholder-execution-backlog.md",
-      "fingerprint": "e4f9ead7fd5734e00f020b99812219e1ea4e89955cef04a169934b73e2cec216",
+      "fingerprint": "4bb2f42d14cc614b776a295866c09f35f76b417034c5c971f74ad618271e3034",
       "kind": "high_entropy",
-      "line": 54,
+      "line": 66,
       "token": "TryHackMe/00-foundations/security-principles"
     },
     {
       "entropy": 4.236,
       "file": "docs/placeholder-execution-backlog.md",
-      "fingerprint": "8b331dbf00a2a76bdc99c853fa8cfa36872a763fd17ed74fa5a7cb3f719fc132",
+      "fingerprint": "85b169e9be6c77d42cec982038eb729ebaf2eeeb3306b305740aff5f3eae051c",
       "kind": "high_entropy",
-      "line": 55,
+      "line": 67,
       "token": "TryHackMe/10-web/google-dorking"
     },
     {
       "entropy": 4.4534,
       "file": "docs/placeholder-execution-backlog.md",
-      "fingerprint": "d4427b0ecb473f8ca09f9a2a776e23204ed5be2b69be2627230f4071614304f7",
+      "fingerprint": "868daeee0c4eddbdbcb23c9896db034fa0fcac235a1b0b4d908888a7e04076be",
       "kind": "high_entropy",
-      "line": 56,
+      "line": 68,
       "token": "TryHackMe/20-linux/linux-fundamentals/partII"
     },
     {
       "entropy": 4.447,
       "file": "docs/placeholder-execution-backlog.md",
-      "fingerprint": "fd4fbb1cfb2b34e8fc2e14fc9195d7796549611131c67acd62f048d4b971e8b7",
+      "fingerprint": "4f2177a877a5668077206add0b7b8a84164fbb66d24a115e2f1e0b4aa00b8d68",
       "kind": "high_entropy",
-      "line": 57,
+      "line": 69,
       "token": "TryHackMe/20-linux/linux-fundamentals/partIII"
     },
     {
       "entropy": 4.4179,
       "file": "docs/placeholder-execution-backlog.md",
-      "fingerprint": "6b64d5973ee374fb311811473f100760242f81f2def1094119420da3298a2ca8",
+      "fingerprint": "79bc87b480c1582f567a88dd7016cffe9bcf40148068b3066f48d2c9026ff0d0",
       "kind": "high_entropy",
-      "line": 58,
+      "line": 70,
       "token": "TryHackMe/30-windows/windows-fundamentals/active-director-basic"
     },
     {
       "entropy": 4.4361,
       "file": "docs/placeholder-execution-backlog.md",
-      "fingerprint": "7aa5d02feef336235a323b95d66d645db0d32f2eec32547f251b842bc00b69e0",
+      "fingerprint": "d85f993a80828dcff642db771f703799f748e07ece262753ac2364d060c74970",
       "kind": "high_entropy",
-      "line": 59,
+      "line": 71,
       "token": "TryHackMe/40-networking/firewall-fundamentals"
     },
     {
       "entropy": 4.5237,
       "file": "docs/placeholder-execution-backlog.md",
-      "fingerprint": "c0814b20f001038357cd15b0cea82f879e644f9507e925d86a348dceca862794",
+      "fingerprint": "f20ddd675a11650212e79159f8355f5c60d10a1ccd92d575c1cf36a71358258d",
       "kind": "high_entropy",
-      "line": 60,
+      "line": 72,
       "token": "TryHackMe/40-networking/network-fundamentals/02-intro-to-LAN"
     },
     {
       "entropy": 4.1833,
       "file": "docs/placeholder-execution-backlog.md",
-      "fingerprint": "a8bd5f50fbc228eab9c82b43238bb8a5bfc343f522d3648c74db8ba985325b8d",
+      "fingerprint": "6bddbf5a51b7a06c77986be062c8ee40b3d1154d9e5e250571ff840e33381bad",
       "kind": "high_entropy",
-      "line": 61,
+      "line": 73,
       "token": "TryHackMe/40-networking/networking-core-protocols"
     },
     {
       "entropy": 4.1809,
       "file": "docs/placeholder-execution-backlog.md",
-      "fingerprint": "b9b91d5ec54d1dad83e59acaf514ccead7e1cede4d93abd9f0cc95467e77dcf5",
+      "fingerprint": "d258ad6f24b96cee2f7bbc0339caa6741e1291e0fef168de732b54622a645719",
       "kind": "high_entropy",
-      "line": 62,
+      "line": 74,
       "token": "TryHackMe/40-networking/networking-essentials"
     },
     {
       "entropy": 4.315,
       "file": "docs/placeholder-execution-backlog.md",
-      "fingerprint": "aa406ebef4a8c28619e82a933f399a5944ddc2d83dff782b15edc3d566f5c58b",
+      "fingerprint": "8f39d836e571726fee31ae369ff1926b69598c2ef669869e630eb0faaa0676f5",
       "kind": "high_entropy",
-      "line": 63,
+      "line": 75,
       "token": "TryHackMe/50-crypto/hashing-basics"
     },
     {
       "entropy": 4.249,
       "file": "docs/placeholder-execution-backlog.md",
-      "fingerprint": "861351d349a7ce1a4c9ecd39927068782e02ed1c0e730bbd276ca99825b2f931",
+      "fingerprint": "959eb80936cf2c0444cdcea4788eab09082824e9606e0249ea0e6e1755e2ee0c",
       "kind": "high_entropy",
-      "line": 64,
+      "line": 76,
       "token": "TryHackMe/50-crypto/john-the-ripper-the-basics"
     },
     {
       "entropy": 4.2844,
       "file": "docs/placeholder-execution-backlog.md",
-      "fingerprint": "80a2a5c326dca400c67fed1beea6f2dbeb3e864e9cfb2e6fef1d80d04b5e893f",
+      "fingerprint": "61da7cb8830398f6bf9dd47d4d264d7a6ab4453e3fbbeb62af940b1769a32c0a",
       "kind": "high_entropy",
-      "line": 65,
+      "line": 77,
       "token": "TryHackMe/50-crypto/public-key-cryptography-basics"
     },
     {
       "entropy": 4.5155,
       "file": "docs/placeholder-execution-backlog.md",
-      "fingerprint": "fea2cbd8c8724b8eb9901eb19edb07fc7b2aa0caaaf3bd12239422c18e542222",
+      "fingerprint": "c5d91d498e05eda454d025f19664a6280775a1da2c32d77fd87a50cf3914ae0c",
       "kind": "high_entropy",
-      "line": 66,
+      "line": 78,
       "token": "TryHackMe/80-blue-team/30-detection/monikerlink-cve-2024-21413"
     },
     {
       "entropy": 4.0913,
       "file": "docs/placeholder-execution-backlog.md",
-      "fingerprint": "bc77db992b91ff2c6c9c78dedf676c4dec8b2f15e2b80084fbd456da2644d8f0",
+      "fingerprint": "4745280c6750c02ac21b9f9b1582d3faee5ca4166408001de80a441680a4dec2",
       "kind": "high_entropy",
-      "line": 67,
+      "line": 79,
       "token": "TryHackMe/80-blue-team/security-awareness/security-awareness"
     },
     {
       "entropy": 4.456,
       "file": "docs/placeholder-execution-backlog.md",
-      "fingerprint": "fa161490580c0f04b0f7f47367f76b0f6fff0d3881218d91442f496dc98a7eb6",
+      "fingerprint": "cd91cd8b8f6d7128ad2d46a391c1dc3bd676014ba1303d28b39621a54e90885d",
       "kind": "high_entropy",
-      "line": 68,
+      "line": 80,
       "token": "TryHackMe/90-events/love-at-first-breach-2026/valenfind"
     },
     {
       "entropy": 4.4312,
       "file": "docs/placeholder-execution-backlog.md",
-      "fingerprint": "af15cc9fd6a43ce0a0ad6d1fc6f5038ee3419c1223d8ecea3a415b383ebbd4fc",
+      "fingerprint": "0c084c41e0a1e56d078c6d92f07e81afe8008cf3a6c26305b2aedf71d02593f4",
       "kind": "high_entropy",
-      "line": 69,
+      "line": 81,
       "token": "TryHackMe/90-events/love-at-first-breach-2026/when-hearts-collide"
     },
     {
       "entropy": 4.3638,
       "file": "docs/placeholder-execution-backlog.md",
-      "fingerprint": "e426d695d3fdd00a0453238b7458878f61f76961e7c89ee5ad5692c10d694681",
+      "fingerprint": "ec39822faf32920c3226349fd411e282c6bbd057d8a9cf2dd820432b7b65e554",
       "kind": "high_entropy",
-      "line": 70,
+      "line": 82,
       "token": "TryHackMe/90-events/thm-aoc-2025/Day"
     },
     {
       "entropy": 4.3638,
       "file": "docs/placeholder-execution-backlog.md",
-      "fingerprint": "edf2ad29f0f714e0ed6544269abee3d977d28ba2b8439605c6c671d16692739f",
+      "fingerprint": "a32db20341a1312053da594a635abda8bb0254ff96ae839ffe1000fd90d51eaa",
       "kind": "high_entropy",
-      "line": 71,
+      "line": 83,
       "token": "TryHackMe/90-events/thm-aoc-2025/Day"
     },
     {
       "entropy": 4.3638,
       "file": "docs/placeholder-execution-backlog.md",
-      "fingerprint": "85a8283d7f06f520ab15c59e8dc85b06354a04dd029e9fa3ac5ac546499c04e8",
+      "fingerprint": "55b0662018b4755d42eb3fb76ab187a362f46f84f4900270794fb0abc9bc65e3",
       "kind": "high_entropy",
-      "line": 72,
+      "line": 84,
       "token": "TryHackMe/90-events/thm-aoc-2025/Day"
     },
     {
       "entropy": 4.3638,
       "file": "docs/placeholder-execution-backlog.md",
-      "fingerprint": "5ecd336e4349d3a89240d8a34126ea3e4ff2a07d9e6e2de0feb2182e69cb9572",
+      "fingerprint": "4e11f64c3adddd07946df9b9408a34875c9d7a2ba3b88d0524a796b84173fc1b",
       "kind": "high_entropy",
-      "line": 73,
+      "line": 85,
       "token": "TryHackMe/90-events/thm-aoc-2025/Day"
     },
     {
       "entropy": 4.3185,
       "file": "docs/placeholder-false-positive-triage.md",
-      "fingerprint": "a0b46ec50363ad1b4e82184a5043cf2a8cb03da8677d879d18318706e0e03508",
+      "fingerprint": "ca2074fc43a12682a7be9029525e230b69bdf7643c2f657a5f646b9a401c772c",
       "kind": "high_entropy",
-      "line": 38,
+      "line": 50,
       "token": "TryHackMe/00-foundations/learning-meta/introductory-researching"
     },
     {
       "entropy": 4.4534,
       "file": "docs/placeholder-false-positive-triage.md",
-      "fingerprint": "e2c56f31ea3ef123084b3b48b69c04db3949dad3a9a92af9988e48f1694c36a8",
+      "fingerprint": "65f8e46f4ef7ea9f338b3a92a1cf3ed013b1dee6ca0f4e8e70717430ff668f9f",
       "kind": "high_entropy",
-      "line": 39,
+      "line": 51,
       "token": "TryHackMe/20-linux/linux-fundamentals/partII"
     },
     {
       "entropy": 4.447,
       "file": "docs/placeholder-false-positive-triage.md",
-      "fingerprint": "0b228e299771b2bada3b63be78ccd8ed86f2dec1e0c28471c91c54f0af72d8e8",
+      "fingerprint": "3e145a1eeb3049c187ad4f01af01fa55b7c1d5944ff0c246204aed88a4793b21",
       "kind": "high_entropy",
-      "line": 40,
+      "line": 52,
       "token": "TryHackMe/20-linux/linux-fundamentals/partIII"
     },
     {
       "entropy": 4.1833,
       "file": "docs/placeholder-false-positive-triage.md",
-      "fingerprint": "c3f7ebff7d99825f8ffa4a8988300671952b692baed0a6ed4e9c420ca88b3b25",
+      "fingerprint": "9c3d81b1a2ba3e2de3c6b2c9305c2fb36e5f0a2ec93bca2f3954728177894bcf",
       "kind": "high_entropy",
-      "line": 41,
+      "line": 53,
       "token": "TryHackMe/40-networking/networking-core-protocols"
     },
     {
       "entropy": 4.2844,
       "file": "docs/placeholder-false-positive-triage.md",
-      "fingerprint": "ddd87be73c61f5df661f7bc487936470eb9a7468cd75473b8ad7645f5a514e75",
+      "fingerprint": "9057b353b09436f76a9fb8e3d88ac8f72ce946e54c0840fe4aacaaa052ee8bf2",
       "kind": "high_entropy",
-      "line": 42,
+      "line": 54,
       "token": "TryHackMe/50-crypto/public-key-cryptography-basics"
     },
     {
       "entropy": 4.4312,
       "file": "docs/placeholder-false-positive-triage.md",
-      "fingerprint": "d273816096f3a982902348b1ea24561d057104c9a3bb71407a51ed45fb80ff6d",
+      "fingerprint": "d2e49d232efa4e8cb27eb3756cdccb01471cf493556798d6f2602721fbe12905",
       "kind": "high_entropy",
-      "line": 43,
+      "line": 55,
       "token": "TryHackMe/90-events/love-at-first-breach-2026/when-hearts-collide"
     },
     {
       "entropy": 4.386,
       "file": "docs/placeholder-false-positive-triage.md",
-      "fingerprint": "305319011a1daddc9126fbbd4395faf8e33a63a8c876450b79460e0878dc060b",
+      "fingerprint": "7bab96494b1835b06dfe48a00e789b249e9c9c6aea580ad5dcce3f1ae4383c08",
       "kind": "high_entropy",
-      "line": 60,
+      "line": 72,
       "token": "TryHackMe/00-foundations/command-line/linux-shells"
     },
     {
       "entropy": 4.2963,
       "file": "docs/placeholder-false-positive-triage.md",
-      "fingerprint": "1382ab459bb36ad5b26029382d6a673bbf3806807c2f223b05e5777e9d5b8b6a",
+      "fingerprint": "22ff2fe7e77006155b0601172a5274e0de9387bc881c5c2ffbf24d7f535daca0",
       "kind": "high_entropy",
-      "line": 61,
+      "line": 73,
       "token": "TryHackMe/00-foundations/command-line/tor"
     },
     {
       "entropy": 4.3282,
       "file": "docs/placeholder-false-positive-triage.md",
-      "fingerprint": "8ee2b54c62da9d6010e2eba65ccbab014d72010e4d1938735e3a91ac50dbe8cf",
+      "fingerprint": "fb9731d83d20becbfa594b674ba694645c8ec33002c1cbba10b920b4a1df0b81",
       "kind": "high_entropy",
-      "line": 62,
+      "line": 74,
       "token": "TryHackMe/00-foundations/security-principles"
     },
     {
       "entropy": 4.236,
       "file": "docs/placeholder-false-positive-triage.md",
-      "fingerprint": "1cf7d24a557a3d705b66bb174b0012012acbaf05143f04f780f5f2ab9410e16b",
+      "fingerprint": "038453158c9b64e4b317c04c41abe802557162337cc0c1cb6b8c431a93a6aa02",
       "kind": "high_entropy",
-      "line": 63,
+      "line": 75,
       "token": "TryHackMe/10-web/google-dorking"
     },
     {
       "entropy": 4.4179,
       "file": "docs/placeholder-false-positive-triage.md",
-      "fingerprint": "0f451bc614896f9053ee28cc8fa20db4455a974e12864240d4bb4d13c02394f4",
+      "fingerprint": "b842d0035a3868ce66a9dc844230f9ad5fb92ce004e6d3cc1b5abf5463f55d4a",
       "kind": "high_entropy",
-      "line": 64,
+      "line": 76,
       "token": "TryHackMe/30-windows/windows-fundamentals/active-director-basic"
     },
     {
       "entropy": 4.1809,
       "file": "docs/placeholder-false-positive-triage.md",
-      "fingerprint": "3df7f6108a827444211323cb03b96007065a4e1f1c3435b33d65a84d3a28e502",
+      "fingerprint": "c77b15512cc0b919ddb82a6a3d604b7c1b1ce87057529ab091be8aef75e1df5b",
       "kind": "high_entropy",
-      "line": 65,
+      "line": 77,
       "token": "TryHackMe/40-networking/networking-essentials"
     },
     {
       "entropy": 4.315,
       "file": "docs/placeholder-false-positive-triage.md",
-      "fingerprint": "fefa16c39eb7d99824cec56c522dd9f11f153586099750795f2a4862b5000a35",
+      "fingerprint": "5cd9d679d784c588a2330e42f29349ea4bd026585779cbfa9ac73fedd85c6c6e",
       "kind": "high_entropy",
-      "line": 66,
+      "line": 78,
       "token": "TryHackMe/50-crypto/hashing-basics"
     },
     {
       "entropy": 4.249,
       "file": "docs/placeholder-false-positive-triage.md",
-      "fingerprint": "f9abe8fbee4237c25444c340a1c8ae91250d369ba3afca021e9b18c994229623",
+      "fingerprint": "d8f71a0020b411011036890685b2119b77c5401e7c7fbbd2e76ba06cd858bb88",
       "kind": "high_entropy",
-      "line": 67,
+      "line": 79,
       "token": "TryHackMe/50-crypto/john-the-ripper-the-basics"
     },
     {
       "entropy": 4.5155,
       "file": "docs/placeholder-false-positive-triage.md",
-      "fingerprint": "dec570bf58c712dd76c4d027afaaf3b36c6b3b88f7fe6cc6a7d3eb771b5cde4c",
+      "fingerprint": "bc7fcd523a0e641ebc5c79423374bfb13ec78bf8e8315f7d5299ae9f7c6d34e5",
       "kind": "high_entropy",
-      "line": 68,
+      "line": 80,
       "token": "TryHackMe/80-blue-team/30-detection/monikerlink-cve-2024-21413"
     },
     {
       "entropy": 4.0913,
       "file": "docs/placeholder-false-positive-triage.md",
-      "fingerprint": "b3774fc53518507ed3248110cab3b8ade481daaa90fdecf1e8900cecbe423f3c",
+      "fingerprint": "018bed02506f465cd23bee10d1264f274ef82538a9a2041888acfacf5ed5ce95",
       "kind": "high_entropy",
-      "line": 69,
+      "line": 81,
       "token": "TryHackMe/80-blue-team/security-awareness/security-awareness"
     },
     {
       "entropy": 4.456,
       "file": "docs/placeholder-false-positive-triage.md",
-      "fingerprint": "cc9d5832b566a4c6f119527aa49d5a7773d142fbeed383b5b90896389c2801c6",
+      "fingerprint": "c3452119a5a9c79934a735c666389f0e4140754e776cda4c5d7c12a3f6c351db",
       "kind": "high_entropy",
-      "line": 70,
+      "line": 82,
       "token": "TryHackMe/90-events/love-at-first-breach-2026/valenfind"
     },
     {
       "entropy": 4.3638,
       "file": "docs/placeholder-false-positive-triage.md",
-      "fingerprint": "9ea28a0893a3674bbb8cd8328b08189ea702ad03a69e9974fd1d6257af78efc3",
+      "fingerprint": "fd182e651be6b163a2a5576e8455e411c3ed05b88709d68a3a1640dd9e42f96f",
       "kind": "high_entropy",
-      "line": 71,
+      "line": 83,
       "token": "TryHackMe/90-events/thm-aoc-2025/Day"
     },
     {
       "entropy": 4.3638,
       "file": "docs/placeholder-false-positive-triage.md",
-      "fingerprint": "590a22dbf41ea26389785f111df20ecd3b487b656de15790eebd450acf6f175b",
+      "fingerprint": "1bbd6cbe54b10ca5bb140b336cae48aac15316b23fe1948fe6d433cf516c7f80",
       "kind": "high_entropy",
-      "line": 72,
+      "line": 84,
       "token": "TryHackMe/90-events/thm-aoc-2025/Day"
     },
     {
       "entropy": 4.3638,
       "file": "docs/placeholder-false-positive-triage.md",
-      "fingerprint": "03946a781788b065b7a6e08a4f6cfce9a121cd22f8ad82e8fecfa7a768ba0c9d",
+      "fingerprint": "3e8456a5d146cd1cbc92582e7168476a144f77309911f9d9c93c50c9b568bb2e",
       "kind": "high_entropy",
-      "line": 73,
+      "line": 85,
       "token": "TryHackMe/90-events/thm-aoc-2025/Day"
     },
     {
       "entropy": 4.3638,
       "file": "docs/placeholder-false-positive-triage.md",
-      "fingerprint": "6fe3295b56ab840664a96d832e4ca5153e1a3f657e1e9421a3f4f2031690e03b",
+      "fingerprint": "1aca511b04c153e1594e36d7f7c3a124d98456a9de396320462dc0b377043892",
       "kind": "high_entropy",
-      "line": 74,
+      "line": 86,
       "token": "TryHackMe/90-events/thm-aoc-2025/Day"
-    },
-    {
-      "entropy": 4.1342,
-      "file": "docs/placeholder-policy-expansion.md",
-      "fingerprint": "d5880a4467a4ba57cc0705fb06c3c1177ef255bb008ad59af8663a6c427b5569",
-      "kind": "high_entropy",
-      "line": 9,
-      "token": "20Projects/p-sec-write-ups/docs/placeholder-policy"
-    },
-    {
-      "entropy": 4.3216,
-      "file": "docs/placeholder-policy-expansion.md",
-      "fingerprint": "d1479e3e125cf9abb152669cc16a85bba95948e17a8d1fa68ba6a9c09aaf5a17",
-      "kind": "high_entropy",
-      "line": 10,
-      "token": "20Projects/p-sec-write-ups/docs/placeholder-execution-backlog"
     },
     {
       "entropy": 4.0653,
       "file": "docs/placeholder-policy-expansion.md",
-      "fingerprint": "6749a819890e4a189e0e3d81ea18b6aeac112506142f3d4e7e33a50e36bbeff8",
+      "fingerprint": "d4627caca768b82a3ce9096d0686c3bf1481a599ac37063ce2213ec5e0e48141",
       "kind": "high_entropy",
-      "line": 10,
+      "line": 22,
       "token": "docs/placeholder-execution-backlog"
-    },
-    {
-      "entropy": 4.1872,
-      "file": "docs/placeholder-policy-expansion.md",
-      "fingerprint": "a2eb1e917d99ebb566409a203323bc5200f207d42d47ab590407680e13d70aaa",
-      "kind": "high_entropy",
-      "line": 11,
-      "token": "20Projects/p-sec-write-ups/docs/placeholder-false-positive-triage"
-    },
-    {
-      "entropy": 4.1872,
-      "file": "docs/placeholder-policy-expansion.md",
-      "fingerprint": "b0f62fc33756dd25833e91c9f6beeee8be88b7a5227e5661eedefbe3a0e638e9",
-      "kind": "high_entropy",
-      "line": 24,
-      "token": "20Projects/p-sec-write-ups/docs/placeholder-false-positive-triage"
-    },
-    {
-      "entropy": 4.3216,
-      "file": "docs/placeholder-policy-expansion.md",
-      "fingerprint": "8d132f4360848e17617cf2929174b57b021b09a2b5824e0c277a57247475a6ca",
-      "kind": "high_entropy",
-      "line": 25,
-      "token": "20Projects/p-sec-write-ups/docs/placeholder-execution-backlog"
     },
     {
       "entropy": 4.0653,
       "file": "docs/placeholder-policy-expansion.md",
-      "fingerprint": "e63ec8019b75fb037a32e9c27fa024ad847d9f388ac107b40ace69346ff15a7d",
-      "kind": "high_entropy",
-      "line": 25,
-      "token": "docs/placeholder-execution-backlog"
-    },
-    {
-      "entropy": 4.1342,
-      "file": "docs/placeholder-policy-expansion.md",
-      "fingerprint": "c61723c252af2b7e7ed016e994ad978d41d5498d9e7dd25e0a602b39c8cfc954",
+      "fingerprint": "ceab86782132bb47150e734d6904ccf274765da101c3d0fcbfe9e5c348355470",
       "kind": "high_entropy",
       "line": 37,
-      "token": "20Projects/p-sec-write-ups/docs/placeholder-policy"
-    },
-    {
-      "entropy": 4.1872,
-      "file": "docs/placeholder-policy-expansion.md",
-      "fingerprint": "d69bdbb4b83442ea8ffca980baf8188cc0abd9a39ce1aae80ccddf23afe895a3",
-      "kind": "high_entropy",
-      "line": 55,
-      "token": "20Projects/p-sec-write-ups/docs/placeholder-false-positive-triage"
-    },
-    {
-      "entropy": 4.1342,
-      "file": "docs/placeholder-policy-expansion.md",
-      "fingerprint": "7eb698396a57fb18cd792c9ff5c42fec66ffd62c9907ea7815e5f60433c11be4",
-      "kind": "high_entropy",
-      "line": 57,
-      "token": "20Projects/p-sec-write-ups/docs/placeholder-policy"
+      "token": "docs/placeholder-execution-backlog"
     },
     {
       "entropy": 4.0851,
@@ -857,132 +713,148 @@
       "token": "CUPID_MASTER_KEY_2024_XOXO"
     },
     {
+      "entropy": 4.0431,
+      "file": "docs/publication-workflow.md",
+      "fingerprint": "2dad330d24ae0752b9feede469b7d04f311039ffd89c8d72198654250cdf6fcf",
+      "kind": "high_entropy",
+      "line": 113,
+      "token": "scripts/generate_markdownlint_debt"
+    },
+    {
       "entropy": 4.2522,
       "file": "docs/repo-normalization-audit.md",
-      "fingerprint": "344f85be57fed6b4a017a87f43e41d587de3e0443e07acf425e0cbade71cf8d4",
+      "fingerprint": "c1a2fabd7273c2731c0944c186229606b44a6e3fc00c66f406b0ec4185a5d97b",
       "kind": "high_entropy",
-      "line": 158,
+      "line": 172,
       "token": "TryHackMe/00-foundations/introductory-networking"
     },
     {
       "entropy": 4.315,
       "file": "docs/repo-normalization-audit.md",
-      "fingerprint": "20198edbdfcb81a31c841ecaa5b2c1cefc121683e750de3b52445c384dd1cf41",
+      "fingerprint": "4eb12db26ab1df064f1f423fe0830a46c2338110a0e45193587ff3d2ddb27691",
       "kind": "high_entropy",
-      "line": 159,
+      "line": 173,
       "token": "TryHackMe/50-crypto/hashing-basics"
     },
     {
       "entropy": 4.249,
       "file": "docs/repo-normalization-audit.md",
-      "fingerprint": "42fa1b839422ce8db5bcad314b83b1b19ef0120f352fdb21f1250592b32c8f4d",
+      "fingerprint": "8174c1189ff17efcaac2db9c6d82cd7d142b9b29e9ffdd1824aa57f9a55c085c",
       "kind": "high_entropy",
-      "line": 160,
+      "line": 174,
       "token": "TryHackMe/50-crypto/john-the-ripper-the-basics"
     },
     {
       "entropy": 4.3291,
       "file": "docs/repo-normalization-audit.md",
-      "fingerprint": "3e1b1dfb13cc37820adb474938919fee17b88831f0868d96c1d909cf7278f20f",
+      "fingerprint": "f597509c5b040744cbe8ce423319f5f0bc1da09630a20a8ecb8bf9f3a6310e3f",
       "kind": "high_entropy",
-      "line": 161,
+      "line": 175,
       "token": "TryHackMe/60-forensics/00-tooling/cyberchef-the-basics"
     },
     {
       "entropy": 4.5155,
       "file": "docs/repo-normalization-audit.md",
-      "fingerprint": "59f84127e8fd2e0d9a6d895218e61bf030a1f202d4de04e5897fc60f59eb794f",
+      "fingerprint": "0612b5019cd5c3e9dd91e7cd25f5263c07bbbee355395b4b9ed8557c0aaccef4",
       "kind": "high_entropy",
-      "line": 162,
+      "line": 176,
       "token": "TryHackMe/80-blue-team/30-detection/monikerlink-cve-2024-21413"
     },
     {
       "entropy": 4.3006,
       "file": "docs/repo-normalization-audit.md",
-      "fingerprint": "e9aae011fff62ab9224d7fab80c206809f231887b7ad056ff082fad7911acb4b",
+      "fingerprint": "09ee7924959ecf95ad80730d38f79e09c761f6c5b664f769d61574446920f665",
       "kind": "high_entropy",
-      "line": 163,
+      "line": 177,
       "token": "TryHackMe/10-web/javascript-essentials"
     },
     {
       "entropy": 4.2655,
       "file": "docs/repo-normalization-audit.md",
-      "fingerprint": "ff677cdd3a6d3f9d10bbab5ce97ee60b8e9943b369ae1a7029bc5c071fe4c0fe",
+      "fingerprint": "db8d9fb4e003c728e4b7cb22de6337562549ac39101126252ac576ac84e5cbf9",
       "kind": "high_entropy",
-      "line": 164,
+      "line": 178,
       "token": "TryHackMe/10-web/web-application-basics"
     },
     {
       "entropy": 4.2938,
       "file": "docs/repo-normalization-audit.md",
-      "fingerprint": "49367093f46dab14324b983fa611532a09f1de63ae71d419458b2f401f612b12",
+      "fingerprint": "ba01df258b4faa173e3368be509fa0299120535552cc082b838a71e1a5764747",
       "kind": "high_entropy",
-      "line": 229,
+      "line": 243,
       "token": "TryHackMe/00-foundations/metasploit-introduction"
     },
     {
       "entropy": 4.249,
       "file": "docs/repo-normalization-audit.md",
-      "fingerprint": "3fce4c5e9a27effc03eac4e56d087fb48c5ce41e6b61a99dc449ff81f75b4513",
+      "fingerprint": "69792b46f2d3461fa4f36ad2f403d9af910c12d57a435d87f52345d12895783b",
       "kind": "high_entropy",
-      "line": 230,
+      "line": 244,
       "token": "TryHackMe/50-crypto/john-the-ripper-the-basics"
     },
     {
       "entropy": 4.2844,
       "file": "docs/repo-normalization-audit.md",
-      "fingerprint": "28f1a39ba0b15edd9504a5c6aed32c8d71d1d8236a3a8d1e7ce29b8a89877dcc",
+      "fingerprint": "f73cc15e9f8034651d5535094eea4827df44f1940d24de4689f9e10a50042f05",
       "kind": "high_entropy",
-      "line": 231,
+      "line": 245,
       "token": "TryHackMe/50-crypto/public-key-cryptography-basics"
     },
     {
       "entropy": 4.447,
       "file": "docs/repo-normalization-audit.md",
-      "fingerprint": "50396355bcd54fdceec122df93b4e2904156a5b7db9b94563dc53759cbadbd67",
+      "fingerprint": "74c1c758222b5066701b151f8c592f4912df404fde56ea02ffb515d71f1c1a33",
       "kind": "high_entropy",
-      "line": 232,
+      "line": 246,
       "token": "TryHackMe/20-linux/linux-fundamentals/partIII"
     },
     {
       "entropy": 4.236,
       "file": "docs/repo-normalization-audit.md",
-      "fingerprint": "01d6f63ba726dac1fd65a4542a3e571f214233fc9f6bb434917e5aaa84e139ad",
+      "fingerprint": "63b819158c11fad488d72b4d3df9a9204232ebe54c16d64d39d745800aaddca0",
       "kind": "high_entropy",
-      "line": 233,
+      "line": 247,
       "token": "TryHackMe/10-web/google-dorking"
     },
     {
       "entropy": 4.3677,
       "file": "docs/repo-normalization-audit.md",
-      "fingerprint": "bf57c6afd8270e7b48e67a571704c576066be55c8cee7e23e11f413158785ce5",
+      "fingerprint": "8bf3c70ed117c2026823d233ec45fa19f5c6764d681d3b12d48bc213ff13ac91",
       "kind": "high_entropy",
-      "line": 258,
+      "line": 272,
       "token": "TryHackMe/90-events/love-at-first-breach-2026/speed-chatter"
     },
     {
       "entropy": 4.0392,
       "file": "docs/taxonomy-closure.md",
-      "fingerprint": "12d48cf654fdba668962ff1fdb1588854a7867aeaee1ad9c63407037b238bf2b",
+      "fingerprint": "3bf1593eccc14b89cd260aa9649fb14b4fd2671b4faa62dd657e3af90be320f5",
       "kind": "high_entropy",
-      "line": 24,
+      "line": 34,
       "token": "docs/taxonomy-execution-backlog"
     },
     {
       "entropy": 4.1513,
       "file": "docs/taxonomy-execution-backlog.md",
-      "fingerprint": "05b2392bf370022335a3aa5d23a2fc32dd7197eff52640c2332ab92c8cdae4e1",
+      "fingerprint": "a93b913c26909dc7d24d14ec1e83543b0dde4fc5cadc708a9254390c4417d6ec",
       "kind": "high_entropy",
-      "line": 62,
+      "line": 78,
       "token": "TryHackMe/00-foundations/intro-cybersecurity/careers-in-cyber"
     },
     {
       "entropy": 4.3321,
       "file": "docs/taxonomy-execution-backlog.md",
-      "fingerprint": "bdbbbad45a183d4739db57f8020249793fd8140adfcd78c2194d8fcc406ec6ec",
+      "fingerprint": "8c64e7cdbfc4ec929b183688160a527e41d3175a1b022f2adf31b7f715b8e95e",
       "kind": "high_entropy",
-      "line": 63,
+      "line": 79,
       "token": "TryHackMe/00-foundations/intro-cybersecurity/search-skills"
+    },
+    {
+      "entropy": 4.0392,
+      "file": "docs/taxonomy-normalization-plan.md",
+      "fingerprint": "547252743de7a5dfee27c7f206a9cae8257145a11d8a7f55467782f7e306d2cc",
+      "kind": "high_entropy",
+      "line": 15,
+      "token": "docs/taxonomy-execution-backlog"
     },
     {
       "entropy": 4.1292,
@@ -1011,194 +883,202 @@
     {
       "entropy": 4.2516,
       "file": "README.md",
-      "fingerprint": "2ba958c3c67035d86d1687ce0411387f55c0b6b0bf42b613484558974bda8a50",
+      "fingerprint": "bcb921c83dda1f61f4382b08750e4dcdfa8ff6b4842b18f7182e964a6f66ab0e",
       "kind": "high_entropy",
-      "line": 43,
+      "line": 45,
       "token": "TryHackMe/00-foundations"
     },
     {
       "entropy": 4.2516,
       "file": "README.md",
-      "fingerprint": "2ba958c3c67035d86d1687ce0411387f55c0b6b0bf42b613484558974bda8a50",
+      "fingerprint": "bcb921c83dda1f61f4382b08750e4dcdfa8ff6b4842b18f7182e964a6f66ab0e",
       "kind": "high_entropy",
-      "line": 43,
+      "line": 45,
       "token": "TryHackMe/00-foundations"
     },
     {
       "entropy": 4.2219,
       "file": "README.md",
-      "fingerprint": "13cea3d992728ed7e9bcb683a19363e3a70b25ac312366f6303a6e8796072094",
+      "fingerprint": "97cc7fa2f869b04cf98424f21f3aaf75a9b9033f2376932fa1c489250b464176",
       "kind": "high_entropy",
-      "line": 46,
+      "line": 48,
       "token": "TryHackMe/30-windows"
     },
     {
       "entropy": 4.2219,
       "file": "README.md",
-      "fingerprint": "13cea3d992728ed7e9bcb683a19363e3a70b25ac312366f6303a6e8796072094",
+      "fingerprint": "97cc7fa2f869b04cf98424f21f3aaf75a9b9033f2376932fa1c489250b464176",
       "kind": "high_entropy",
-      "line": 46,
+      "line": 48,
       "token": "TryHackMe/30-windows"
     },
     {
       "entropy": 4.1757,
       "file": "README.md",
-      "fingerprint": "afb66a2c8a258cc6c992964880f427ce4343acf92e02f8350a276a3b60dae241",
+      "fingerprint": "e3b84c2d8840b064c84886b1df8ce73f44768f646b94a13afe90b6094fd93f3e",
       "kind": "high_entropy",
-      "line": 47,
+      "line": 49,
       "token": "TryHackMe/40-networking"
     },
     {
       "entropy": 4.1757,
       "file": "README.md",
-      "fingerprint": "afb66a2c8a258cc6c992964880f427ce4343acf92e02f8350a276a3b60dae241",
+      "fingerprint": "e3b84c2d8840b064c84886b1df8ce73f44768f646b94a13afe90b6094fd93f3e",
       "kind": "high_entropy",
-      "line": 47,
+      "line": 49,
       "token": "TryHackMe/40-networking"
     },
     {
       "entropy": 4.0958,
       "file": "README.md",
-      "fingerprint": "ece15bed3ab296790d2ed58028d43f82be1a556cbfe570e10efb36673c597d7e",
+      "fingerprint": "21b4265179e345c966064a38d15f4c1098a38da87f50e3f547f743427e1f0b6a",
       "kind": "high_entropy",
-      "line": 49,
+      "line": 51,
       "token": "TryHackMe/60-forensics"
     },
     {
       "entropy": 4.0958,
       "file": "README.md",
-      "fingerprint": "ece15bed3ab296790d2ed58028d43f82be1a556cbfe570e10efb36673c597d7e",
+      "fingerprint": "21b4265179e345c966064a38d15f4c1098a38da87f50e3f547f743427e1f0b6a",
       "kind": "high_entropy",
-      "line": 49,
+      "line": 51,
       "token": "TryHackMe/60-forensics"
     },
     {
       "entropy": 4.0615,
       "file": "README.md",
-      "fingerprint": "c5a411370e4269f7c3ef611060e7ee8a42de2196411b950e3f0b340047d0f40a",
+      "fingerprint": "cb5d91e4781982237d1afd9cdcd669abb7ada5f0b35ebdd9e5b901a519d68812",
       "kind": "high_entropy",
-      "line": 50,
+      "line": 52,
       "token": "TryHackMe/80-blue-team"
     },
     {
       "entropy": 4.0615,
       "file": "README.md",
-      "fingerprint": "c5a411370e4269f7c3ef611060e7ee8a42de2196411b950e3f0b340047d0f40a",
+      "fingerprint": "cb5d91e4781982237d1afd9cdcd669abb7ada5f0b35ebdd9e5b901a519d68812",
       "kind": "high_entropy",
-      "line": 50,
+      "line": 52,
       "token": "TryHackMe/80-blue-team"
     },
     {
       "entropy": 4.0039,
       "file": "README.md",
-      "fingerprint": "d818288f5f894d5d2ec7214d5d4654feb044bf28e09344266cc4805960a12240",
+      "fingerprint": "f7d74f29132b8ad12e0f856bb30cba70472aa4adb3472d3deb642be298a19886",
       "kind": "high_entropy",
-      "line": 61,
+      "line": 67,
       "token": "docs/publication-workflow"
     },
     {
       "entropy": 4.0039,
       "file": "README.md",
-      "fingerprint": "d818288f5f894d5d2ec7214d5d4654feb044bf28e09344266cc4805960a12240",
+      "fingerprint": "f7d74f29132b8ad12e0f856bb30cba70472aa4adb3472d3deb642be298a19886",
       "kind": "high_entropy",
-      "line": 61,
+      "line": 67,
       "token": "docs/publication-workflow"
     },
     {
       "entropy": 4.2516,
       "file": "README.md",
-      "fingerprint": "220970d1525e6ee6b3c576541fec834715c25cd519f1251241b35625d96ac837",
+      "fingerprint": "5871d1eb61743188cceff84b4c0f9011f01bf32aff898e1ef072c5e752fa553c",
       "kind": "high_entropy",
-      "line": 63,
+      "line": 69,
       "token": "TryHackMe/00-foundations"
     },
     {
       "entropy": 4.2516,
       "file": "README.md",
-      "fingerprint": "220970d1525e6ee6b3c576541fec834715c25cd519f1251241b35625d96ac837",
+      "fingerprint": "5871d1eb61743188cceff84b4c0f9011f01bf32aff898e1ef072c5e752fa553c",
       "kind": "high_entropy",
-      "line": 63,
+      "line": 69,
       "token": "TryHackMe/00-foundations"
     },
     {
       "entropy": 4.1757,
       "file": "README.md",
-      "fingerprint": "8d18845eba655c441fca3c6b75acd5a345fa3851214c06033b1b68ab30985f74",
+      "fingerprint": "f4c23f97d0f2c887695b7de0dbd90da74999ea884e0a660c898129ada107a822",
       "kind": "high_entropy",
-      "line": 65,
+      "line": 71,
       "token": "TryHackMe/40-networking"
     },
     {
       "entropy": 4.1757,
       "file": "README.md",
-      "fingerprint": "8d18845eba655c441fca3c6b75acd5a345fa3851214c06033b1b68ab30985f74",
+      "fingerprint": "f4c23f97d0f2c887695b7de0dbd90da74999ea884e0a660c898129ada107a822",
       "kind": "high_entropy",
-      "line": 65,
+      "line": 71,
       "token": "TryHackMe/40-networking"
     },
     {
       "entropy": 4.0615,
       "file": "README.md",
-      "fingerprint": "f2d375bbedd7821aecd255cec172f977e40200f2720ed4b34da7fd3bd7b2f8c0",
+      "fingerprint": "aa643ad200d9ea07883f12068726c48391fe5a8c5e6a9db8215b362931b29fe3",
       "kind": "high_entropy",
-      "line": 66,
+      "line": 72,
       "token": "TryHackMe/80-blue-team"
     },
     {
       "entropy": 4.0615,
       "file": "README.md",
-      "fingerprint": "f2d375bbedd7821aecd255cec172f977e40200f2720ed4b34da7fd3bd7b2f8c0",
+      "fingerprint": "aa643ad200d9ea07883f12068726c48391fe5a8c5e6a9db8215b362931b29fe3",
       "kind": "high_entropy",
-      "line": 66,
+      "line": 72,
       "token": "TryHackMe/80-blue-team"
     },
     {
       "entropy": 4.0039,
       "file": "README.md",
-      "fingerprint": "9f8a140fc4b2dd994cf02c95859d6582c00d917fb8e027bbaef18349609d3793",
+      "fingerprint": "408c63473908f8e3fe14c60b166520c1a587fdda902709c111c62b7b5fe314ed",
       "kind": "high_entropy",
-      "line": 133,
+      "line": 139,
       "token": "docs/publication-workflow"
     },
     {
       "entropy": 4.0039,
       "file": "README.md",
-      "fingerprint": "9f8a140fc4b2dd994cf02c95859d6582c00d917fb8e027bbaef18349609d3793",
+      "fingerprint": "408c63473908f8e3fe14c60b166520c1a587fdda902709c111c62b7b5fe314ed",
       "kind": "high_entropy",
-      "line": 133,
+      "line": 139,
       "token": "docs/publication-workflow"
     },
     {
       "entropy": 4.0039,
       "file": "README.md",
-      "fingerprint": "043d3337a306813115afd6cb2c3c04aa9d7776916c49c08ef49f69ce845e4686",
+      "fingerprint": "57692ce2a0fe0ed655f0281d4644d9e134f260eaacce70bfc8f891146735520c",
       "kind": "high_entropy",
-      "line": 144,
+      "line": 151,
       "token": "docs/publication-workflow"
     },
     {
       "entropy": 4.0039,
       "file": "README.md",
-      "fingerprint": "043d3337a306813115afd6cb2c3c04aa9d7776916c49c08ef49f69ce845e4686",
+      "fingerprint": "57692ce2a0fe0ed655f0281d4644d9e134f260eaacce70bfc8f891146735520c",
       "kind": "high_entropy",
-      "line": 144,
+      "line": 151,
       "token": "docs/publication-workflow"
     },
     {
       "entropy": 4.0039,
       "file": "README.md",
-      "fingerprint": "d4d2e77dc4f08650935c107d9d4b11a721f3e977769498e16640a4d821495094",
+      "fingerprint": "a1ca4119edbc75f2b8235b6ea0a7faf918b1d33f0490f1be0085053b6072202a",
       "kind": "high_entropy",
-      "line": 156,
+      "line": 163,
       "token": "docs/publication-workflow"
     },
     {
       "entropy": 4.0039,
       "file": "README.md",
-      "fingerprint": "d4d2e77dc4f08650935c107d9d4b11a721f3e977769498e16640a4d821495094",
+      "fingerprint": "a1ca4119edbc75f2b8235b6ea0a7faf918b1d33f0490f1be0085053b6072202a",
       "kind": "high_entropy",
-      "line": 156,
+      "line": 163,
       "token": "docs/publication-workflow"
+    },
+    {
+      "entropy": 4.0431,
+      "file": "README.md",
+      "fingerprint": "70838127895c37de08dcd4af7e8cc537e934e09e54d449c9a20545880638eb25",
+      "kind": "high_entropy",
+      "line": 182,
+      "token": "scripts/generate_markdownlint_debt"
     },
     {
       "entropy": 4.0039,
@@ -1225,12 +1105,44 @@
       "token": "invalid/sec-writeups-public/frontmatter"
     },
     {
-      "entropy": 4.1342,
-      "file": "templates/writeup_sanitized.md",
-      "fingerprint": "133cb266cad9cc7ab4364a0fc8cda8a394fd07a07435f61d51e83197b1a8ccf4",
+      "entropy": 4.2516,
+      "file": "scripts/render_readme_snapshot.py",
+      "fingerprint": "1fc0652d22c9c676b37260cd156c8aee88882386c021dccfc3633c2a47e679b0",
       "kind": "high_entropy",
-      "line": 36,
-      "token": "20Projects/p-sec-write-ups/docs/placeholder-policy"
+      "line": 15,
+      "token": "TryHackMe/00-foundations"
+    },
+    {
+      "entropy": 4.2219,
+      "file": "scripts/render_readme_snapshot.py",
+      "fingerprint": "117a2cc5b99033fb884ba271d56aaba994c6a05798b3df97da22eb905cc32152",
+      "kind": "high_entropy",
+      "line": 18,
+      "token": "TryHackMe/30-windows"
+    },
+    {
+      "entropy": 4.1757,
+      "file": "scripts/render_readme_snapshot.py",
+      "fingerprint": "6356e800ea2801e731c919537b07fccc1711542abc136307f174dabd4ae0e4d6",
+      "kind": "high_entropy",
+      "line": 19,
+      "token": "TryHackMe/40-networking"
+    },
+    {
+      "entropy": 4.0958,
+      "file": "scripts/render_readme_snapshot.py",
+      "fingerprint": "3588e51d261184315b0aac639da7caf137ecc9d8fc63b7387186808b935b2980",
+      "kind": "high_entropy",
+      "line": 21,
+      "token": "TryHackMe/60-forensics"
+    },
+    {
+      "entropy": 4.0615,
+      "file": "scripts/render_readme_snapshot.py",
+      "fingerprint": "c4505045e9cf59d941502547e092da64f58bc09bd95743d4d89378b162d21c92",
+      "kind": "high_entropy",
+      "line": 22,
+      "token": "TryHackMe/80-blue-team"
     },
     {
       "entropy": 4.386,
@@ -2529,16 +2441,11 @@
       "token": "40-networking/network-fundamentals"
     },
     {
-      "fingerprint": "2268e39db2ef51eba92c7640986350d5843da88ece2739c97ec7ab0b3e267a93",
-      "kind": "missing_file",
-      "path": ".gitignore"
-    },
-    {
       "fingerprint": "efcd9b83e1c3bef283a2e4f5dbd6a6dfa4fc691f54653643445778f35d2f501e",
       "kind": "missing_file",
       "path": "LICENSE"
     }
   ],
-  "generated_at": "2026-04-02T16:34:53Z",
+  "generated_at": "2026-04-02T18:57:41Z",
   "schema_version": 1
 }
