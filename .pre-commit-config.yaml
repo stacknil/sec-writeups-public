@@ -35,6 +35,13 @@ repos:
     rev: v1.38.0
     hooks:
       - id: yamllint
+  - repo: https://github.com/stacknil/repo-sentinel-lite
+    rev: 61f8efbf68e7b5d7d1e49ad20e491a065963a307
+    hooks:
+      - id: repo-sentinel-error
+        stages:
+          - pre-push
+          - manual
   - repo: local
     hooks:
       - id: markdownlint-cli2

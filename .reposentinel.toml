@@ -1,0 +1,5 @@
+ignore_globs = [
+    ".reposentinel-baseline.json",
+    "reports/markdownlint-debt.txt",
+    "reports/placeholder-audit.txt",
+]
