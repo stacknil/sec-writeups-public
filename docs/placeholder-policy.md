@@ -138,11 +138,14 @@ Do not introduce these styles in new or edited public notes:
 Do not normalize these into placeholders when they are the real subject of the note:
 
 * environment variables such as `AWS_ACCESS_KEY_ID`
+* framework environment variables such as `FLASK_APP`
 * literal search markers such as `API_KEY` when the note is teaching what string to search for in source code or logs
 * env-var style config names such as `TORSOCKS_CONF_FILE` or `DATABASE_URL` when the literal identifier is the thing being searched for or explained
 * operating-system or registry identifiers such as `LD_PRELOAD` and `HKEY_LOCAL_MACHINE`
+* Windows library or import identifiers such as `WS2_32` when the note is explaining literal API or import-table names
 * artifact names such as `NTUSER.DAT`
 * room/title artifacts such as `SIEM__` when they are part of a challenge or file title
+* challenge literals such as `MI_SAMPLE_BRAVO` and `MEMORY_POISONED` when they are fixed room/task identifiers rather than redacted values
 * instructional metavariables such as `<EXPECTED_USER>`, `<EXPECTED_COMPANY>`, `<EXPECTED_PIN>`, `<FILE>`, `<KNOWN_HASH>`, `<MODE>`, `<ATTACK>`, `<DOWNLOADED_FILE>`, `<HASH_STRING>`, `<HASH>`, `<FORMAT>`, `<NAME>`, `<IFACE>`, `<SID>`, `<POLICY_NAME>`, and `<ACCOUNT_ID>` when the note is documenting a command or data-shape slot rather than a redacted real value
 * diagram/node identifiers such as `OU_THM`, `OU_IT`, `THM_ROOT`, `THM_UK`, `THM_US`, `MHT_ROOT`, `MHT_EU`, `MHT_ASIA`, and `EXTERNAL_ACTORS`
 * local capture or code variable identifiers such as `CAP_DHCP`, `DHCP_CAPTURE`, `CAP_ARP`, `ARP_CAPTURE`, `PLC_IP`, and `UNIT_ID`

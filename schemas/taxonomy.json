@@ -2,6 +2,7 @@
   "domain": {
     "allowed": [
       "access-control",
+      "ai-security",
       "authentication",
       "blueteam",
       "client-side-security",
@@ -37,7 +38,10 @@
       "web-recon",
       "windows",
       "windows-auth"
-    ]
+    ],
+    "aliases": {
+      "llm-security": "ai-security"
+    }
   },
   "skills": {
     "allowed": [
@@ -64,6 +68,7 @@
       "cmd-basics",
       "compliance",
       "containers",
+      "context-windows",
       "control-flow",
       "cookies",
       "crawling-indexing",
@@ -114,6 +119,7 @@
       "incident-response",
       "infra-basics",
       "input-validation",
+      "instruction-hierarchy",
       "ip-subnetting",
       "ir-basics",
       "javascript-basics",
@@ -156,7 +162,10 @@
       "powershell",
       "process-triage",
       "processes",
+      "prompt-engineering",
+      "prompt-evaluation",
       "prompt-injection",
+      "prompt-templates",
       "proxying",
       "public-key-crypto",
       "python-basics",
@@ -181,6 +190,7 @@
       "rsa",
       "rust-basics",
       "s3",
+      "sampling-controls",
       "search-engines",
       "secure-by-design",
       "security-headers",
@@ -207,6 +217,7 @@
       "telnet",
       "threat-modeling",
       "timestamps",
+      "tokenization",
       "tls",
       "tls-certs",
       "topology",
@@ -244,7 +255,8 @@
     ],
     "aliases": {
       "command-cookbook": "cookbook",
-      "pattern-cards": "pattern-card"
+      "pattern-cards": "pattern-card",
+      "prompt-patterns": "pattern-card"
     }
   }
 }

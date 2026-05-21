@@ -26,9 +26,10 @@ Use this page as the controlled-vocabulary reference for TryHackMe note front ma
 
 Choose the domain values that best describe the note scope.
 
-_Canonical values: `36`_
+_Canonical values: `37`_
 
 - `access-control`
+- `ai-security`
 - `authentication`
 - `blueteam`
 - `client-side-security`
@@ -65,11 +66,15 @@ _Canonical values: `36`_
 - `windows`
 - `windows-auth`
 
+### Aliases
+
+- `llm-security` -> `ai-security`
+
 ## Skill tags
 
 Prefer the smallest set of skills that preserves retrieval value.
 
-_Canonical values: `191`_
+_Canonical values: `198`_
 
 - `accounts`
 - `ad-basics`
@@ -94,6 +99,7 @@ _Canonical values: `191`_
 - `cmd-basics`
 - `compliance`
 - `containers`
+- `context-windows`
 - `control-flow`
 - `cookies`
 - `crawling-indexing`
@@ -144,6 +150,7 @@ _Canonical values: `191`_
 - `incident-response`
 - `infra-basics`
 - `input-validation`
+- `instruction-hierarchy`
 - `ip-subnetting`
 - `ir-basics`
 - `javascript-basics`
@@ -186,7 +193,10 @@ _Canonical values: `191`_
 - `powershell`
 - `process-triage`
 - `processes`
+- `prompt-engineering`
+- `prompt-evaluation`
 - `prompt-injection`
+- `prompt-templates`
 - `proxying`
 - `public-key-crypto`
 - `python-basics`
@@ -211,6 +221,7 @@ _Canonical values: `191`_
 - `rsa`
 - `rust-basics`
 - `s3`
+- `sampling-controls`
 - `search-engines`
 - `secure-by-design`
 - `security-headers`
@@ -237,6 +248,7 @@ _Canonical values: `191`_
 - `telnet`
 - `threat-modeling`
 - `timestamps`
+- `tokenization`
 - `tls`
 - `tls-certs`
 - `topology`
@@ -279,6 +291,7 @@ _Canonical values: `5`_
 
 - `command-cookbook` -> `cookbook`
 - `pattern-cards` -> `pattern-card`
+- `prompt-patterns` -> `pattern-card`
 
 ## Hygiene rules
 

@@ -18,6 +18,27 @@ Use it together with:
 * These are proposed decisions only. No note bodies or front matter are changed by this document.
 * Decision meanings: `merge-to-existing` collapses to an already-established canonical value, `promote-into-taxonomy` keeps the value as a first-class canonical term, and `drop-as-noise` removes it from future taxonomy use.
 
+## Post-Closure Additions
+
+Date: 2026-04-19
+
+These additions were introduced while normalizing the new `notes/00-foundations/prompt-engineering.md` note.
+
+Existing taxonomy could express the note's broad security-engineering context, but it could not capture the LLM-specific prompt-control concepts cleanly enough for precise retrieval.
+
+| Field | Value | Decision | Canonical / Target | Rationale |
+| --- | --- | --- | --- | --- |
+| `domain` | `ai-security` | `promote-into-taxonomy` | `ai-security` | Needed as a reusable umbrella for AI and LLM security notes; `security-engineering` alone was too broad for retrieval. |
+| `domain` | `llm-security` | `merge-to-existing` | `ai-security` | Keep the narrower historical phrasing available as an alias while converging on one canonical AI-security domain. |
+| `skills` | `context-windows` | `promote-into-taxonomy` | `context-windows` | Distinct operating constraint in prompting, memory, and prompt-injection notes. |
+| `skills` | `instruction-hierarchy` | `promote-into-taxonomy` | `instruction-hierarchy` | Stable concept for system-vs-user precedence and prompt-conflict analysis. |
+| `skills` | `prompt-engineering` | `promote-into-taxonomy` | `prompt-engineering` | Broad but durable prompt-design workflow that will recur across AI security notes. |
+| `skills` | `prompt-evaluation` | `promote-into-taxonomy` | `prompt-evaluation` | Needed for prompt-quality review, challenge scoring, and security-workflow evaluation notes. |
+| `skills` | `prompt-templates` | `promote-into-taxonomy` | `prompt-templates` | Reusable prompt structures behave like pattern assets and deserve direct retrieval. |
+| `skills` | `sampling-controls` | `promote-into-taxonomy` | `sampling-controls` | Covers temperature and top-p style output-control concepts more accurately than generic workflow tags. |
+| `skills` | `tokenization` | `promote-into-taxonomy` | `tokenization` | Foundational LLM text-processing concept with direct impact on prompt design and truncation risk. |
+| `artifacts` | `prompt-patterns` | `merge-to-existing` | `pattern-card` | Existing `pattern-card` already covers reusable prompt-pattern packs; add an alias instead of expanding the artifact family. |
+
 ## Family Summary
 
 | Family | Review-needed values | Total occurrences | Promote | Merge | Drop |
