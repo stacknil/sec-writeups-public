@@ -13,6 +13,14 @@ Security notes are often hard to publish safely: they either leak too much, coll
 - taxonomy, placeholder, and publication governance
 - local checks that keep the public corpus maintainable
 
+## Reviewer Evidence
+
+- Reproducible command: `python scripts/render_readme_snapshot.py --check`
+- Deterministic outputs: rendered README snapshots, generated tag docs, placeholder audit output, taxonomy docs, and markdownlint debt reports.
+- Tests / CI: local publication checks, placeholder checks, markdown checks, pre-commit hooks, and GitHub Actions maintenance workflows.
+- Release evidence: public corpus snapshot, governance docs, sanitization checklist, publication workflow, and maintenance checkpoints.
+- Non-goals: raw exploit logs, private evidence dumps, live target identifiers, weaponized exploit chains, or unsanitized challenge transcripts.
+
 ## Quick run
 
 ```bash
