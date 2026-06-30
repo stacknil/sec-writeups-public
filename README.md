@@ -8,9 +8,9 @@ Public, sanitized security write-ups from authorized labs and training platforms
 
 Current public snapshot:
 
-- `156` active public notes
+- `157` active public notes
 - `100` active TryHackMe notes
-- `56` topic-organized notes under `notes/`
+- `57` topic-organized notes under `notes/`
 - `9` organized TryHackMe learning tracks
 - public governance for taxonomy, placeholders, publication, and maintenance
 
@@ -54,7 +54,7 @@ The live public corpus is currently centered on **TryHackMe** and supplemented b
 
 Additional organized notes outside the TryHackMe tree:
 
-- `notes/` currently contains `56` active public notes
+- `notes/` currently contains `57` active public notes
 
 ## Start Here
 
