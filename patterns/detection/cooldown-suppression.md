@@ -55,3 +55,8 @@ suppressed while meaningful changes still create a new alert.
 ## Related project
 
 [telemetry-lab](https://github.com/stacknil/telemetry-lab)
+
+## Related notes
+
+* [Logs Fundamentals](../../notes/80-blue-team/logs-fundamentals.md)
+* [SOC Fundamentals](../../notes/80-blue-team/soc-fundamentals.md)

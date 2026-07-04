@@ -55,3 +55,8 @@ files, and compare the behaviour against the user's normal administrative role.
 ## Related project
 
 [LogLens](https://github.com/stacknil/LogLens)
+
+## Related notes
+
+* [Logs Fundamentals](../../notes/80-blue-team/logs-fundamentals.md)
+* [Incident Response Fundamentals](../../notes/80-blue-team/incident-response-fundamentals.md)

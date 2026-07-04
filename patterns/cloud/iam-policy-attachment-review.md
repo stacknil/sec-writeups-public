@@ -58,3 +58,7 @@ down.
 ## Related project
 
 [telemetry-lab](https://github.com/stacknil/telemetry-lab)
+
+## Related notes
+
+* [Cloud Security Pitfalls](../../notes/80-blue-team/40-cloud/cloud-security-pitfalls.md)

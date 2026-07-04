@@ -1,4 +1,4 @@
-# SSH Bruteforce Triage
+# SSH Brute-Force Triage
 
 ## Signal
 
@@ -57,3 +57,8 @@ and whether the source has appeared in prior authentication alerts.
 ## Related project
 
 [LogLens](https://github.com/stacknil/LogLens)
+
+## Related notes
+
+* [Logs Fundamentals](../../notes/80-blue-team/logs-fundamentals.md)
+* [Incident Response Fundamentals](../../notes/80-blue-team/incident-response-fundamentals.md)

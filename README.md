@@ -62,6 +62,7 @@ If you are browsing this repo for the first time:
 
 | Goal | Start with |
 | --- | --- |
+| read reusable security patterns first | [patterns/README.md](patterns/README.md) |
 | understand the repo publishing boundary | [POLICY.md](POLICY.md) |
 | publish a new public-safe write-up | [SANITIZATION_CHECKLIST.md](SANITIZATION_CHECKLIST.md) |
 | understand the full publication flow | [docs/publication-workflow.md](docs/publication-workflow.md) |
@@ -75,6 +76,11 @@ If you are browsing this repo for the first time:
 
 ```text
 sec-writeups-public/
+├── patterns/
+│   ├── auth/
+│   ├── detection/
+│   ├── cloud/
+│   └── supply-chain/
 ├── TryHackMe/
 │   ├── 00-foundations/
 │   ├── 10-web/

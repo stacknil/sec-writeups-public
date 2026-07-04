@@ -56,3 +56,8 @@ matches the intended pull request or release plan.
 ## Related project
 
 [sbom-diff-and-risk](https://github.com/stacknil/scientific-computing-toolkit/tree/main/tools/sbom-diff-and-risk)
+
+## Related notes
+
+* [Understanding AI Supply Chains](../../notes/80-blue-team/understanding-ai-supply-chains-public.md)
+* [Vulnerabilities 101](../../notes/10-web/foundations/vulnerabilities-101-public.md)

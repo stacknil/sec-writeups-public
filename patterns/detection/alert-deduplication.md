@@ -54,3 +54,8 @@ links, and severity reasoning.
 ## Related project
 
 [telemetry-lab](https://github.com/stacknil/telemetry-lab)
+
+## Related notes
+
+* [Logs Fundamentals](../../notes/80-blue-team/logs-fundamentals.md)
+* [Report Writing for SOC L2](../../notes/80-blue-team/soc-l2-report-writing.md)
