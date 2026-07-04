@@ -5,6 +5,7 @@ name: Markdown Validation
   push:
     paths:
       - "README.md"
+      - "patterns/**/*.md"
       - "TryHackMe/**/*.md"
       - "TryHackMe/_meta/TAGS.md"
       - "notes/**/*.md"
@@ -23,6 +24,7 @@ name: Markdown Validation
   pull_request:
     paths:
       - "README.md"
+      - "patterns/**/*.md"
       - "TryHackMe/**/*.md"
       - "TryHackMe/_meta/TAGS.md"
       - "notes/**/*.md"
@@ -69,7 +71,7 @@ jobs:
         run: python scripts/check_markdown.py
 
   markdownlint-changed:
-    name: Markdownlint Changed Active Notes
+    name: Markdownlint Changed Public Markdown
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -89,21 +91,23 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Collect changed active-note Markdown files
+      - name: Collect changed public Markdown files
         id: changed-md
         shell: bash
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          BEFORE_SHA: ${{ github.event.before }}
+          EVENT_NAME: ${{ github.event_name }}
+          HEAD_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
+          zero_sha="0000000000000000000000000000000000000000"
 
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            base_ref="${{ github.base_ref }}"
-            git fetch --no-tags --prune --depth=1 origin "${base_ref}"
-            diff_range="origin/${base_ref}...HEAD"
-          elif [[
-            "${{ github.event.before }}" !=
-            "0000000000000000000000000000000000000000"
-          ]]; then
-            diff_range="${{ github.event.before }}...${{ github.sha }}"
+          if [[ "${EVENT_NAME}" == "pull_request" ]]; then
+            git fetch --no-tags --prune --depth=1 origin "${BASE_REF}"
+            diff_range="origin/${BASE_REF}...HEAD"
+          elif [[ "${BEFORE_SHA}" != "${zero_sha}" ]]; then
+            diff_range="${BEFORE_SHA}...${HEAD_SHA}"
           else
             diff_range=""
           fi
@@ -111,13 +115,13 @@ jobs:
           if [[ -n "${diff_range}" ]]; then
             mapfile -t files < <(
               git diff --name-only --diff-filter=ACMR "${diff_range}" |
-                grep -E '^(TryHackMe|notes)/.*\.md$' |
+                grep -E '^(README\.md|(TryHackMe|notes|patterns)/.*\.md)$' |
                 grep -Ev '^TryHackMe/_meta/' || true
             )
           else
             mapfile -t files < <(
-              git show --pretty='' --name-only "${{ github.sha }}" |
-                grep -E '^(TryHackMe|notes)/.*\.md$' |
+              git show --pretty='' --name-only "${HEAD_SHA}" |
+                grep -E '^(README\.md|(TryHackMe|notes|patterns)/.*\.md)$' |
                 grep -Ev '^TryHackMe/_meta/' || true
             )
           fi
@@ -129,7 +133,7 @@ jobs:
             echo "EOF"
           } >> "${GITHUB_OUTPUT}"
 
-      - name: Run markdownlint on changed active-note Markdown files
+      - name: Run markdownlint on changed public Markdown files
         if: steps.changed-md.outputs.count != '0'
         shell: bash
         run: |
@@ -139,8 +143,8 @@ jobs:
           EOF
           python scripts/run_markdownlint.py "${files[@]}"
 
-      - name: Skip markdownlint when no active-note Markdown changed
+      - name: Skip markdownlint when no public Markdown changed
         if: steps.changed-md.outputs.count == '0'
         run: |
-          echo "No changed active-note Markdown files;"
+          echo "No changed public Markdown files;"
           echo "skipping markdownlint."

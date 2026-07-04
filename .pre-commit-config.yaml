@@ -49,4 +49,6 @@ repos:
         entry: python scripts/run_markdownlint.py
         language: system
         pass_filenames: true
-        files: ^(TryHackMe/(?!_meta/)|notes/).+\.md$
+        files: >-
+          ^(README\.md|TryHackMe/(?!_meta/).+\.md|notes/.+\.md|
+          patterns/.+\.md)$
