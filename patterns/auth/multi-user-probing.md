@@ -1,3 +1,8 @@
+---
+maturity: stable
+last_reviewed: 2026-07-05
+---
+
 # Multi-User Probing
 
 ## Signal
@@ -24,7 +29,7 @@ stuffing, or preparation for a later targeted login attempt. It is often quieter
 than single-account brute force because each account may see only a few
 failures.
 
-## False positives
+## False-positive contexts
 
 When can it be benign?
 
@@ -34,7 +39,7 @@ When can it be benign?
 * a shared NAT or proxy groups unrelated users behind one source
 * a helpdesk workflow checks multiple locked or disabled accounts
 
-## Minimum evidence
+## Evidence limits
 
 What must be present before making a claim?
 
@@ -53,11 +58,11 @@ Group the attempts by source, username, and service. Then check for later
 successful logins, lockouts, MFA challenges, impossible travel, and whether the
 same source probed other exposed services.
 
-## Related project
+## Related implementation
 
 [LogLens](https://github.com/stacknil/LogLens)
 
-## Related notes
+## Supporting notes
 
 * [Logs Fundamentals](../../notes/80-blue-team/logs-fundamentals.md)
 * [SOC Fundamentals](../../notes/80-blue-team/soc-fundamentals.md)

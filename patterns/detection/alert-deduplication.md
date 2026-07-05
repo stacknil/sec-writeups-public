@@ -1,3 +1,8 @@
+---
+maturity: stable
+last_reviewed: 2026-07-05
+---
+
 # Alert Deduplication
 
 ## Signal
@@ -23,7 +28,7 @@ Alert duplication can inflate severity, overwhelm analysts, and hide the real
 shape of an incident. Deduplication helps preserve one investigation thread
 without losing the supporting evidence.
 
-## False positives
+## False-positive contexts
 
 When can it be benign?
 
@@ -33,7 +38,7 @@ When can it be benign?
 * alerts look similar but involve different users, assets, or outcomes
 * a detection rule intentionally fires per affected entity
 
-## Minimum evidence
+## Evidence limits
 
 What must be present before making a claim?
 
@@ -51,11 +56,11 @@ Create or review the incident-level grouping key, then confirm that the
 deduplicated alert still keeps representative timestamps, entities, evidence
 links, and severity reasoning.
 
-## Related project
+## Related implementation
 
 [telemetry-lab](https://github.com/stacknil/telemetry-lab)
 
-## Related notes
+## Supporting notes
 
 * [Logs Fundamentals](../../notes/80-blue-team/logs-fundamentals.md)
 * [Report Writing for SOC L2](../../notes/80-blue-team/soc-l2-report-writing.md)

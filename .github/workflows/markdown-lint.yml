@@ -5,12 +5,14 @@ name: Markdown Validation
   push:
     paths:
       - "README.md"
+      - "docs/**/*.md"
       - "patterns/**/*.md"
       - "TryHackMe/**/*.md"
       - "TryHackMe/_meta/TAGS.md"
       - "notes/**/*.md"
       - "schemas/**/*.json"
       - "scripts/check_markdown.py"
+      - "scripts/check_pattern_library.py"
       - "scripts/render_readme_snapshot.py"
       - "scripts/render_tags_doc.py"
       - "scripts/generate_markdownlint_debt.py"
@@ -24,12 +26,14 @@ name: Markdown Validation
   pull_request:
     paths:
       - "README.md"
+      - "docs/**/*.md"
       - "patterns/**/*.md"
       - "TryHackMe/**/*.md"
       - "TryHackMe/_meta/TAGS.md"
       - "notes/**/*.md"
       - "schemas/**/*.json"
       - "scripts/check_markdown.py"
+      - "scripts/check_pattern_library.py"
       - "scripts/render_readme_snapshot.py"
       - "scripts/render_tags_doc.py"
       - "scripts/generate_markdownlint_debt.py"
@@ -66,6 +70,9 @@ jobs:
 
       - name: Verify README.md snapshot is in sync with tracked notes
         run: python scripts/render_readme_snapshot.py --check
+
+      - name: Validate pattern library contract
+        run: python scripts/check_pattern_library.py
 
       - name: Run Markdown checks
         run: python scripts/check_markdown.py

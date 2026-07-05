@@ -1,3 +1,8 @@
+---
+maturity: reviewed
+last_reviewed: 2026-07-05
+---
+
 # SSH Brute-Force Triage
 
 ## Signal
@@ -24,7 +29,7 @@ guessing, or an attacker trying to confirm which accounts exist. A successful
 login after the failure burst raises the priority because it may indicate
 credential compromise.
 
-## False positives
+## False-positive contexts
 
 When can it be benign?
 
@@ -34,7 +39,7 @@ When can it be benign?
 * a monitoring system tests service availability
 * a known administrator reconnects repeatedly during maintenance
 
-## Minimum evidence
+## Evidence limits
 
 What must be present before making a claim?
 
@@ -54,11 +59,11 @@ Check whether any attempted account had a successful SSH login near the same
 time, then review session commands, source reputation, MFA status, account age,
 and whether the source has appeared in prior authentication alerts.
 
-## Related project
+## Related implementation
 
 [LogLens](https://github.com/stacknil/LogLens)
 
-## Related notes
+## Supporting notes
 
 * [Logs Fundamentals](../../notes/80-blue-team/logs-fundamentals.md)
 * [Incident Response Fundamentals](../../notes/80-blue-team/incident-response-fundamentals.md)

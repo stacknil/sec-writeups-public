@@ -1,3 +1,8 @@
+---
+maturity: stable
+last_reviewed: 2026-07-05
+---
+
 # Bounded Correlation
 
 ## Signal
@@ -23,7 +28,7 @@ Bounded correlation helps detect behaviour that individual rules miss. It also
 keeps detection logic honest by requiring a specific relationship rather than
 loosely connecting unrelated events.
 
-## False positives
+## False-positive contexts
 
 When can it be benign?
 
@@ -33,7 +38,7 @@ When can it be benign?
 * the time window is too broad and catches unrelated events
 * entity mapping is weak, such as shared IPs or reused hostnames
 
-## Minimum evidence
+## Evidence limits
 
 What must be present before making a claim?
 
@@ -52,11 +57,11 @@ Validate the join key and time window against known benign workflows. Then
 review whether the correlated sequence produces a clear investigation action,
 such as session review, host isolation decision, or identity reset.
 
-## Related project
+## Related implementation
 
 [telemetry-lab](https://github.com/stacknil/telemetry-lab)
 
-## Related notes
+## Supporting notes
 
 * [Logs Fundamentals](../../notes/80-blue-team/logs-fundamentals.md)
 * [Incident Response Fundamentals](../../notes/80-blue-team/incident-response-fundamentals.md)

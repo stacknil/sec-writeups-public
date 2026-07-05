@@ -17,6 +17,16 @@ repos:
         files: >-
           ^(README\.md|TryHackMe/(?!_meta/).+\.md|notes/.+\.md|
           scripts/render_readme_snapshot\.py)$
+      - id: validate-pattern-library
+        name: validate-pattern-library
+        entry: python scripts/check_pattern_library.py
+        language: python
+        additional_dependencies:
+          - PyYAML>=6.0,<7.0
+        pass_filenames: false
+        files: >-
+          ^(README\.md|docs/.+\.md|patterns/.+\.md|schemas/pattern-library\.json|
+          scripts/check_pattern_library\.py|notes/.+\.md)$
       - id: validate-frontmatter
         name: validate-frontmatter
         entry: python scripts/check_markdown.py

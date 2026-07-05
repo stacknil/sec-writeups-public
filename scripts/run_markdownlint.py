@@ -15,7 +15,7 @@ def is_markdown_path(value: str) -> bool:
     return value.lower().endswith(".md")
 
 
-def is_active_note_path(value: str) -> bool:
+def is_blocking_markdown_path(value: str) -> bool:
     path = Path(value)
     if not path.is_absolute():
         path = ROOT / path
@@ -25,9 +25,12 @@ def is_active_note_path(value: str) -> bool:
     except (OSError, ValueError):
         return False
 
+    if not rel_path.endswith(".md"):
+        return False
+    if rel_path == "README.md" or rel_path.startswith("patterns/"):
+        return True
     return (
-        rel_path.endswith(".md")
-        and (rel_path.startswith("TryHackMe/") or rel_path.startswith("notes/"))
+        (rel_path.startswith("TryHackMe/") or rel_path.startswith("notes/"))
         and not rel_path.startswith("TryHackMe/_meta/")
     )
 
@@ -67,13 +70,13 @@ def main() -> int:
         filtered_files: list[str] = []
         for arg in args:
             if is_markdown_path(arg):
-                if is_active_note_path(arg):
+                if is_blocking_markdown_path(arg):
                     filtered_files.append(arg)
             else:
                 passthrough_args.append(arg)
 
         if not filtered_files:
-            print("No active-note Markdown files provided to markdownlint; skipping.")
+            print("No blocking-scope Markdown files provided; skipping markdownlint.")
             return 0
 
         if "--config" not in passthrough_args and "-c" not in passthrough_args:
