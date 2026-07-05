@@ -1,3 +1,8 @@
+---
+maturity: reviewed
+last_reviewed: 2026-07-05
+---
+
 # Sudo Burst Review
 
 ## Signal
@@ -23,7 +28,7 @@ The pattern may indicate privilege discovery, post-compromise enumeration,
 hands-on-keyboard activity, or an operator trying to convert user access into
 administrative control.
 
-## False positives
+## False-positive contexts
 
 When can it be benign?
 
@@ -33,7 +38,7 @@ When can it be benign?
 * a developer debugging local service permissions
 * configuration management running under a human account
 
-## Minimum evidence
+## Evidence limits
 
 What must be present before making a claim?
 
@@ -52,11 +57,11 @@ Review the full session timeline around the burst. Confirm whether the commands
 changed persistence, credentials, services, logs, network tools, or sensitive
 files, and compare the behaviour against the user's normal administrative role.
 
-## Related project
+## Related implementation
 
 [LogLens](https://github.com/stacknil/LogLens)
 
-## Related notes
+## Supporting notes
 
 * [Logs Fundamentals](../../notes/80-blue-team/logs-fundamentals.md)
 * [Incident Response Fundamentals](../../notes/80-blue-team/incident-response-fundamentals.md)

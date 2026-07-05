@@ -1,3 +1,8 @@
+---
+maturity: reviewed
+last_reviewed: 2026-07-05
+---
+
 # IAM Policy Attachment Review
 
 ## Signal
@@ -24,7 +29,7 @@ Policy attachment can immediately expand what an identity can read, change, or
 destroy. Suspicious attachments may indicate privilege escalation,
 persistence, lateral movement preparation, or accidental over-permissioning.
 
-## False positives
+## False-positive contexts
 
 When can it be benign?
 
@@ -34,7 +39,7 @@ When can it be benign?
 * temporary incident response access
 * managed service or cloud control plane updating expected permissions
 
-## Minimum evidence
+## Evidence limits
 
 What must be present before making a claim?
 
@@ -55,10 +60,10 @@ recent API calls by the actor and target identity, associated change tickets,
 infrastructure commits, and whether the policy should be rolled back or scoped
 down.
 
-## Related project
+## Related implementation
 
 [telemetry-lab](https://github.com/stacknil/telemetry-lab)
 
-## Related notes
+## Supporting notes
 
 * [Cloud Security Pitfalls](../../notes/80-blue-team/40-cloud/cloud-security-pitfalls.md)

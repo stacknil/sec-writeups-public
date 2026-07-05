@@ -1,3 +1,8 @@
+---
+maturity: reviewed
+last_reviewed: 2026-07-05
+---
+
 # SBOM Dependency Diff Review
 
 ## Signal
@@ -23,7 +28,7 @@ Dependency diffs reveal when the software supply chain changed. A small diff
 can introduce exploitable vulnerabilities, malicious packages, dependency
 confusion exposure, license risk, or unexpected runtime behaviour.
 
-## False positives
+## False-positive contexts
 
 When can it be benign?
 
@@ -33,7 +38,7 @@ When can it be benign?
 * build tool normalization changing output order
 * environment-specific optional dependencies
 
-## Minimum evidence
+## Evidence limits
 
 What must be present before making a claim?
 
@@ -53,11 +58,11 @@ Review the dependency's source repository, package registry metadata, release
 notes, maintainer history, vulnerability data, license, and whether the change
 matches the intended pull request or release plan.
 
-## Related project
+## Related implementation
 
 [sbom-diff-and-risk](https://github.com/stacknil/scientific-computing-toolkit/tree/main/tools/sbom-diff-and-risk)
 
-## Related notes
+## Supporting notes
 
 * [Understanding AI Supply Chains](../../notes/80-blue-team/understanding-ai-supply-chains-public.md)
 * [Vulnerabilities 101](../../notes/10-web/foundations/vulnerabilities-101-public.md)

@@ -4,13 +4,32 @@ Public, sanitized security write-ups from authorized labs and training platforms
 
 > A local-first public knowledge base focused on methodology, reasoning, and reusable security patterns, not copy-paste exploitation.
 
+## Featured Security Patterns
+
+Current extraction metric: **8 stable reusable security patterns extracted
+from 10 distinct supporting notes**.
+
+| Pattern | Review focus |
+| --- | --- |
+| [Parser uncertainty](patterns/parsing/parser-uncertainty.md) | make unsupported input visible instead of treating it as negative evidence |
+| [Authentication burst triage](patterns/auth/authentication-burst-triage.md) | bound failure clusters without claiming compromise |
+| [Multi-user probing](patterns/auth/multi-user-probing.md) | distinguish username spread from ordinary repeated failure |
+| [Alert deduplication](patterns/detection/alert-deduplication.md) | collapse duplicate alerts without erasing evidence |
+| [Bounded correlation](patterns/detection/bounded-correlation.md) | require a reproducible join key, sequence, and window |
+| [Repository baseline governance](patterns/repository/repository-baseline-governance.md) | review suppression drift as security-adjacent code |
+| [SBOM policy warning](patterns/supply-chain/sbom-policy-warning.md) | explain a warning without inventing a package-safety verdict |
+| [Human verification boundary](patterns/ai/human-verification-boundary.md) | keep AI assistance separate from the accountable finding |
+
+The [Pattern Library](patterns/README.md) is the primary reusable output. The
+larger note corpus remains its source archive and evidence base.
+
 ## At A Glance
 
-Current public snapshot:
+Supporting source archive:
 
-- `157` active public notes
-- `100` active TryHackMe notes
-- `57` topic-organized notes under `notes/`
+- `157` public notes retained as source material
+- `100` TryHackMe source notes
+- `57` topic-organized source notes under `notes/`
 - `9` organized TryHackMe learning tracks
 - public governance for taxonomy, placeholders, publication, and maintenance
 
@@ -38,7 +57,7 @@ The emphasis is on:
 
 ## What You Will Find
 
-The live public corpus is currently centered on **TryHackMe** and supplemented by a smaller topic-organized `notes/` tree.
+The supporting source corpus is centered on **TryHackMe** and supplemented by a topic-organized `notes/` tree.
 
 | Track | Notes | Focus |
 | --- | --- | --- |
@@ -52,7 +71,7 @@ The live public corpus is currently centered on **TryHackMe** and supplemented b
 | [TryHackMe/80-blue-team](TryHackMe/80-blue-team) | `6` | SIEM, detection, analyst notes |
 | [TryHackMe/90-events](TryHackMe/90-events) | `32` | event and challenge write-ups, sanitized for publication |
 
-Additional organized notes outside the TryHackMe tree:
+Additional source notes outside the TryHackMe tree:
 
 - `notes/` currently contains `57` active public notes
 
@@ -77,9 +96,12 @@ If you are browsing this repo for the first time:
 ```text
 sec-writeups-public/
 ├── patterns/
+│   ├── ai/
 │   ├── auth/
-│   ├── detection/
 │   ├── cloud/
+│   ├── detection/
+│   ├── parsing/
+│   ├── repository/
 │   └── supply-chain/
 ├── TryHackMe/
 │   ├── 00-foundations/

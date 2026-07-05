@@ -341,3 +341,9 @@ Convenience can collide with privacy law, chain of custody, and admissibility.
 * NIST AI Risk Management Framework
 * legal references on the Daubert standard and expert testimony
 * privacy-preserving federated learning references
+
+---
+
+## 11. Related Patterns
+
+* [Human Verification Boundary](../../patterns/ai/human-verification-boundary.md)

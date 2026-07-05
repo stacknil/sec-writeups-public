@@ -70,11 +70,11 @@ def build_at_a_glance(files: list[str]) -> str:
     lines = [
         "## At A Glance",
         "",
-        "Current public snapshot:",
+        "Supporting source archive:",
         "",
-        f"- `{total_notes}` active public notes",
-        f"- `{tryhackme_notes}` active TryHackMe notes",
-        f"- `{notes_tree_notes}` topic-organized notes under `notes/`",
+        f"- `{total_notes}` public notes retained as source material",
+        f"- `{tryhackme_notes}` TryHackMe source notes",
+        f"- `{notes_tree_notes}` topic-organized source notes under `notes/`",
         f"- `{len(tryhackme_tracks)}` organized TryHackMe learning tracks",
         "- public governance for taxonomy, placeholders, publication, and maintenance",
         "",
@@ -98,7 +98,7 @@ def build_what_you_will_find(files: list[str]) -> str:
     lines = [
         "## What You Will Find",
         "",
-        "The live public corpus is currently centered on **TryHackMe** and supplemented by a smaller topic-organized `notes/` tree.",
+        "The supporting source corpus is centered on **TryHackMe** and supplemented by a topic-organized `notes/` tree.",
         "",
         "| Track | Notes | Focus |",
         "| --- | --- | --- |",
@@ -109,7 +109,7 @@ def build_what_you_will_find(files: list[str]) -> str:
     lines.extend(
         [
             "",
-            "Additional organized notes outside the TryHackMe tree:",
+            "Additional source notes outside the TryHackMe tree:",
             "",
             f"- `notes/` currently contains `{notes_tree_notes}` active public notes",
             "",

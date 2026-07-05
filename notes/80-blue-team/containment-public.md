@@ -471,3 +471,9 @@ environments.
 * Prompt injection defensive guidance
 * Human-in-the-loop incident response patterns
 * Ransomware triage and evidence-validation playbooks
+
+---
+
+## 16. Related Patterns
+
+* [Human Verification Boundary](../../patterns/ai/human-verification-boundary.md)

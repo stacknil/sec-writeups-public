@@ -1,3 +1,8 @@
+---
+maturity: reviewed
+last_reviewed: 2026-07-05
+---
+
 # Cooldown Suppression
 
 ## Signal
@@ -23,7 +28,7 @@ Cooldown suppression reduces alert fatigue, but it can also hide repeated
 activity if the suppression key is too broad or the cooldown window is too long.
 The control should reduce noise without erasing escalation signals.
 
-## False positives
+## False-positive contexts
 
 When can it be benign?
 
@@ -33,7 +38,7 @@ When can it be benign?
 * one benign automation job retriggering the same condition
 * expected retry behaviour from a monitored service
 
-## Minimum evidence
+## Evidence limits
 
 What must be present before making a claim?
 
@@ -52,11 +57,11 @@ Review suppressed events for changes in user, host, destination, success state,
 or command behaviour. Tune the cooldown key so repeated identical noise is
 suppressed while meaningful changes still create a new alert.
 
-## Related project
+## Related implementation
 
 [telemetry-lab](https://github.com/stacknil/telemetry-lab)
 
-## Related notes
+## Supporting notes
 
 * [Logs Fundamentals](../../notes/80-blue-team/logs-fundamentals.md)
 * [SOC Fundamentals](../../notes/80-blue-team/soc-fundamentals.md)

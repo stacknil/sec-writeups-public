@@ -615,3 +615,9 @@ reproducibility, not page aesthetics.
 * SafeTensors documentation
 * PyPI analysis of the Ultralytics supply-chain attack
 * PyTorch advisory on the torchtriton dependency confusion incident
+
+---
+
+## 16. Related Patterns
+
+* [SBOM Policy Warning](../../patterns/supply-chain/sbom-policy-warning.md)

@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "maturity_values": [
+    "draft",
+    "reviewed",
+    "stable"
+  ],
+  "required_sections": [
+    "Signal",
+    "Why it matters",
+    "False-positive contexts",
+    "Evidence limits",
+    "Defensive next step",
+    "Related implementation",
+    "Supporting notes"
+  ],
+  "core_projects": [
+    {
+      "name": "LogLens",
+      "url_prefix": "https://github.com/stacknil/LogLens"
+    },
+    {
+      "name": "telemetry-lab",
+      "url_prefix": "https://github.com/stacknil/telemetry-lab"
+    },
+    {
+      "name": "repo-sentinel-lite",
+      "url_prefix": "https://github.com/stacknil/repo-sentinel-lite"
+    },
+    {
+      "name": "sbom-diff-and-risk",
+      "url_prefix": "https://github.com/stacknil/scientific-computing-toolkit"
+    }
+  ],
+  "featured_patterns": [
+    "patterns/parsing/parser-uncertainty.md",
+    "patterns/auth/authentication-burst-triage.md",
+    "patterns/auth/multi-user-probing.md",
+    "patterns/detection/alert-deduplication.md",
+    "patterns/detection/bounded-correlation.md",
+    "patterns/repository/repository-baseline-governance.md",
+    "patterns/supply-chain/sbom-policy-warning.md",
+    "patterns/ai/human-verification-boundary.md"
+  ],
+  "flagship_case_studies": [
+    "notes/80-blue-team/containment-public.md",
+    "notes/80-blue-team/ai-forensics-public.md",
+    "notes/80-blue-team/understanding-ai-supply-chains-public.md"
+  ],
+  "metric_surfaces": [
+    "README.md",
+    "patterns/README.md"
+  ]
+}

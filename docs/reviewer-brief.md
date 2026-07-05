@@ -6,19 +6,21 @@ Security notes are often hard to publish safely: they either leak too much, coll
 
 ## What it does
 
-`sec-writeups-public` is a public, sanitized security note repository with:
+`sec-writeups-public` is a public, sanitized pattern library backed by a
+security source-note repository with:
 
-- a large TryHackMe-centered note corpus
-- topic-organized notes outside the training-platform tree
+- a stable pattern library extracted from supporting source notes
+- evidence-bounded links from patterns to related implementations
+- a larger TryHackMe-centered source-note corpus
 - taxonomy, placeholder, and publication governance
 - local checks that keep the public corpus maintainable
 
 ## Reviewer Evidence
 
-- Reproducible command: `python scripts/render_readme_snapshot.py --check`
-- Deterministic outputs: rendered README snapshots, generated tag docs, placeholder audit output, taxonomy docs, and markdownlint debt reports.
-- Tests / CI: local publication checks, placeholder checks, markdown checks, pre-commit hooks, and GitHub Actions maintenance workflows.
-- Release evidence: public corpus snapshot, governance docs, sanitization checklist, publication workflow, and maintenance checkpoints.
+- Reproducible command: `python scripts/check_pattern_library.py`
+- Deterministic outputs: pattern maturity, provenance counts, project links, case-study backlinks, rendered README snapshots, and generated tag docs.
+- Tests / CI: pattern-contract validation, publication checks, placeholder checks, markdown checks, pre-commit hooks, and GitHub Actions workflows.
+- Release evidence: stable pattern index, source-note links, governance docs, sanitization checklist, and maintenance checkpoints.
 - Non-goals: raw exploit logs, private evidence dumps, live target identifiers, weaponized exploit chains, or unsanitized challenge transcripts.
 
 ## Quick run
@@ -26,6 +28,7 @@ Security notes are often hard to publish safely: they either leak too much, coll
 ```bash
 python scripts/render_tags_doc.py --check
 python scripts/render_readme_snapshot.py --check
+python scripts/check_pattern_library.py
 python scripts/check_placeholders.py notes/80-blue-team/soc-fundamentals.md
 python scripts/check_markdown.py
 python -m pre_commit run --files notes/80-blue-team/soc-fundamentals.md
@@ -33,19 +36,23 @@ python -m pre_commit run --files notes/80-blue-team/soc-fundamentals.md
 
 ## Sample output
 
-The current public snapshot in the README reports:
+The current reviewer-facing metric is:
 
-- `111` active public notes
-- `100` active TryHackMe notes
-- `11` topic-organized notes under `notes/`
+- `8` stable reusable security patterns
+- `10` distinct supporting notes behind those stable patterns
+- `13` total cards across stable and reviewed maturity levels
 
-A representative public-safe note is `notes/80-blue-team/soc-fundamentals.md`, which uses summary-first structure, reusable concepts, and placeholders instead of live identifiers.
+A representative stable card is
+`patterns/detection/bounded-correlation.md`, which makes the signal,
+false-positive contexts, evidence limits, implementation bridge, and source
+notes independently reviewable.
 
 ## What this proves
 
 - security writing can be structured like an engineered artifact
 - publication safety can be enforced with explicit governance
-- public notes can stay reusable and maintainable instead of one-off dumps
+- source notes can be distilled into stable, reusable security patterns
+- pattern maturity and evidence links can be enforced in CI
 - reviewer-facing documentation discipline extends beyond code repos
 
 ## Safety / boundaries
@@ -63,4 +70,5 @@ A representative public-safe note is `notes/80-blue-team/soc-fundamentals.md`, w
 
 ## Next milestone
 
-Keep deepening blue-team and detection-oriented notes while improving reviewer-facing indexes for the strongest public writing paths.
+Promote reviewed cards only when new evidence or implementation work increases
+their decision value; avoid growing the source archive as an end in itself.
