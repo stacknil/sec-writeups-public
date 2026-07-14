@@ -37,6 +37,7 @@ Normalize and maintain this repository as a local-first canonical knowledge base
 Run:
 
 - python scripts/render_tags_doc.py --check
+- python -m unittest discover -s tests -p 'test_*.py'
 - python scripts/check_placeholders.py `<changed files>`
 - python scripts/check_markdown.py
 - python -m pre_commit run --files `<changed files>`

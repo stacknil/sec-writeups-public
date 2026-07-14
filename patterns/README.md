@@ -38,7 +38,9 @@ These cards remain useful but are not part of the featured stable set:
 | `reviewed` | Structurally reviewed and supported, but not yet promoted as a stable library entry. |
 | `stable` | Evidence-bounded, linked to a core implementation, and supported by at least one source note. |
 
-Every card records `maturity` and `last_reviewed` in front matter.
+Every card records `maturity` and `last_reviewed` in front matter. The review
+date must be a valid current or historical date; future provenance claims fail
+validation.
 
 ## Card Contract
 

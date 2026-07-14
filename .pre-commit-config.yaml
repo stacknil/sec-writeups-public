@@ -27,6 +27,15 @@ repos:
         files: >-
           ^(README\.md|docs/.+\.md|patterns/.+\.md|schemas/pattern-library\.json|
           scripts/check_pattern_library\.py|notes/.+\.md)$
+      - id: test-validation-contracts
+        name: test-validation-contracts
+        entry: python -m unittest discover -s tests -p test_*.py
+        language: python
+        additional_dependencies:
+          - PyYAML>=6.0,<7.0
+          - jsonschema>=4.23,<5.0
+        pass_filenames: false
+        always_run: true
       - id: validate-frontmatter
         name: validate-frontmatter
         entry: python scripts/check_markdown.py

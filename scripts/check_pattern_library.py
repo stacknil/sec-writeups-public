@@ -62,6 +62,9 @@ def parse_card(
     except (TypeError, ValueError):
         errors.append(f"{relative(path)}: last_reviewed must use YYYY-MM-DD")
         return None
+    if reviewed > date.today():
+        errors.append(f"{relative(path)}: last_reviewed must not be in the future")
+        return None
 
     body = text[match.end() :]
     headings = list(HEADING_RE.finditer(body))
