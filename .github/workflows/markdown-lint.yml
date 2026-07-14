@@ -18,6 +18,7 @@ name: Markdown Validation
       - "scripts/render_tags_doc.py"
       - "scripts/generate_markdownlint_debt.py"
       - "scripts/run_markdownlint.py"
+      - "tests/**/*.py"
       - "requirements-lint.txt"
       - ".markdownlint-cli2.jsonc"
       - ".markdownlint-cli2-debt.jsonc"
@@ -40,6 +41,7 @@ name: Markdown Validation
       - "scripts/render_tags_doc.py"
       - "scripts/generate_markdownlint_debt.py"
       - "scripts/run_markdownlint.py"
+      - "tests/**/*.py"
       - "requirements-lint.txt"
       - ".markdownlint-cli2.jsonc"
       - ".markdownlint-cli2-debt.jsonc"
@@ -78,6 +80,9 @@ jobs:
 
       - name: Validate canonical public placeholders
         run: python scripts/check_placeholders.py
+
+      - name: Run validator contract tests
+        run: python -m unittest discover -s tests -p 'test_*.py'
 
       - name: Run Markdown checks
         run: python scripts/check_markdown.py
