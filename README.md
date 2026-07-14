@@ -197,6 +197,7 @@ Run these before publishing or merging materially edited public notes:
 ```text
 python scripts/render_tags_doc.py --check
 python scripts/render_readme_snapshot.py --check
+python -m unittest discover -s tests -p 'test_*.py'
 python scripts/check_placeholders.py <changed files>
 python scripts/check_markdown.py
 python -m pre_commit run --files <changed files>
