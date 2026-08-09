@@ -2439,11 +2439,6 @@
       "kind": "high_entropy",
       "line": 60,
       "token": "40-networking/network-fundamentals"
-    },
-    {
-      "fingerprint": "efcd9b83e1c3bef283a2e4f5dbd6a6dfa4fc691f54653643445778f35d2f501e",
-      "kind": "missing_file",
-      "path": "LICENSE"
     }
   ],
   "generated_at": "2026-04-02T18:57:41Z",
