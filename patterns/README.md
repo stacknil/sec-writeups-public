@@ -39,8 +39,11 @@ These cards remain useful but are not part of the featured stable set:
 | `stable` | Evidence-bounded, linked to a core implementation, and supported by at least one source note. |
 
 Every card records `maturity` and `last_reviewed` in front matter. The review
-date must be a valid current or historical date; future provenance claims fail
-validation.
+date is evaluated against the UTC calendar date
+(`datetime.now(timezone.utc).date()`), so local timezone differences cannot
+make a same-day review look like future provenance. Future provenance claims
+fail validation, and the contract tests inject the clock rather than depending
+on the machine's current date.
 
 ## Card Contract
 

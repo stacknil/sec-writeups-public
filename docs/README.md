@@ -17,6 +17,7 @@ This folder contains the governance and maintenance documents that keep the publ
 - [publication-workflow.md](publication-workflow.md): how to move from private/raw notes to public sanitized notes
 - [taxonomy-closure.md](taxonomy-closure.md): canonical taxonomy state and future workflow
 - [placeholder-closure.md](placeholder-closure.md): canonical placeholder state and checker workflow
+- [repo-sentinel-baseline-review.md](repo-sentinel-baseline-review.md): redacted baseline classification and remote-gate decision record
 - [maintenance-checkpoint.md](maintenance-checkpoint.md): current markdownlint maintenance mode, operator commands, and audit baseline
 - [maintenance-quick-reference.md](maintenance-quick-reference.md): shortest-path maintainer commands by change type
 

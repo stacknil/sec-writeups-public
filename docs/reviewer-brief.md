@@ -19,6 +19,7 @@ security source-note repository with:
 
 - Reproducible command: `python scripts/check_pattern_library.py`
 - Deterministic outputs: pattern maturity, provenance counts, project links, case-study backlinks, rendered README snapshots, and generated tag docs.
+- Provenance boundary: `last_reviewed` is compared with the UTC calendar date and tested with an injected clock.
 - Tests / CI: pattern-contract validation, publication checks, placeholder checks, markdown checks, pre-commit hooks, and GitHub Actions workflows.
 - Release evidence: stable pattern index, source-note links, governance docs, sanitization checklist, and maintenance checkpoints.
 - Non-goals: raw exploit logs, private evidence dumps, live target identifiers, weaponized exploit chains, or unsanitized challenge transcripts.
@@ -72,3 +73,5 @@ notes independently reviewable.
 
 Promote reviewed cards only when new evidence or implementation work increases
 their decision value; avoid growing the source archive as an end in itself.
+The next governance case is the reviewed `repo-sentinel` baseline; its audit
+evidence is recorded separately before any remote gate becomes blocking.
