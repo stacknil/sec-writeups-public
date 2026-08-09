@@ -4,6 +4,8 @@ Public, sanitized security write-ups from authorized labs and training platforms
 
 > A local-first public knowledge base focused on methodology, reasoning, and reusable security patterns, not copy-paste exploitation.
 
+Original written content and pattern cards are licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); see [LICENSE](LICENSE). This does not grant rights to third-party platform material, quotations, or linked resources.
+
 ## Featured Security Patterns
 
 Current extraction metric: **8 stable reusable security patterns extracted

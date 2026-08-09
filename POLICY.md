@@ -4,6 +4,13 @@ This repository is public.
 
 Everything published here must be safe to share, compliant with platform rules, and non-actionable outside authorized lab contexts.
 
+## License Scope
+
+Unless a file or section states otherwise, the original written content and
+pattern cards in this repository are licensed under [CC BY 4.0](LICENSE).
+This license does not grant rights to third-party platform material,
+quotations, or linked resources; those remain subject to their own terms.
+
 ## Publishing Standard
 
 The default publishing standard in this repo is:
