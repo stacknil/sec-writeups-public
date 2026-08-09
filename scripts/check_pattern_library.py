@@ -4,8 +4,9 @@ from __future__ import annotations
 import json
 import re
 import sys
+from collections.abc import Callable
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, datetime, timezone
 from pathlib import Path
 from urllib.parse import unquote, urlparse
 
@@ -17,6 +18,7 @@ CONFIG_PATH = ROOT / "schemas" / "pattern-library.json"
 FRONT_MATTER_RE = re.compile(r"\A---\n(.*?)\n---\n", re.DOTALL)
 HEADING_RE = re.compile(r"^## (.+)$", re.MULTILINE)
 LINK_RE = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
+DateClock = Callable[[], date]
 
 
 @dataclass(frozen=True)
@@ -35,11 +37,18 @@ def load_config() -> dict[str, object]:
     return json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
 
 
+def utc_today() -> date:
+    """Return the UTC calendar date used by local and CI provenance checks."""
+    return datetime.now(timezone.utc).date()
+
+
 def parse_card(
     path: Path,
     required_sections: list[str],
     maturity_values: set[str],
     errors: list[str],
+    *,
+    clock: DateClock = utc_today,
 ) -> Card | None:
     text = path.read_text(encoding="utf-8").replace("\r\n", "\n")
     match = FRONT_MATTER_RE.match(text)
@@ -62,7 +71,7 @@ def parse_card(
     except (TypeError, ValueError):
         errors.append(f"{relative(path)}: last_reviewed must use YYYY-MM-DD")
         return None
-    if reviewed > date.today():
+    if reviewed > clock():
         errors.append(f"{relative(path)}: last_reviewed must not be in the future")
         return None
 
@@ -112,7 +121,7 @@ def is_core_project_link(target: str, prefixes: list[str]) -> bool:
     return any(target == prefix or target.startswith(f"{prefix}/") for prefix in prefixes)
 
 
-def validate() -> tuple[list[str], int, int, int]:
+def validate(*, clock: DateClock = utc_today) -> tuple[list[str], int, int, int]:
     config = load_config()
     required_sections = list(config["required_sections"])
     maturity_values = set(config["maturity_values"])
@@ -135,6 +144,7 @@ def validate() -> tuple[list[str], int, int, int]:
                 required_sections,
                 maturity_values,
                 errors,
+                clock=clock,
             )
         )
         is not None

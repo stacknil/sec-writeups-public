@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import sys
 import unittest
+from datetime import date
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
@@ -56,7 +57,7 @@ def pattern_card_text(
 
 
 class PatternLibraryContractTests(unittest.TestCase):
-    def test_parse_card_future_review_date_is_rejected(self) -> None:
+    def test_parse_card_future_review_date_is_rejected_against_utc_clock(self) -> None:
         with TemporaryDirectory() as temp_dir:
             temp_root = Path(temp_dir)
             card_path = temp_root / "patterns" / "future-review.md"
@@ -64,7 +65,7 @@ class PatternLibraryContractTests(unittest.TestCase):
             card_path.write_text(
                 pattern_card_text(
                     title="Future review",
-                    last_reviewed="2999-01-01",
+                    last_reviewed="2026-07-16",
                 ),
                 encoding="utf-8",
             )
@@ -76,6 +77,7 @@ class PatternLibraryContractTests(unittest.TestCase):
                     REQUIRED_PATTERN_SECTIONS,
                     {"draft", "reviewed", "stable"},
                     errors,
+                    clock=lambda: date(2026, 7, 15),
                 )
 
             self.assertIsNone(card)
@@ -86,6 +88,32 @@ class PatternLibraryContractTests(unittest.TestCase):
                     "last_reviewed must not be in the future"
                 ],
             )
+
+    def test_parse_card_review_date_on_utc_boundary_is_allowed(self) -> None:
+        with TemporaryDirectory() as temp_dir:
+            temp_root = Path(temp_dir)
+            card_path = temp_root / "patterns" / "boundary-review.md"
+            card_path.parent.mkdir(parents=True)
+            card_path.write_text(
+                pattern_card_text(
+                    title="Boundary review",
+                    last_reviewed="2026-07-16",
+                ),
+                encoding="utf-8",
+            )
+            errors: list[str] = []
+
+            with patch.object(check_pattern_library, "ROOT", temp_root):
+                card = check_pattern_library.parse_card(
+                    card_path,
+                    REQUIRED_PATTERN_SECTIONS,
+                    {"draft", "reviewed", "stable"},
+                    errors,
+                    clock=lambda: date(2026, 7, 16),
+                )
+
+            self.assertIsNotNone(card)
+            self.assertEqual(errors, [])
 
     def test_validate_stable_card_without_core_project_is_rejected(self) -> None:
         with TemporaryDirectory() as temp_dir:
