@@ -3,21 +3,22 @@
 ## Status
 
 This is a classification record for the current consumer baseline. The
-committed `.reposentinel-baseline.json` is unchanged, and no remote
-`repo-sentinel` gate is enabled by this review.
+committed `.reposentinel-baseline.json` is unchanged, and the consumer now
+pins the reviewed `repo-sentinel-lite v0.8.1` release.
 
 The review keeps raw token values out of repository history, issues, and
 reviewer-facing output.
 
 ## Audit Scope
 
-The consumer snapshot is `sec-writeups-public` `main` at `9a18c74`. The
+The pre-integration consumer snapshot is `sec-writeups-public` `main` at
+`7db916e`. The
 baseline is schema version `1`, generated at `2026-04-02T18:57:41Z`, and
 contains 306 entries across 127 files.
 
-The candidate audit used `repo-sentinel-lite` commit `8a6e064` from the
-v0.8 development line. It is recorded as an immutable audit input, not as a
-released dependency or a claim that the remote gate is ready.
+The formal consumer integration uses the production PyPI package
+`repo-sentinel-lite==0.8.1`. It is intentionally not pinned to the provider
+repository's development branch.
 
 Reproduction command:
 
@@ -28,7 +29,11 @@ repo-sentinel baseline audit \
   .
 ```
 
-## Classification
+## Historical v0.8 Development Classification
+
+The following classification is retained as historical evidence from the
+development-line audit. It is not the canonical consumer result for the
+published `v0.8.1` integration.
 
 | Audit class | Count | Classification | Decision |
 | --- | ---: | --- | --- |
@@ -66,21 +71,24 @@ The baseline change was targeted: it removed only the stale
 `repo.required_file_missing` entry for `LICENSE`. No unrelated suppression was
 regenerated.
 
-A clean-worktree local validation used the installed `repo-sentinel 0.8.0`
-CLI against that exact consumer commit. This is pre-release/local evidence,
-not a formal remote dependency pin or a claim that the changed-file gate is
-ready.
+The targeted license resolution is retained as historical governance
+evidence. The canonical current audit is recorded below against the pinned
+production release.
+
+## v0.8.1 Integration Audit
+
+The exact pinned audit was rerun with `repo-sentinel-lite==0.8.1` after adding
+the consumer gate and synthetic contract. The redacted output contained no
+raw token values.
 
 Reproduction command:
 
 ```bash
-repo-sentinel baseline audit \
+python -m repo_sentinel baseline audit \
   --format json \
   --baseline .reposentinel-baseline.json \
   .
 ```
-
-Evidence summary:
 
 | Result | Count |
 | --- | ---: |
@@ -89,37 +97,35 @@ Evidence summary:
 | Changed | 0 |
 | Ambiguous | 26 |
 | Stale | 0 |
-| Unmatched | 2,567 |
+| Unmatched | 150 |
 | Active `repo.required_file_missing` | 0 |
 
-The redacted audit artifact SHA-256 is
-`ce5e84b0bff3c8825c51141a9278612837ae7cbf80baaafd52b1c1a71167fe9a`.
+The exact consumer SHA, scanner version, command, artifact SHA-256, and remote
+workflow results are kept together in the issue #5 closure record.
 
 ## Governance Decision
 
-The current baseline is useful as a reviewed suppression record, but it is not
-ready to become a blocking remote gate yet.
+The current baseline remains a reviewed suppression record. Baseline drift is
+reported by a non-blocking audit job, while the changed-file error gate is now
+blocking for pull requests.
 
 1. The missing `LICENSE` decision is resolved. Keep the targeted baseline
    cleanup and do not regenerate unrelated suppressions.
 2. Keep baseline audit output non-blocking. The changed-file policy should fail
    on new error findings while baseline drift remains an independent review
    signal.
-3. Consume a reviewed `repo-sentinel` release or pin a reviewed immutable
-   commit before enabling the remote job.
-4. Add the synthetic pass/fail/redaction integration test in the consumer
-   workflow before making the check required.
+3. Pin the reviewed production release `repo-sentinel-lite==0.8.1`; do not use
+   the provider's development branch as consumer proof.
+4. Keep the synthetic pass/fail/redaction integration test in the consumer
+   workflow as a release contract.
 5. Preserve the rollback path: remove the remote job while retaining the local
    pre-push hook.
 
 ## Relationship To Issue #5
 
 This record advances [issue #5](https://github.com/stacknil/sec-writeups-public/issues/5)
-without claiming that the acceptance criteria are complete. The historical
-issue snapshot and this v0.8 candidate audit are not directly comparable:
-scanner rule coverage and baseline identity semantics changed between the two
-runs. Future comparisons should always record the exact `repo-sentinel`
-release or commit used for the audit. The license condition is now resolved;
-issue #5 remains open pending the formal v0.8.0 release, exact pinned consumer
-audit, synthetic pass/fail/redaction tests, and changed-file remote-gate
-rollout while baseline audit remains non-blocking.
+without treating the historical development-line counts as current consumer
+evidence. Future comparisons should always record the exact `repo-sentinel`
+release or commit used for the audit. The license condition is resolved; issue
+#5 can close after the exact v0.8.1 consumer audit, remote synthetic contract,
+and changed-file gate have passed while baseline audit remains non-blocking.
