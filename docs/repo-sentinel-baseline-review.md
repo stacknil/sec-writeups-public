@@ -121,11 +121,36 @@ blocking for pull requests.
 5. Preserve the rollback path: remove the remote job while retaining the local
    pre-push hook.
 
+## Consumer Orchestration Contract
+
+The blocking consumer workflow delegates its base/head policy to one testable
+script. The contract keeps scanner behavior and workflow trust decisions
+separate:
+
+1. Require the checked-out worktree to resolve to the requested pull request
+   head commit before collecting or scanning paths.
+2. Read the suppression baseline only from the pull request base commit. If the
+   base has no baseline, disable default-baseline discovery rather than trusting
+   the pull request checkout.
+3. Fail closed when the pull request modifies, deletes, or renames either
+   `.reposentinel.toml` or `.reposentinel-baseline.json`.
+4. With rename detection disabled, send the destination of an ordinary rename
+   to the blocking scan as an added path and report its deleted source path as
+   audit-only. Other added, copied, modified, and type-changed paths follow the
+   same stable blocking-path order.
+5. Keep only new error findings blocking. Warning findings and coverage skips
+   remain report-only, and repository-level baseline drift remains visible in
+   the independent non-blocking audit job.
+
+Temporary-Git-repository tests cover the trusted-base and path-selection
+boundary. The existing published-package fixture remains authoritative for the
+scanner's pass, fail, and redaction behavior.
+
 ## Relationship To Issue #5
 
-This record advances [issue #5](https://github.com/stacknil/sec-writeups-public/issues/5)
-without treating the historical development-line counts as current consumer
-evidence. Future comparisons should always record the exact `repo-sentinel`
-release or commit used for the audit. The license condition is resolved; issue
-#5 can close after the exact v0.8.1 consumer audit, remote synthetic contract,
-and changed-file gate have passed while baseline audit remains non-blocking.
+This record closed [issue #5](https://github.com/stacknil/sec-writeups-public/issues/5)
+through pull request #8 without treating the historical development-line counts
+as current consumer evidence. Future comparisons should always record the exact
+`repo-sentinel` release or commit used for the audit. Issue #9 adds regression
+coverage for the consumer workflow boundary without changing the reviewed
+baseline or warning policy.
