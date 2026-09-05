@@ -31,18 +31,19 @@ jobs:
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          REPORT_PATH: ${{ runner.temp }}/repo-sentinel-changed.txt
         run: |
           python scripts/repo_sentinel_gate.py \
             --base-sha "$BASE_SHA" \
             --head-sha "$HEAD_SHA" \
-            --output repo-sentinel-changed.txt
+            --output "$REPORT_PATH"
 
       - name: Upload changed-file report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: repo-sentinel-changed-file-report
-          path: repo-sentinel-changed.txt
+          path: ${{ runner.temp }}/repo-sentinel-changed.txt
           if-no-files-found: ignore
           retention-days: 14
 

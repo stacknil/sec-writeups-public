@@ -42,6 +42,10 @@ class CheckoutMismatch(RuntimeError):
     """Raised when the scanner worktree is not the requested head commit."""
 
 
+class UnsafeReportPath(ValueError):
+    """Raised when report cleanup could remove a repository input."""
+
+
 ScannerRunner = Callable[[GatePlan, Path, Path], int]
 
 
@@ -168,6 +172,23 @@ def _run_repo_sentinel(
     return result.returncode
 
 
+def _prepare_report(repository: Path, report_path: Path) -> Path:
+    if report_path.is_symlink():
+        raise UnsafeReportPath("report output must not be a symbolic link")
+    report_path = report_path.resolve()
+    if report_path.is_relative_to(repository):
+        relative = report_path.relative_to(repository)
+        tracked = _run_git(
+            repository, "ls-files", "--cached", "-z", "--",
+            f":(literal){relative.as_posix()}",
+        ).stdout
+        if tracked or (relative.parts and relative.parts[0].casefold() == ".git"):
+            raise UnsafeReportPath("report output must not replace tracked or Git files")
+    if report_path.is_file():
+        report_path.unlink()
+    return report_path
+
+
 def run_gate(
     repository: Path,
     base_sha: str,
@@ -179,9 +200,7 @@ def run_gate(
     """Run the gate and preserve the scanner's blocking exit status."""
 
     repository = repository.resolve()
-    report_path = report_path.resolve()
-    if report_path.is_file():
-        report_path.unlink()
+    report_path = _prepare_report(repository, report_path)
     plan = build_gate_plan(repository, base_sha, head_sha)
 
     print(f"Changed files: {len(plan.changed_files)}")
@@ -251,8 +270,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             file=sys.stderr,
         )
         return 1
-    except CheckoutMismatch as error:
-        print(f"Repo Sentinel gate target mismatch: {error}", file=sys.stderr)
+    except (CheckoutMismatch, UnsafeReportPath) as error:
+        print(f"Repo Sentinel gate refused unsafe inputs: {error}", file=sys.stderr)
         return 2
     except (OSError, subprocess.CalledProcessError, UnicodeError) as error:
         print(f"Repo Sentinel gate could not establish trusted inputs: {error}", file=sys.stderr)
