@@ -170,6 +170,41 @@ class RepoSentinelGatePlanTests(unittest.TestCase):
         self.assertIn("Baseline audit (non-blocking)", stdout.getvalue())
         self.assertFalse(report_path.exists())
 
+    def test_report_cleanup_cannot_delete_a_tracked_scan_input(self) -> None:
+        repository, base_sha = self.repository()
+        report_path = repository / "report.txt"
+        original = b"Tracked pull request content must be scanned.\n"
+        report_path.write_bytes(original)
+        head_sha = commit(repository, "test: add tracked report path")
+
+        with self.assertRaises(repo_sentinel_gate.UnsafeReportPath):
+            repo_sentinel_gate.run_gate(
+                repository, base_sha, head_sha, report_path,
+                scanner_runner=lambda *_args: 0,
+            )
+
+        self.assertEqual(report_path.read_bytes(), original)
+
+    def test_report_cleanup_cannot_follow_a_symbolic_link(self) -> None:
+        repository, base_sha = self.repository()
+        target = repository / "untracked.txt"
+        original = b"Keep untracked user content.\n"
+        target.write_bytes(original)
+        report_path = repository / "report.txt"
+        try:
+            report_path.symlink_to(target)
+        except OSError as error:
+            self.skipTest(f"symlink creation unavailable: {error}")
+
+        with self.assertRaises(repo_sentinel_gate.UnsafeReportPath):
+            repo_sentinel_gate.run_gate(
+                repository, base_sha, base_sha, report_path,
+                scanner_runner=lambda *_args: 0,
+            )
+
+        self.assertTrue(report_path.is_symlink())
+        self.assertEqual(target.read_bytes(), original)
+
     def test_rename_scans_destination_and_audits_source(self) -> None:
         repository, base_sha = self.repository()
         (repository / "notes" / "existing.md").rename(
