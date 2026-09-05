@@ -146,6 +146,11 @@ Temporary-Git-repository tests cover the trusted-base and path-selection
 boundary. The existing published-package fixture remains authoritative for the
 scanner's pass, fail, and redaction behavior.
 
+The workflow writes its report under the runner's temporary directory, outside
+the checkout. Local report cleanup rejects tracked files, the checkout's `.git` path,
+and symbolic-link outputs before deleting anything. This prevents a report
+filename supplied by a pull request from removing input content before scanning.
+
 ## Relationship To Issue #5
 
 This record closed [issue #5](https://github.com/stacknil/sec-writeups-public/issues/5)
