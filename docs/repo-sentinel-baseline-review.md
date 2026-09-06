@@ -151,6 +151,18 @@ the checkout. Local report cleanup rejects tracked files, the checkout's `.git` 
 and symbolic-link outputs before deleting anything. This prevents a report
 filename supplied by a pull request from removing input content before scanning.
 
+The scanner subprocess uses `python -I -m repo_sentinel`, so Python excludes the
+checkout and user site-packages from default module lookup and ignores `PYTHON*`
+environment variables. Install the pinned scanner in the active virtual
+environment or runner interpreter; a user-site-only or `PYTHONPATH` installation
+is intentionally unsupported. A marker-only shadow-module fixture verifies that
+checkout content cannot replace the scanner and hide an error finding.
+
+Import isolation is not a sandbox or a trusted-workflow guarantee. The workflow
+and orchestration script are still pull-request-owned; control-plane ownership
+remains open in issue #10.
+The interpreter and installed package set must themselves remain trusted.
+
 ## Relationship To Issue #5
 
 This record closed [issue #5](https://github.com/stacknil/sec-writeups-public/issues/5)

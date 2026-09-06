@@ -269,6 +269,10 @@ class RepoSentinelGatePlanTests(unittest.TestCase):
         self.assertEqual((trusted_status, untrusted_status), (0, 0))
         self.assertEqual(len(captured), 2)
         command = captured[0]
+        for invocation in captured:
+            self.assertEqual(
+                invocation[:4], [sys.executable, "-I", "-m", "repo_sentinel"]
+            )
         self.assertIn("--changed-files", command)
         severity_index = command.index("--fail-on-severity")
         self.assertEqual(command[severity_index + 1], "error")

@@ -10,6 +10,8 @@ import sys
 import tempfile
 from pathlib import Path
 
+from repo_sentinel_gate import GatePlan, _run_repo_sentinel
+
 
 def _run_scan(repository: Path, report_path: Path, *extra: str) -> tuple[int, dict[str, object]]:
     command = [
@@ -34,6 +36,30 @@ def _write_minimum_repository(repository: Path) -> None:
     (repository / "README.md").write_text("Synthetic repository fixture.\n", encoding="utf-8")
     (repository / "LICENSE").write_text("CC BY 4.0\n", encoding="utf-8")
     (repository / ".gitignore").write_text("\n", encoding="utf-8")
+
+
+def _check_import_isolation(repository: Path, token: str) -> None:
+    marker = repository / "shadow-module-executed"
+    (repository / "repo_sentinel.py").write_text(
+        'from pathlib import Path\nPath("shadow-module-executed").touch()\n',
+        encoding="utf-8",
+    )
+    report_path = repository / "isolated.txt"
+    status = _run_repo_sentinel(
+        GatePlan(("repo_sentinel.py", "synthetic.txt"), (), None),
+        repository,
+        report_path,
+    )
+    if marker.exists():
+        raise AssertionError("scanner executed the fixture's shadow module")
+    if status != 1 or not report_path.is_file():
+        raise AssertionError("isolated scanner did not report the error fixture")
+    report = report_path.read_text(encoding="utf-8")
+    if "synthetic.txt" not in report or "<redacted:sha256:" not in report:
+        raise AssertionError("isolated scanner lost the expected redacted finding")
+    if token in report:
+        raise AssertionError("isolated scanner exposed the synthetic token")
+    print("scanner import isolation: passed")
 
 
 def main() -> None:
@@ -80,6 +106,7 @@ def main() -> None:
         ):
             raise AssertionError("redaction contract did not emit a redacted token")
         print("redaction: passed")
+        _check_import_isolation(repository, token)
 
 
 if __name__ == "__main__":

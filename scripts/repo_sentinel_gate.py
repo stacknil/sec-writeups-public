@@ -151,6 +151,7 @@ def _run_repo_sentinel(
         result = subprocess.run(
             [
                 sys.executable,
+                "-I",
                 "-m",
                 "repo_sentinel",
                 "scan",
