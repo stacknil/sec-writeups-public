@@ -55,7 +55,7 @@ def _run_git(
     check: bool = True,
 ) -> subprocess.CompletedProcess[bytes]:
     return subprocess.run(
-        ["git", *arguments],
+        ["git", "--no-replace-objects", *arguments],
         cwd=repository,
         check=check,
         capture_output=True,
@@ -115,6 +115,16 @@ def build_gate_plan(
     if checked_out_head != requested_head:
         raise CheckoutMismatch("checked-out HEAD does not match requested HEAD_SHA")
 
+    return build_gate_plan_from_graph(repository, base_sha, head_sha)
+
+
+def build_gate_plan_from_graph(
+    repository: Path,
+    base_sha: str,
+    head_sha: str,
+) -> GatePlan:
+    """Build a gate plan from a trusted object graph without a checkout."""
+
     policy_changes = _diff_paths(
         repository,
         base_sha,
@@ -140,6 +150,8 @@ def _run_repo_sentinel(
     plan: GatePlan,
     repository: Path,
     report_path: Path,
+    *,
+    execution_directory: Path | None = None,
 ) -> int:
     baseline_arguments = ["--no-default-baseline"]
     with TemporaryDirectory(prefix="repo-sentinel-base-") as temporary:
@@ -163,11 +175,11 @@ def _run_repo_sentinel(
                 "text",
                 "--output",
                 str(report_path),
-                ".",
+                str(repository),
                 "--",
                 *plan.changed_files,
             ],
-            cwd=repository,
+            cwd=execution_directory or repository,
             check=False,
         )
     return result.returncode
@@ -203,6 +215,23 @@ def run_gate(
     repository = repository.resolve()
     report_path = _prepare_report(repository, report_path)
     plan = build_gate_plan(repository, base_sha, head_sha)
+
+    return run_gate_plan(
+        plan,
+        repository,
+        report_path,
+        scanner_runner=scanner_runner,
+    )
+
+
+def run_gate_plan(
+    plan: GatePlan,
+    repository: Path,
+    report_path: Path,
+    *,
+    scanner_runner: ScannerRunner = _run_repo_sentinel,
+) -> int:
+    """Run an established plan against a prepared data-only repository."""
 
     print(f"Changed files: {len(plan.changed_files)}")
     print(f"Deleted files (audit-only): {len(plan.deleted_files)}")
