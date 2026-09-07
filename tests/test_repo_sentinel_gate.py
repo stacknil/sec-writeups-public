@@ -115,6 +115,37 @@ class RepoSentinelGatePlanTests(unittest.TestCase):
         with self.assertRaises(repo_sentinel_gate.CheckoutMismatch):
             repo_sentinel_gate.build_gate_plan(repository, base_sha, head_sha)
 
+    def test_graph_plan_does_not_require_a_target_checkout(self) -> None:
+        repository, base_sha = self.repository()
+        (repository / "notes" / "new.md").write_text("New.\n", encoding="utf-8")
+        head_sha = commit(repository, "test: add note")
+        run_git(repository, "checkout", "--quiet", "--detach", base_sha)
+
+        plan = repo_sentinel_gate.build_gate_plan_from_graph(
+            repository, base_sha, head_sha
+        )
+
+        self.assertEqual(plan.changed_files, ("notes/new.md",))
+        self.assertEqual(plan.trusted_baseline, BASELINE_BYTES)
+
+    def test_graph_plan_ignores_local_replace_refs(self) -> None:
+        repository, base_sha = self.repository()
+        (repository / "notes" / "new.md").write_text("New.\n", encoding="utf-8")
+        head_sha = commit(repository, "test: add note")
+        baseline_oid = run_git(
+            repository, "rev-parse", f"{base_sha}:.reposentinel-baseline.json"
+        )
+        replacement = repository / "replacement.json"
+        replacement.write_text('{"untrusted":"replacement"}\n', encoding="utf-8")
+        replacement_oid = run_git(repository, "hash-object", "-w", str(replacement))
+        run_git(repository, "replace", baseline_oid, replacement_oid)
+
+        plan = repo_sentinel_gate.build_gate_plan_from_graph(
+            repository, base_sha, head_sha
+        )
+
+        self.assertEqual(plan.trusted_baseline, BASELINE_BYTES)
+
     def test_protected_policy_changes_fail_closed(self) -> None:
         for path in PROTECTED_POLICY_FILES:
             for operation in ("modify", "delete", "rename"):
@@ -241,10 +272,10 @@ class RepoSentinelGatePlanTests(unittest.TestCase):
     def test_scanner_command_keeps_only_errors_blocking(self) -> None:
         repository, _base_sha = self.repository()
         report_path = repository / "report.txt"
-        captured: list[list[str]] = []
+        captured: list[tuple[list[str], Path]] = []
 
         def run(command: list[str], **_kwargs: object) -> subprocess.CompletedProcess:
-            captured.append(command)
+            captured.append((command, Path(_kwargs["cwd"])))
             if "--baseline" in command:
                 baseline_index = command.index("--baseline") + 1
                 self.assertEqual(
@@ -259,6 +290,7 @@ class RepoSentinelGatePlanTests(unittest.TestCase):
                 ),
                 repository,
                 report_path,
+                execution_directory=repository.parent,
             )
             untrusted_status = repo_sentinel_gate._run_repo_sentinel(
                 repo_sentinel_gate.GatePlan(("notes/new.md",), (), None),
@@ -268,17 +300,20 @@ class RepoSentinelGatePlanTests(unittest.TestCase):
 
         self.assertEqual((trusted_status, untrusted_status), (0, 0))
         self.assertEqual(len(captured), 2)
-        command = captured[0]
-        for invocation in captured:
+        command = captured[0][0]
+        for invocation, _cwd in captured:
             self.assertEqual(
                 invocation[:4], [sys.executable, "-I", "-m", "repo_sentinel"]
             )
+            self.assertIn(str(repository), invocation)
         self.assertIn("--changed-files", command)
         severity_index = command.index("--fail-on-severity")
         self.assertEqual(command[severity_index + 1], "error")
         self.assertNotIn("warning", command)
-        self.assertIn("--no-default-baseline", captured[1])
-        self.assertNotIn("--baseline", captured[1])
+        self.assertEqual(captured[0][1], repository.parent)
+        self.assertEqual(captured[1][1], repository)
+        self.assertIn("--no-default-baseline", captured[1][0])
+        self.assertNotIn("--baseline", captured[1][0])
 
     def test_scanner_failure_status_is_preserved(self) -> None:
         repository, base_sha = self.repository()
