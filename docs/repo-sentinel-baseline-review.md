@@ -163,6 +163,40 @@ and orchestration script are still pull-request-owned; control-plane ownership
 remains open in issue #10.
 The interpreter and installed package set must themselves remain trusted.
 
+### Trusted Object-Graph Foundation
+
+Issue #10 separates the next control-plane work into independently reviewable
+changes. This first foundation does not add a privileged event or claim merge
+enforcement.
+
+The orchestration module now exposes `build_gate_plan_from_graph()` so a future
+base-owned caller can derive the same protected-policy, changed-path,
+deletion-only, and accepted-base baseline decisions from a verifier-owned Git
+object database without checking out the pull-request tree. All Git reads made
+by the module use `--no-replace-objects`; a real replacement-ref regression
+proves that the accepted-base baseline retains its original bytes.
+
+The scanner invocation also accepts a separate execution directory and passes
+the target repository as an absolute data path. This is the seam needed to keep
+a future trusted caller outside the materialized target. Python isolated mode
+continues to protect the installed scanner import. Existing callers retain their
+current working directory by default, so changed-file error blocking, warning
+reporting, deletion-only audit behavior, and baseline selection are unchanged.
+
+This foundation does **not** fetch a pull-request ref, parse arbitrary trees,
+materialize files, add `pull_request_target`, attach a result to a PR head, or
+configure a required check. The next draft must implement a bounded regular-file
+reader and its refusal states before adding the advisory workflow. The later
+canary must then prove that target-owned workflow/helper changes remain data and
+inspect the resulting Check API `head_sha` before any enforcement decision.
+
+**Main risk:** a later caller could use the graph-planning API with an object
+database or interpreter it does not actually control. **Compatibility impact:**
+none is intended for the existing workflow; the new API is additive and the
+default scanner working directory is preserved. **Rollback:** revert this
+foundation without changing the corpus, baseline, report format, workflow event,
+permissions, credentials, or repository settings.
+
 ## Relationship To Issue #5
 
 This record closed [issue #5](https://github.com/stacknil/sec-writeups-public/issues/5)
