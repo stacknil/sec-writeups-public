@@ -306,6 +306,7 @@ class RepoSentinelGatePlanTests(unittest.TestCase):
                 invocation[:4], [sys.executable, "-I", "-m", "repo_sentinel"]
             )
             self.assertIn(str(repository), invocation)
+            self.assertTrue(Path(invocation[invocation.index(str(repository))]).is_absolute())
         self.assertIn("--changed-files", command)
         severity_index = command.index("--fail-on-severity")
         self.assertEqual(command[severity_index + 1], "error")

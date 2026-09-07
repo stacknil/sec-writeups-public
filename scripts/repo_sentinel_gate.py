@@ -153,6 +153,9 @@ def _run_repo_sentinel(
     *,
     execution_directory: Path | None = None,
 ) -> int:
+    repository = repository.resolve()
+    if execution_directory is not None:
+        execution_directory = execution_directory.resolve()
     baseline_arguments = ["--no-default-baseline"]
     with TemporaryDirectory(prefix="repo-sentinel-base-") as temporary:
         if plan.trusted_baseline is not None:
