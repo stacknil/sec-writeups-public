@@ -216,7 +216,8 @@ not transform or execute the returned bytes.
 Initial admission is intentionally narrow: regular files with mode `100644`
 or `100755`, ASCII path components containing letters, digits, spaces, dots,
 underscores or hyphens, at most 255 bytes per component. Dot components, `.git`,
-Windows device names, trailing dots/spaces, and case-folding collisions are
+Windows device names (including spaces before an extension), trailing
+dots/spaces, and case-folding collisions are
 refused. Symlinks, gitlinks and other modes refuse the entire snapshot. This
 portable subset excludes legitimate names, including non-ASCII names; refusal
 must remain visible rather than silently dropping files.

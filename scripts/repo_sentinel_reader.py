@@ -94,7 +94,7 @@ def _component(raw: bytes) -> str:
     if not re.fullmatch(rb"[A-Za-z0-9._ -]{1,255}", raw):
         raise ReaderRefused("unsupported_path")
     name = raw.decode("ascii")
-    stem = name.split(".", 1)[0].upper()
+    stem = name.split(".", 1)[0].rstrip(" ").upper()
     if (name in (".", "..") or name.lower() == ".git"
             or name.endswith((".", " "))
             or stem in {"CON", "PRN", "AUX", "NUL"}

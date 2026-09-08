@@ -87,7 +87,8 @@ class ReaderTests(unittest.TestCase):
     def test_unsafe_paths_and_case_collisions_are_refused(self) -> None:
         root, _, blob = self.fixture()
         for name in (b"..", b".GiT", b"a/b", b"a\\b", b"NUL.txt", b"LPT1",
-                     b"x.", b"x ", b"a:b", b"a\nb", b"a\tb", b"\xff"):
+                     b"NUL .txt", b"COM1  .log", b"x.", b"x ", b"a:b",
+                     b"a\nb", b"a\tb", b"\xff"):
             with self.subTest(name=name):
                 tree = self.tree(root, [(b"100644", name, blob)])
                 with self.assertRaisesRegex(ReaderRefused, "^unsupported_path$"):
