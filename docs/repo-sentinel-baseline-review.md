@@ -197,6 +197,49 @@ default scanner working directory is preserved. **Rollback:** revert this
 foundation without changing the corpus, baseline, report format, workflow event,
 permissions, credentials, or repository settings.
 
+### Bounded Raw Snapshot Reader
+
+`scripts/repo_sentinel_reader.py` adds `read_snapshot(repository, commit_oid)`
+for the next Issue #10 data-plane boundary. It returns an immutable `Snapshot`
+with the commit, root tree, and sorted `(path, mode, oid, data)` file records.
+It reads a caller-owned, stable object database without a target checkout.
+The caller must trust Git, local repository configuration, and object storage.
+
+The reader accepts full lowercase commit OIDs in SHA-1 and SHA-256 repositories.
+It independently hashes the Git framing and raw bytes of every commit, tree,
+and blob before using them. Tree membership is parsed from those verified raw
+tree bytes. No-replace lookup applies to every Git command. Ambient `GIT_*`
+variables and global/system Git config are excluded; lazy fetching is disabled.
+Archive attributes, textconv, checkout filters, and executable file modes do
+not transform or execute the returned bytes.
+
+Initial admission is intentionally narrow: regular files with mode `100644`
+or `100755`, ASCII path components containing letters, digits, spaces, dots,
+underscores or hyphens, at most 255 bytes per component. Dot components, `.git`,
+Windows device names, trailing dots/spaces, and case-folding collisions are
+refused. Symlinks, gitlinks and other modes refuse the entire snapshot. This
+portable subset excludes legitimate names, including non-ASCII names; refusal
+must remain visible rather than silently dropping files.
+
+Defaults bound the complete read to 4,096 files, 8,192 object reads, 16 MiB of
+cumulative raw object bodies, 2 MiB per blob, 32 directory levels and 30 seconds.
+Repeated objects count again. Output reads stop after the remaining byte cap
+plus one sentinel byte, and a deadline timer kills a stalled Git child. The
+byte budget is not an exact resident-memory or Git-internal allocation limit.
+Failures raise `ReaderRefused` with a fixed code and return no partial snapshot;
+raw Git stderr and target content are excluded from refusal messages.
+
+Real bare-repository tests exercise both object formats, raw binary content,
+archive attributes, replacement refs, type/mode mismatch, unsafe paths,
+collisions, malformed trees and file/object/byte/depth budgets. A stalled child
+checks the deadline, and injected transport corruption checks independent
+identity validation. Run `python -m unittest tests.test_repo_sentinel_reader`.
+
+This API is not wired into the scanner or workflow yet. PR-ref acquisition,
+filesystem materialization, producer/head binding and enforcement remain
+separate work. Existing scan and baseline behavior is unchanged. Rollback is
+removal of the reader and its tests; there is no persisted state or migration.
+
 ## Relationship To Issue #5
 
 This record closed [issue #5](https://github.com/stacknil/sec-writeups-public/issues/5)
