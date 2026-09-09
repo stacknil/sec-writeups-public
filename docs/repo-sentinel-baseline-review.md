@@ -321,6 +321,54 @@ execution, PR-ref acquisition, and workflow activation remain unwired. Rollback
 restores the prior reader/materializer contract; there is no persisted output
 format or repository-setting migration.
 
+### Exact Pull-Head Acquisition
+
+`acquire_pull_snapshot(remote, pull_number, expected_head_oid, scratch_root)`
+creates a fresh bare object database below a caller-owned scratch directory. It
+fetches only `refs/pull/<number>/head` into one private ref, requires that ref to
+equal the expected full lowercase SHA-1 or SHA-256 OID, and calls the existing
+bounded reader before yielding `AcquiredSnapshot`. No checkout is created.
+
+Network remotes are restricted to credential-free HTTPS URLs without query or
+fragment data. A `Path` remote exists only for caller-controlled local fixtures.
+Git runs with inherited `GIT_*` variables and global/system configuration
+removed, replacement lookup disabled, redirects disabled, protocol selection
+restricted, automatic maintenance disabled, and terminal prompting disabled.
+The fetch is depth one, writes no `FETCH_HEAD`, imports no tags or submodules,
+and uses an explicit force refspec into the fresh database.
+
+The only resulting ref must be `refs/repo-sentinel/acquired-head` at the exact
+expected OID. A moved or missing PR ref, an unexpected ref set, an object-format
+mismatch, fetch failure, or reader refusal cannot yield a snapshot. The reader
+then independently validates raw commit, tree and blob identities and admission
+limits; acquisition does not replace those checks.
+
+The default acquisition timeout is 60 seconds for initialization, fetch and ref
+verification. The reader retains its separate timeout. A 64 MiB repository-size
+check runs after fetch; it makes an over-budget result fail closed but is not a
+hard transport or peak-disk quota because Git may exceed it before the fetch
+returns. A trusted Git executable and enough scratch capacity for that interval
+remain preconditions.
+
+Normal exit, setup refusal and consumer exceptions remove the fresh database.
+Cleanup failure is explicit and may leave residual files for the scratch owner.
+Tests cover SHA-1/SHA-256 acquisition, exact raw bytes, unrequested refs, ref
+movement, missing refs, input validation, reader refusal, timeout, repository
+budget, symlinked scratch input and lifecycle cleanup.
+
+A read-only HTTPS probe acquired PR #15 head `2f7b7a9` with the expected commit
+and tree, then the reader refused `unsupported_path`. Eight of that public tree's
+242 regular-file paths contain characters outside the current reader subset,
+including ampersands, apostrophes, exclamation marks, an en dash and a curly
+apostrophe. This is correct fail-closed propagation and a concrete compatibility
+blocker for workflow activation. Path admission needs a separate decision; this
+acquisition layer must not rewrite names or convert refusal into a clean result.
+
+This helper is not connected to a workflow or scanner invocation. It does not
+add `pull_request_target`, secrets, caches, Check API writes, permissions or
+repository enforcement. Rollback removes the acquisition helper/tests/docs;
+the merged reader and materializer remain independently usable.
+
 ## Relationship To Issue #5
 
 This record closed [issue #5](https://github.com/stacknil/sec-writeups-public/issues/5)
