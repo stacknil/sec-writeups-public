@@ -241,6 +241,45 @@ filesystem materialization, producer/head binding and enforcement remain
 separate work. Existing scan and baseline behavior is unchanged. Rollback is
 removal of the reader and its tests; there is no persisted state or migration.
 
+### Temporary Snapshot Materialization
+
+`materialized_snapshot(repository, commit_oid, scratch_root)` is a context
+manager in `scripts/repo_sentinel_materialize.py`. It calls the bounded reader
+before creating output. Only a complete snapshot can create a fresh private
+directory below an existing, caller-owned scratch root. The scratch root itself
+must be a real directory, not a symlink or Windows reparse point; its ancestors
+and stability are caller trust requirements.
+
+Files are created exclusively and read back with exact byte comparison before
+the context yields `MaterializedSnapshot(snapshot, root)`. Existing files and
+symlinks are never overwritten. Directory entries are checked before use;
+regular files use no-follow reads where supported. Source Git modes remain in
+the snapshot metadata, while output files request POSIX mode `0600` and
+directories request `0700`, both subject to umask. Windows permissions depend
+on the trusted parent ACL.
+No source hook, import, action, attribute or executable file is run.
+
+Normal exit, setup refusal and consumer exceptions clean the temporary output.
+`MaterializationRefused` carries fixed reason codes, without raw OS error text.
+Cleanup failure is explicit as `cleanup_failed`; it may supersede an earlier
+exception and can leave residual output for the scratch owner to handle. A
+hard process crash is outside this context-manager cleanup guarantee.
+
+The caller must prevent concurrent mutation by other processes or the consumer.
+These checks do not defend against a hostile local actor changing ancestors or
+files during use. Reader byte/count limits bound the selected data, but its
+deadline does not bound filesystem I/O, cleanup or consumer execution. Host
+path-length or disk failures refuse materialization rather than shortening paths
+or returning fewer files. Empty Git directories are not part of the reader's
+file snapshot and are not reconstructed.
+
+Run `python -m unittest tests.test_repo_sentinel_materialize` for real-object
+fixtures covering bytes, executable-mode metadata, empty files/trees, lifecycle,
+reader refusal, collisions, symlinks, same-length corruption, partial setup failures
+and cleanup failures. Scanner execution, PR-ref acquisition and workflow
+activation remain unwired. Rollback removes this additive helper/tests/docs;
+there is no persisted output format or repository-setting migration.
+
 ## Relationship To Issue #5
 
 This record closed [issue #5](https://github.com/stacknil/sec-writeups-public/issues/5)
