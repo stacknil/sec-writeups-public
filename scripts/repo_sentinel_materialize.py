@@ -34,9 +34,10 @@ class _MaterializationPlan:
 _WINDOWS_FORBIDDEN = frozenset('<>:"\\|?*')
 _WINDOWS_DEVICES = frozenset({"CON", "PRN", "AUX", "NUL", "CONIN$", "CONOUT$"})
 _WINDOWS_PORT_DEVICE_SUFFIXES = frozenset("123456789¹²³")
-_ASCII_CASE_TRANSLATION = str.maketrans(
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"
-)
+_ASCII_CASE_TRANSLATION = {
+    codepoint: codepoint + (ord("a") - ord("A"))
+    for codepoint in range(ord("A"), ord("Z") + 1)
+}
 
 
 def _has_control_characters(value: str) -> bool:
