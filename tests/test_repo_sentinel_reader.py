@@ -84,20 +84,90 @@ class ReaderTests(unittest.TestCase):
             with self.subTest(mode=mode), self.assertRaises(ReaderRefused):
                 read_snapshot(root, self.commit(root, tree))
 
-    def test_unsafe_paths_and_case_collisions_are_refused(self) -> None:
+    def test_strict_utf8_logical_paths_admit_repository_punctuation(self) -> None:
         root, _, blob = self.fixture()
-        for name in (b"..", b".GiT", b"a/b", b"a\\b", b"NUL.txt", b"LPT1",
-                     b"NUL .txt", b"COM1  .log", b"x.", b"x ", b"a:b",
-                     b"a\nb", b"a\tb", b"\xff"):
+        names = (
+            "README.md",
+            "a b.txt",
+            "a&b.md",
+            "it's.md",
+            "bang!.md",
+            "a–b.md",
+            "curly’apostrophe.md",
+            "café.md",
+        )
+        for name in names:
+            with self.subTest(name=name):
+                tree = self.tree(root, [(b"100644", name.encode("utf-8"), blob)])
+                result = read_snapshot(root, self.commit(root, tree))
+                self.assertEqual([item.path for item in result.files], [name])
+        child = self.tree(root, [(b"100644", "it's–ready!.md".encode(), blob)])
+        tree = self.tree(root, [(b"40000", "notes & café".encode(), child)])
+        result = read_snapshot(root, self.commit(root, tree))
+        self.assertEqual(
+            [item.path for item in result.files],
+            ["notes & café/it's–ready!.md"],
+        )
+
+    def test_host_specific_names_remain_valid_logical_identity(self) -> None:
+        root, _, blob = self.fixture()
+        names = (
+            "a\\b", "a:b", "foo.", "foo ", "CON", "con.txt", "COM1.txt",
+            "LPT9", "star*.txt", "x?y", "C:", "C:\\x", "\\\\server\\share",
+            ".git", ".GiT", "cash$-review&notes!.md", "COM¹", "COM²", "COM³",
+            "LPT¹", "LPT²", "LPT³", "COM¹.txt", "LPT³.log",
+        )
+        for name in names:
+            with self.subTest(name=name):
+                tree = self.tree(root, [(b"100644", name.encode("utf-8"), blob)])
+                result = read_snapshot(root, self.commit(root, tree))
+                self.assertEqual([item.path for item in result.files], [name])
+
+    def test_invalid_logical_paths_are_refused_with_stable_codes(self) -> None:
+        root, _, blob = self.fixture()
+        cases = (
+            (b"", "invalid_logical_path"),
+            (b".", "invalid_logical_path"),
+            (b"..", "invalid_logical_path"),
+            (b"a/b", "invalid_logical_path"),
+            (b"a\nb", "invalid_logical_path"),
+            (b"a\tb", "invalid_logical_path"),
+            (b"a\x7fb", "invalid_logical_path"),
+            (b"a\xc2\x80b", "invalid_logical_path"),
+            (b"\xff", "unsupported_path_encoding"),
+            (b"a" * 256, "path_limit"),
+        )
+        for name, code in cases:
             with self.subTest(name=name):
                 tree = self.tree(root, [(b"100644", name, blob)])
-                with self.assertRaisesRegex(ReaderRefused, "^unsupported_path$"):
+                with self.assertRaisesRegex(ReaderRefused, f"^{code}$"):
                     read_snapshot(root, self.commit(root, tree))
+
+    def test_case_and_normalization_variants_remain_distinct(self) -> None:
+        root, _, blob = self.fixture()
+        names = ("A", "a", "é", "e\u0301", "ß", "SS", "İ", "i")
+        tree = self.tree(
+            root,
+            [(b"100644", name.encode("utf-8"), blob) for name in names],
+        )
+        result = read_snapshot(root, self.commit(root, tree))
+        self.assertEqual({item.path for item in result.files}, set(names))
+
+    def test_exact_duplicate_and_file_directory_conflicts_are_refused(self) -> None:
+        root, _, blob = self.fixture()
         child = self.tree(root, [(b"100644", b"child", blob)])
-        tree = self.tree(root, [(b"40000", b"Dir", child),
-                                (b"100644", b"dir", blob)])
-        with self.assertRaisesRegex(ReaderRefused, "^path_collision$"):
-            read_snapshot(root, self.commit(root, tree))
+        trees = (
+            self.tree(root, [(b"100644", b"same", blob),
+                             (b"100644", b"same", blob)]),
+            self.tree(root, [(b"40000", b"same", child),
+                             (b"100644", b"same", blob)]),
+        )
+        for tree in trees:
+            with (
+                self.subTest(tree=tree),
+                self.assertRaisesRegex(ReaderRefused, "^path_collision$"),
+            ):
+                read_snapshot(root, self.commit(root, tree))
 
     def test_limits_refuse_instead_of_returning_a_partial_snapshot(self) -> None:
         root, head, blob = self.fixture()
