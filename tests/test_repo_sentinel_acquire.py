@@ -141,13 +141,13 @@ class AcquisitionTests(unittest.TestCase):
                 self.fail("incomplete snapshot reached the consumer")
         self.assertEqual(list(scratch.iterdir()), [])
 
-    def test_unsupported_fetched_path_preserves_reader_refusal(self) -> None:
+    def test_invalid_utf8_fetched_path_preserves_reader_refusal(self) -> None:
         remote, scratch, _ = self.fixture()
         blob = self.object(remote, "blob", b"data")
-        tree = self.tree(remote, [(b"100644", b"Command & Carol.md", blob)])
-        head = self.commit(remote, tree, "unsupported path")
+        tree = self.tree(remote, [(b"100644", b"invalid-\xff.md", blob)])
+        head = self.commit(remote, tree, "invalid UTF-8 path")
         self.git(remote, "update-ref", "refs/pull/7/head", head)
-        with self.assertRaisesRegex(ReaderRefused, "^unsupported_path$"):
+        with self.assertRaisesRegex(ReaderRefused, "^unsupported_path_encoding$"):
             with self.acquire(remote, scratch, head):
                 self.fail("reader refusal became a successful acquisition")
         self.assertEqual(list(scratch.iterdir()), [])
