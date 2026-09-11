@@ -213,14 +213,23 @@ variables and global/system Git config are excluded; lazy fetching is disabled.
 Archive attributes, textconv, checkout filters, and executable file modes do
 not transform or execute the returned bytes.
 
-Initial admission is intentionally narrow: regular files with mode `100644`
-or `100755`, ASCII path components containing letters, digits, spaces, dots,
-underscores or hyphens, at most 255 bytes per component. Dot components, `.git`,
-Windows device names (including spaces before an extension), trailing
-dots/spaces, and case-folding collisions are
-refused. Symlinks, gitlinks and other modes refuse the entire snapshot. This
-portable subset excludes legitimate names, including non-ASCII names; refusal
-must remain visible rather than silently dropping files.
+Path admission now represents logical Git-tree identity rather than host
+filesystem portability. Each raw component must decode as strict UTF-8,
+re-encode to the original bytes, and remain within the 255 raw-byte component
+bound. Empty components, raw `/`, exact `.` or `..`, C0/C1 controls, DEL,
+malformed framing, exact duplicate paths, and exact file/directory namespace
+conflicts refuse the complete snapshot. Symlinks, gitlinks and other modes
+remain unsupported.
+
+The strict UTF-8 rule is a deliberate compatibility boundary for this reader,
+not a claim that arbitrary non-NUL, non-slash Git path bytes are invalid Git.
+Decoded names are not normalized, case-folded, transliterated, or repaired.
+Logical identity is exact Python `str` equality, so case variants and NFC/NFD
+variants remain distinct and exact-string sorting stays deterministic. Host-only
+concerns such as `.git`, backslash, colon, Windows device names, wildcards, and
+trailing dots or spaces are intentionally left to the materializer. Ordinary
+Unicode and inert punctuation such as `&`, apostrophes, `!`, `~`, and `$` are
+admitted without filename-specific exceptions.
 
 Defaults bound the complete read to 4,096 files, 8,192 object reads, 16 MiB of
 cumulative raw object bodies, 2 MiB per blob, 32 directory levels and 30 seconds.
@@ -234,12 +243,13 @@ Real bare-repository tests exercise both object formats, raw binary content,
 archive attributes, replacement refs, type/mode mismatch, unsafe paths,
 collisions, malformed trees and file/object/byte/depth budgets. A stalled child
 checks the deadline, and injected transport corruption checks independent
-identity validation. Run `python -m unittest tests.test_repo_sentinel_reader`.
+identity validation. Run
+`python -m unittest discover -s tests -p 'test_repo_sentinel_reader.py'`.
 
-This API is not wired into the scanner or workflow yet. PR-ref acquisition,
-filesystem materialization, producer/head binding and enforcement remain
-separate work. Existing scan and baseline behavior is unchanged. Rollback is
-removal of the reader and its tests; there is no persisted state or migration.
+These APIs are not wired into the scanner or workflow yet. PR-ref acquisition,
+producer/head binding, and enforcement remain separate work. Existing scan and
+baseline behavior is unchanged. Rollback restores the prior reader/materializer
+contract; there is no persisted state or migration.
 
 ### Temporary Snapshot Materialization
 
@@ -249,6 +259,34 @@ before creating output. Only a complete snapshot can create a fresh private
 directory below an existing, caller-owned scratch root. The scratch root itself
 must be a real directory, not a symlink or Windows reparse point; its ancestors
 and stability are caller trust requirements.
+
+The empty private staging container is created first so root-dependent path
+limits can be evaluated. Before any snapshot subdirectory or file is populated,
+the materializer revalidates every `SnapshotFile.path`, derives all implicit
+directories, and completes indexed collision and type-prefix checks across the
+whole tree. This independent preflight also protects against caller-constructed
+`Snapshot` values that did not originate in the reader.
+
+Canonical materialization rejects Windows separators, drive/UNC/device forms,
+ADS colons, reserved punctuation and device names, including the Windows-defined
+superscript-digit `COM`/`LPT` aliases, trailing dots/spaces, and
+ASCII-case-insensitive `.git` components on every supported host. Portable-v1
+case aliases use an explicit ASCII-only `A-Z` mapping independent of the runner
+OS. NFC and NFD keys detect Unicode portability aliases separately without
+changing logical identity. This deterministic policy does not claim to emulate
+every evolving filesystem-specific Unicode casing rule. Full Unicode lowercasing
+or case folding is not used, so names such as `ẞ`/`ß`, `ß`/`SS`, and `İ`/`i`
+remain distinct. Logical names can therefore be reader-valid but
+materializer-invalid by design.
+
+The preflight retains the reader's 255-byte component and depth bounds. It also
+checks UTF-16 component and conservative `MAX_PATH` length against the actual
+private staging root on Windows, and runtime `pathconf` component/full-path
+limits on POSIX. Unavailable or indeterminate POSIX limits refuse the operation;
+the absolute limit is consequently a documented runtime-root precondition
+rather than an emulation of a foreign filesystem. Validated component tuples
+are joined with `root.joinpath(*components)`; unvalidated logical path strings
+never reach host path joining.
 
 Files are created exclusively and read back with exact byte comparison before
 the context yields `MaterializedSnapshot(snapshot, root)`. Existing files and
@@ -269,16 +307,19 @@ The caller must prevent concurrent mutation by other processes or the consumer.
 These checks do not defend against a hostile local actor changing ancestors or
 files during use. Reader byte/count limits bound the selected data, but its
 deadline does not bound filesystem I/O, cleanup or consumer execution. Host
-path-length or disk failures refuse materialization rather than shortening paths
-or returning fewer files. Empty Git directories are not part of the reader's
-file snapshot and are not reconstructed.
+path-length or disk failures refuse materialization rather than shortening
+paths or returning fewer files. Empty Git directories are not part of the
+reader's file snapshot and are not reconstructed.
 
-Run `python -m unittest tests.test_repo_sentinel_materialize` for real-object
-fixtures covering bytes, executable-mode metadata, empty files/trees, lifecycle,
-reader refusal, collisions, symlinks, same-length corruption, partial setup failures
-and cleanup failures. Scanner execution, PR-ref acquisition and workflow
-activation remain unwired. Rollback removes this additive helper/tests/docs;
-there is no persisted output format or repository-setting migration.
+Run
+`python -m unittest discover -s tests -p 'test_repo_sentinel_materialize.py'`
+for real-object and direct-`Snapshot` fixtures covering bytes, executable-mode
+metadata, empty files/trees, lifecycle, layered path refusal, aliases,
+normalization and type collisions, path limits, preflight atomicity, symlinks,
+same-length corruption, partial setup failures, and cleanup failures. Scanner
+execution, PR-ref acquisition, and workflow activation remain unwired. Rollback
+restores the prior reader/materializer contract; there is no persisted output
+format or repository-setting migration.
 
 ## Relationship To Issue #5
 

@@ -12,7 +12,13 @@ from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 import repo_sentinel_materialize as materializer  # noqa: E402
-from repo_sentinel_reader import ReaderLimits, ReaderRefused  # noqa: E402
+from repo_sentinel_reader import (  # noqa: E402
+    ReaderLimits,
+    ReaderRefused,
+    Snapshot,
+    SnapshotFile,
+    read_snapshot,
+)
 
 
 class MaterializationTests(unittest.TestCase):
@@ -49,6 +55,38 @@ class MaterializationTests(unittest.TestCase):
     def materialize(self):
         return materializer.materialized_snapshot(self.repository, self.head, self.scratch)
 
+    def synthetic_snapshot(self, *paths: str) -> Snapshot:
+        files = tuple(
+            SnapshotFile(path, "100644", f"{index:040x}", f"payload-{index}".encode())
+            for index, path in enumerate(paths, start=1)
+        )
+        return Snapshot("0" * 40, "1" * 40, files)
+
+    def assert_preflight_refused(self, snapshot: Snapshot, code: str) -> None:
+        captured: list[TemporaryDirectory[str]] = []
+
+        def capture(**kwargs: object) -> TemporaryDirectory[str]:
+            temporary = TemporaryDirectory(**kwargs)
+            cleanup = temporary.cleanup
+            self.addCleanup(cleanup)
+            temporary.cleanup = lambda: None
+            captured.append(temporary)
+            return temporary
+
+        with (
+            patch.object(materializer, "read_snapshot", return_value=snapshot),
+            patch.object(materializer, "TemporaryDirectory", side_effect=capture),
+            patch.object(materializer, "_write_verified") as writer,
+            self.assertRaisesRegex(materializer.MaterializationRefused, f"^{code}$"),
+            self.materialize(),
+        ):
+            self.fail("refused snapshot reached consumer")
+        self.assertEqual(writer.call_count, 0)
+        self.assertEqual(len(captured), 1)
+        output = Path(captured[0].name) / "data"
+        self.assertTrue(output.is_dir())
+        self.assertEqual(list(output.iterdir()), [])
+
     def test_exact_files_are_yielded_as_data_then_removed(self) -> None:
         sentinel = self.scratch / "existing.txt"
         sentinel.write_bytes(b"keep unrelated scratch content")
@@ -63,6 +101,197 @@ class MaterializationTests(unittest.TestCase):
             self.assertNotIn(str(self.scratch), repr(result))
         self.assertFalse(output.exists())
         self.assertEqual(list(self.scratch.iterdir()), [sentinel])
+
+    def test_portable_positive_matrix_preserves_logical_identity(self) -> None:
+        paths = (
+            "README.md",
+            "space name.txt",
+            "a&b.md",
+            "it's.md",
+            "bang!.md",
+            "a–b.md",
+            "curly’apostrophe.md",
+            "café.md",
+            "notes & café/it's–ready!.md",
+            "portable/cash$-review&notes!.md",
+            "portable/tilde~name.md",
+            "portable/confusable∕separator.md",
+            "portable/ß.md",
+            "portable/SS.md",
+            "portable/İ.md",
+            "portable/i.md",
+            "portable/COM⁴.txt",
+            "portable/LPT⁰.log",
+        )
+        snapshot = self.synthetic_snapshot(*paths)
+        with (
+            patch.object(materializer, "read_snapshot", return_value=snapshot),
+            self.materialize() as result,
+        ):
+            self.assertEqual(result.snapshot, snapshot)
+            for item in snapshot.files:
+                target = result.root.joinpath(*item.path.split("/"))
+                self.assertEqual(target.read_bytes(), item.data)
+
+    def test_host_specific_paths_are_rejected_before_any_write(self) -> None:
+        paths = (
+            ".git/config",
+            ".GiT/config",
+            "a\\b",
+            "CON",
+            "con.txt",
+            "PRN",
+            "AUX",
+            "NUL.txt",
+            "COM1",
+            "COM1.txt",
+            "LPT9",
+            "COM¹",
+            "COM²",
+            "COM³",
+            "LPT¹",
+            "LPT²",
+            "LPT³",
+            "COM¹.txt",
+            "LPT³.log",
+            "NUL .txt",
+            "COM1  .log",
+            "foo.",
+            "foo ",
+            "a:b",
+            "star*.txt",
+            "x?y",
+            'a"b',
+            "a<b",
+            "a>b",
+            "a|b",
+            "C:",
+            r"C:\x",
+            r"\\server\share",
+            r"\\?\C:\x",
+            r"\\.\NUL",
+            r"\rooted",
+            "/absolute",
+            ".",
+            "..",
+            "safe//file",
+            "safe/",
+            "../escape",
+            "safe/../escape",
+            "safe/a\0b",
+            "safe/a\x7fb",
+            "safe/a\u0080b",
+        )
+        for path in paths:
+            with self.subTest(path=path):
+                self.assert_preflight_refused(
+                    self.synthetic_snapshot(path), "unsupported_host_path"
+                )
+
+    def test_reader_accepts_a_host_specific_name_that_materializer_refuses(self) -> None:
+        blob = self.object("blob", b"logical data")
+        tree = self.object("tree", b"100644 a:b\0" + bytes.fromhex(blob))
+        head = self.commit(tree)
+        snapshot = read_snapshot(self.repository, head)
+        self.assertEqual([item.path for item in snapshot.files], ["a:b"])
+        with (
+            self.assertRaisesRegex(
+                materializer.MaterializationRefused, "^unsupported_host_path$"
+            ),
+            materializer.materialized_snapshot(self.repository, head, self.scratch),
+        ):
+            self.fail("host-specific path reached consumer")
+        self.assertEqual(list(self.scratch.iterdir()), [])
+
+    def test_arbitrary_snapshot_path_representation_is_revalidated(self) -> None:
+        invalid_paths = (None, Path("path-object"), "bad\udcff")
+        for path in invalid_paths:
+            with self.subTest(kind=type(path).__name__):
+                item = SnapshotFile(path, "100644", "2" * 40, b"payload")
+                snapshot = Snapshot("0" * 40, "1" * 40, (item,))
+                self.assert_preflight_refused(snapshot, "unsupported_host_path")
+
+    def test_host_aliases_and_type_conflicts_are_rejected_in_preflight(self) -> None:
+        cases = (
+            ("A.txt", "a.txt"),
+            ("é.txt", "e\u0301.txt"),
+            ("Dir/left", "dir/right"),
+            ("dir", "DIR/child"),
+        )
+        for paths in cases:
+            with self.subTest(paths=paths):
+                self.assert_preflight_refused(
+                    self.synthetic_snapshot(*paths), "host_path_collision"
+                )
+
+    def test_portable_case_policy_keeps_non_ascii_names_distinct(self) -> None:
+        paths = ("ẞ.txt", "ß.txt", "SS.txt", "İ.txt", "i.txt")
+        snapshot = self.synthetic_snapshot(*paths)
+        with (
+            patch.object(materializer, "read_snapshot", return_value=snapshot),
+            self.materialize() as result,
+        ):
+            self.assertEqual(
+                {path.name for path in result.root.iterdir()},
+                set(paths),
+            )
+
+    def test_exact_duplicate_is_rejected_in_preflight(self) -> None:
+        for paths in (("same", "same"), ("dir", "dir/child")):
+            with self.subTest(paths=paths):
+                self.assert_preflight_refused(
+                    self.synthetic_snapshot(*paths), "path_collision"
+                )
+
+    def test_component_and_full_path_limits_are_preflighted(self) -> None:
+        long_path = "/".join(["a" * 220] * 20 + ["file"])
+        for path in ("a" * 256, long_path):
+            with self.subTest(length=len(path)):
+                self.assert_preflight_refused(
+                    self.synthetic_snapshot(path), "path_limit"
+                )
+
+    def test_unknown_posix_path_limits_fail_closed(self) -> None:
+        with (
+            patch.object(materializer.os, "name", "posix"),
+            patch.object(materializer, "_pathconf", return_value=None),
+            self.assertRaisesRegex(
+                materializer.MaterializationRefused, "^unsupported_host_path$"
+            ),
+        ):
+            materializer._validate_host_lengths(self.scratch, (("safe",),))
+
+    def test_late_invalid_path_cannot_leave_partial_snapshot_content(self) -> None:
+        self.assert_preflight_refused(
+            self.synthetic_snapshot("safe/ok.txt", "later/NUL.txt"),
+            "unsupported_host_path",
+        )
+
+    def test_late_superscript_device_cannot_leave_partial_snapshot_content(self) -> None:
+        self.assert_preflight_refused(
+            self.synthetic_snapshot("safe.txt", "COM¹.txt"),
+            "unsupported_host_path",
+        )
+
+    def test_only_validated_components_reach_host_path_joining(self) -> None:
+        snapshot = self.synthetic_snapshot("nested/file.txt")
+        path_type = type(self.scratch)
+        original = path_type.__truediv__
+
+        def reject_raw_path(left: Path, right: object) -> Path:
+            if isinstance(right, str) and "/" in right:
+                raise AssertionError("raw logical path reached host joining")
+            return original(left, right)
+
+        with (
+            patch.object(materializer, "read_snapshot", return_value=snapshot),
+            patch.object(path_type, "__truediv__", reject_raw_path),
+            self.materialize() as result,
+        ):
+            self.assertEqual(
+                result.root.joinpath("nested", "file.txt").read_bytes(),
+                snapshot.files[0].data,
+            )
 
     def test_consumer_exception_is_preserved_and_directory_is_removed(self) -> None:
         with self.assertRaisesRegex(RuntimeError, "consumer failed"):

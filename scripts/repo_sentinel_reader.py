@@ -90,16 +90,18 @@ def _git(repository: Path, arguments: list[str], cap: int, deadline: float) -> b
 
 
 def _component(raw: bytes) -> str:
-    # A deliberately portable subset, before any future filesystem writes.
-    if not re.fullmatch(rb"[A-Za-z0-9._ -]{1,255}", raw):
-        raise ReaderRefused("unsupported_path")
-    name = raw.decode("ascii")
-    stem = name.split(".", 1)[0].rstrip(" ").upper()
-    if (name in (".", "..") or name.lower() == ".git"
-            or name.endswith((".", " "))
-            or stem in {"CON", "PRN", "AUX", "NUL"}
-            or re.fullmatch(r"(?:COM|LPT)[1-9]", stem)):
-        raise ReaderRefused("unsupported_path")
+    if len(raw) > 255:
+        raise ReaderRefused("path_limit")
+    try:
+        name = raw.decode("utf-8", errors="strict")
+    except UnicodeDecodeError:
+        raise ReaderRefused("unsupported_path_encoding") from None
+    if name.encode("utf-8") != raw:
+        raise ReaderRefused("unsupported_path_encoding")
+    if (not name or b"/" in raw or name in (".", "..")
+            or any(ord(character) < 0x20 or 0x7f <= ord(character) <= 0x9f
+                   for character in name)):
+        raise ReaderRefused("invalid_logical_path")
     return name
 
 
@@ -161,9 +163,9 @@ def read_snapshot(
             child = tree[nul + 1:nul + 1 + oid_bytes].hex()
             offset = nul + 1 + oid_bytes
             path = parent + name
-            if path.casefold() in paths:
+            if path in paths:
                 raise ReaderRefused("path_collision")
-            paths.add(path.casefold())
+            paths.add(path)
             if mode == b"40000":
                 walk(child, path + "/", depth + 1)
             elif mode in (b"100644", b"100755"):
