@@ -356,13 +356,24 @@ Tests cover SHA-1/SHA-256 acquisition, exact raw bytes, unrequested refs, ref
 movement, missing refs, input validation, reader refusal, timeout, repository
 budget, symlinked scratch input and lifecycle cleanup.
 
-A read-only HTTPS probe acquired PR #15 head `2f7b7a9` with the expected commit
-and tree, then the reader refused `unsupported_path`. Eight of that public tree's
-242 regular-file paths contain characters outside the current reader subset,
-including ampersands, apostrophes, exclamation marks, an en dash and a curly
-apostrophe. This is correct fail-closed propagation and a concrete compatibility
-blocker for workflow activation. Path admission needs a separate decision; this
-acquisition layer must not rewrite names or convert refusal into a clean result.
+Before the path-contract merge, a read-only HTTPS probe acquired the exact PR
+#15 head `2f7b7a9bef43715141086b0d79bacbe67a178288` and tree
+`960dc6c6496f1260f6fab74b64f26408024cd5fb`, then the reader refused
+`unsupported_path`. Eight of that public tree's 242 regular-file paths were
+outside the former portable ASCII reader subset. That historical result remains
+evidence that acquisition propagated downstream reader refusal without
+rewriting names, omitting files or yielding a partial snapshot.
+
+After the path contract merged in PR #17 at
+`d8e30ba019247a21b9d42e1c1d52900a1f1de623`, the same exact-head probe traversed
+acquisition, the logical-path reader and the portable materializer. All 242
+paths, modes and blob OIDs were preserved with exact file bytes, totalling
+2,260,062 bytes. The SHA-256 manifest over each ordered
+`path NUL mode NUL oid NUL sha256(data)` record was
+`ad39acf89d0826ce2651ed14d12e143d7f0a8b5cb6b2eb219b46895688f45d0a`.
+Both the bare acquisition database and materialized target were removed after
+their contexts exited. Repository content was handled only as data and was not
+executed; acquisition remained checkout-free.
 
 This helper is not connected to a workflow or scanner invocation. It does not
 add `pull_request_target`, secrets, caches, Check API writes, permissions or
