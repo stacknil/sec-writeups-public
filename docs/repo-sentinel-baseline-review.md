@@ -332,8 +332,10 @@ bounded reader before yielding `AcquiredSnapshot`. No checkout is created.
 Network remotes are restricted to credential-free HTTPS URLs without query or
 fragment data. A `Path` remote exists only for caller-controlled local fixtures.
 Git runs with inherited `GIT_*` variables and global/system configuration
-removed, replacement lookup disabled, redirects disabled, protocol selection
-restricted, automatic maintenance disabled, and terminal prompting disabled.
+removed. Terminal prompting is disabled, inherited Git/SSH askpass helpers are
+neutralized, and `SSH_ASKPASS_REQUIRE` cannot force a parent helper. Replacement
+lookup and redirects are disabled, protocol selection is restricted, and
+automatic maintenance is disabled.
 The fetch is depth one, writes no `FETCH_HEAD`, imports no tags or submodules,
 and uses an explicit force refspec into the fresh database.
 

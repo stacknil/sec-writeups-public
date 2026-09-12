@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import subprocess
 import sys
 import time
@@ -15,6 +16,23 @@ from repo_sentinel_reader import ReaderLimits, ReaderRefused  # noqa: E402
 
 
 class AcquisitionTests(unittest.TestCase):
+    def askpass_helper(self, root: Path, marker: Path) -> Path:
+        if os.name == "nt":
+            helper = root / "askpass.cmd"
+            helper.write_text(
+                '@echo off\r\necho invoked>>"%ASKPASS_MARKER%"\r\necho dummy\r\n',
+                encoding="ascii",
+            )
+        else:
+            helper = root / "askpass.sh"
+            helper.write_text(
+                '#!/bin/sh\nprintf "invoked\\n" >> "$ASKPASS_MARKER"\n'
+                'printf "dummy\\n"\n',
+                encoding="ascii",
+            )
+            helper.chmod(0o700)
+        return helper
+
     def repository(self, algorithm: str = "sha1") -> tuple[Path, Path]:
         temporary = TemporaryDirectory(prefix="acquisition-contract-")
         self.addCleanup(temporary.cleanup)
@@ -100,6 +118,45 @@ class AcquisitionTests(unittest.TestCase):
                     self.assertFalse(marker.exists())
                 self.assertFalse(database.exists())
                 self.assertEqual(list(scratch.iterdir()), [])
+
+    def test_inherited_askpass_helpers_cannot_supply_credentials(self) -> None:
+        with TemporaryDirectory(prefix="askpass-contract-") as directory:
+            root = Path(directory)
+            marker = root / "calls.txt"
+            helper = self.askpass_helper(root, marker)
+            parent_environment = {
+                "ASKPASS_MARKER": str(marker),
+                "GIT_ASKPASS": str(helper),
+                "SSH_ASKPASS": str(helper),
+                "SSH_ASKPASS_REQUIRE": "force",
+            }
+            with patch.dict(os.environ, parent_environment, clear=False):
+                environment = acquisition._environment()
+                result = subprocess.run(
+                    ["git", "-c", "credential.helper=", "credential", "fill"],
+                    cwd=root,
+                    input=b"protocol=https\nhost=example.com\n\n",
+                    env=environment,
+                    capture_output=True,
+                    timeout=10,
+                    check=False,
+                )
+
+            calls = (
+                marker.read_text(encoding="ascii").splitlines()
+                if marker.exists()
+                else []
+            )
+            self.assertEqual(calls, [])
+            self.assertNotEqual(result.returncode, 0)
+            self.assertNotIn(b"username=dummy", result.stdout)
+            self.assertNotIn(b"password=dummy", result.stdout)
+            self.assertEqual(environment["GIT_TERMINAL_PROMPT"], "0")
+            self.assertEqual(environment["GIT_ASKPASS"], "")
+            self.assertEqual(environment["SSH_ASKPASS"], "")
+            self.assertNotIn(
+                "SSH_ASKPASS_REQUIRE", {key.upper() for key in environment}
+            )
 
     def test_unrequested_refs_are_not_imported(self) -> None:
         remote, scratch, head = self.fixture()

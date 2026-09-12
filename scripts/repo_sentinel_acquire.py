@@ -83,12 +83,17 @@ def _remote_argument(remote: str | Path) -> str:
 
 def _environment() -> dict[str, str]:
     environment = {
-        key: value for key, value in os.environ.items() if not key.upper().startswith("GIT_")
+        key: value
+        for key, value in os.environ.items()
+        if not key.upper().startswith("GIT_")
+        and key.upper() != "SSH_ASKPASS_REQUIRE"
     }
     environment.update(
         GIT_CONFIG_NOSYSTEM="1",
         GIT_CONFIG_GLOBAL=os.devnull,
         GIT_TERMINAL_PROMPT="0",
+        GIT_ASKPASS="",
+        SSH_ASKPASS="",
         GIT_NO_LAZY_FETCH="1",
     )
     return environment
