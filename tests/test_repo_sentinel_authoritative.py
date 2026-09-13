@@ -280,6 +280,37 @@ class AuthoritativeWorkerTests(unittest.TestCase):
         self.assertTrue(harness.acquirer_exited)
         self.assertTrue(harness.materializer_exited)
 
+    def test_baseline_bytes_are_selected_from_base_snapshot(self) -> None:
+        baseline_oid = "4" * 40
+        base_baseline = snapshot_file(
+            ".reposentinel-baseline.json",
+            BASELINE,
+            oid=baseline_oid,
+        )
+        head_baseline = snapshot_file(
+            ".reposentinel-baseline.json",
+            b'{"head_owned":true}\n',
+            oid=baseline_oid,
+        )
+        harness = self.harness(
+            base_files=(base_baseline,),
+            head_files=(head_baseline, snapshot_file("notes/new.md")),
+        )
+        observed_baseline: list[bytes] = []
+
+        def scanner(
+            invocation: authoritative.ScannerInvocation,
+        ) -> authoritative.ScannerExecution:
+            assert invocation.baseline_path is not None
+            observed_baseline.append(invocation.baseline_path.read_bytes())
+            write_report(invocation)
+            return scanner_execution()
+
+        result = harness.run(scanner)
+
+        self.assertEqual(result.verdict, authoritative.GateVerdict.PASS)
+        self.assertEqual(observed_baseline, [BASELINE])
+
     def test_absent_base_baseline_disables_explicit_baseline(self) -> None:
         harness = self.harness(head_files=(snapshot_file("new.md"),))
         calls: list[authoritative.ScannerInvocation] = []
