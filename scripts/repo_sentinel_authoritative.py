@@ -229,21 +229,25 @@ def _overlaps(left: Path, right: Path) -> bool:
     return left == right or left.is_relative_to(right) or right.is_relative_to(left)
 
 
+def _request_identity_is_valid(request: AuthoritativeGateRequest) -> bool:
+    return (
+        type(request.repository_identity) is str
+        and len(request.repository_identity) <= 200
+        and _REPOSITORY_PATTERN.fullmatch(request.repository_identity) is not None
+        and type(request.pull_number) is int
+        and 0 < request.pull_number <= 2_147_483_647
+        and type(request.base_oid) is str
+        and type(request.head_oid) is str
+        and _OID_PATTERN.fullmatch(request.base_oid) is not None
+        and _OID_PATTERN.fullmatch(request.head_oid) is not None
+        and len(request.base_oid) == len(request.head_oid)
+    )
+
+
 def _validate_request(
     request: AuthoritativeGateRequest,
 ) -> tuple[Path, Path, Path]:
-    if (
-        type(request.repository_identity) is not str
-        or len(request.repository_identity) > 200
-        or _REPOSITORY_PATTERN.fullmatch(request.repository_identity) is None
-        or type(request.pull_number) is not int
-        or not 0 < request.pull_number <= 2_147_483_647
-        or type(request.base_oid) is not str
-        or type(request.head_oid) is not str
-        or _OID_PATTERN.fullmatch(request.base_oid) is None
-        or _OID_PATTERN.fullmatch(request.head_oid) is None
-        or len(request.base_oid) != len(request.head_oid)
-    ):
+    if not _request_identity_is_valid(request):
         raise WorkerRefused("invalid_request")
 
     trusted_repository = _regular_directory(request.trusted_repository)
@@ -657,12 +661,22 @@ def _result(
     scanner_version: str | None = None,
     refusal_code: str | None = None,
 ) -> AuthoritativeGateResult:
+    if _request_identity_is_valid(request):
+        repository_identity = request.repository_identity
+        pull_number = request.pull_number
+        base_oid = request.base_oid
+        head_oid = request.head_oid
+    else:
+        repository_identity = ""
+        pull_number = 0
+        base_oid = ""
+        head_oid = ""
     return AuthoritativeGateResult(
         verdict=verdict,
-        repository_identity=request.repository_identity,
-        pull_number=request.pull_number,
-        base_oid=request.base_oid,
-        head_oid=request.head_oid,
+        repository_identity=repository_identity,
+        pull_number=pull_number,
+        base_oid=base_oid,
+        head_oid=head_oid,
         changed_count=changed_count,
         deleted_count=deleted_count,
         report_sha256=(
