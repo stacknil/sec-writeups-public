@@ -803,6 +803,31 @@ class AuthoritativeWorkerTests(unittest.TestCase):
             self.assertNotIn("owner/repository", rendered)
             self.assertNotIn("example.invalid", rendered)
 
+    def test_invalid_identity_is_not_reflected_in_refusal_result(self) -> None:
+        harness = self.harness()
+        hostile_oid = "::error::must-remain-data"
+        request = authoritative.AuthoritativeGateRequest(
+            repository_identity="stacknil/sec-writeups-public",
+            pull_number=7,
+            base_oid=hostile_oid,
+            head_oid=HEAD_OID,
+            remote="https://example.com/repository.git",
+            trusted_repository=harness.trusted_repository,
+            scratch_root=harness.scratch_root,
+            evidence_root=harness.evidence_root,
+        )
+
+        result = authoritative.run_authoritative_gate(
+            request,
+            snapshot_reader=lambda *_args, **_kwargs: self.fail("reader must not run"),
+        )
+
+        self.assertEqual(result.refusal_code, "invalid_request")
+        self.assertEqual(result.pull_number, 0)
+        self.assertEqual(result.base_oid, "")
+        self.assertEqual(result.head_oid, "")
+        self.assertNotIn(hostile_oid, repr(result))
+
 
 class ScannerRunnerTests(unittest.TestCase):
     def directory(self, prefix: str) -> Path:
