@@ -48,6 +48,15 @@ _INLINE_SUPPRESSION_PATTERN = re.compile(
     re.IGNORECASE,
 )
 _SCANNER_TEXT_ENCODINGS = ("utf-8", "utf-8-sig", "utf-16", "cp1252")
+_PORTABLE_V1_ASCII_CASE_ALIAS = str.maketrans(
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    "abcdefghijklmnopqrstuvwxyz",
+)
+
+
+def _portable_v1_alias(value: str) -> str:
+    return value.translate(_PORTABLE_V1_ASCII_CASE_ALIAS)
+
 
 _PROTECTED_EXACT_PATHS = frozenset(
     {
@@ -64,6 +73,12 @@ _PROTECTED_EXACT_PATHS = frozenset(
 _PROTECTED_PATH_PREFIXES = (
     ".github/workflows/",
     ".github/actions/",
+)
+_PROTECTED_EXACT_ALIASES = frozenset(
+    _portable_v1_alias(path) for path in _PROTECTED_EXACT_PATHS
+)
+_PROTECTED_PATH_PREFIX_ALIASES = tuple(
+    _portable_v1_alias(prefix) for prefix in _PROTECTED_PATH_PREFIXES
 )
 
 _REFUSAL_CODES = frozenset(
@@ -290,7 +305,10 @@ def diff_snapshots(base: Snapshot, head: Snapshot) -> SnapshotDelta:
 
 
 def _is_protected_path(path: str) -> bool:
-    return path in _PROTECTED_EXACT_PATHS or path.startswith(_PROTECTED_PATH_PREFIXES)
+    alias = _portable_v1_alias(path)
+    return alias in _PROTECTED_EXACT_ALIASES or alias.startswith(
+        _PROTECTED_PATH_PREFIX_ALIASES
+    )
 
 
 def _contains_inline_suppression(data: bytes) -> bool:
@@ -746,7 +764,7 @@ def _execute(
                     None,
                     evidence_root,
                 )
-            if not delta.changed_paths:
+            if not delta.changed_paths and not delta.deleted_paths:
                 return (
                     _result(
                         request,
