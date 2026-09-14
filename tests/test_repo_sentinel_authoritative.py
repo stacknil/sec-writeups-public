@@ -358,20 +358,51 @@ class AuthoritativeWorkerTests(unittest.TestCase):
 
         self.assertEqual(result.verdict, authoritative.GateVerdict.PASS)
 
-    def test_identical_and_deletion_only_snapshots_do_not_launch_scanner(self) -> None:
+    def test_identical_snapshot_does_not_launch_scanner(self) -> None:
         existing = snapshot_file("ordinary.txt")
-        for head_files, deleted in (((existing,), 0), ((), 1)):
-            with self.subTest(deleted=deleted):
-                harness = self.harness(
-                    base_files=(existing,),
-                    head_files=head_files,
-                )
-                result = harness.run(
-                    lambda _invocation: self.fail("scanner must not run")
-                )
-                self.assertEqual(result.verdict, authoritative.GateVerdict.PASS)
-                self.assertEqual(result.changed_count, 0)
-                self.assertEqual(result.deleted_count, deleted)
+        harness = self.harness(
+            base_files=(existing,),
+            head_files=(existing,),
+        )
+
+        result = harness.run(lambda _invocation: self.fail("scanner must not run"))
+
+        self.assertEqual(result.verdict, authoritative.GateVerdict.PASS)
+        self.assertEqual(result.changed_count, 0)
+        self.assertEqual(result.deleted_count, 0)
+        self.assertIsNone(result.scanner_version)
+        self.assertIsNone(result.report_path)
+
+    def test_deletion_only_snapshot_runs_scanner_with_empty_changed_paths(self) -> None:
+        existing = snapshot_file("ordinary.txt")
+        harness = self.harness(base_files=(existing,))
+        calls: list[authoritative.ScannerInvocation] = []
+
+        result = harness.run(self.passing_scanner(calls))
+
+        self.assertEqual(result.verdict, authoritative.GateVerdict.PASS)
+        self.assertEqual(result.changed_count, 0)
+        self.assertEqual(result.deleted_count, 1)
+        self.assertEqual(result.scanner_version, "0.8.1")
+        self.assertIsNotNone(result.report_path)
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(calls[0].changed_paths, ())
+
+    def test_deletion_only_scanner_failure_fails_closed(self) -> None:
+        harness = self.harness(base_files=(snapshot_file("ordinary.txt"),))
+
+        def failing_scanner(
+            _invocation: authoritative.ScannerInvocation,
+        ) -> authoritative.ScannerExecution:
+            raise authoritative.WorkerRefused("scanner_launch_failed")
+
+        result = harness.run(failing_scanner)
+
+        self.assertEqual(
+            result.verdict,
+            authoritative.GateVerdict.INFRASTRUCTURE_REFUSAL,
+        )
+        self.assertEqual(result.refusal_code, "scanner_launch_failed")
 
     def test_protected_exact_and_subtree_changes_block_before_scanner(self) -> None:
         cases = (
@@ -407,6 +438,133 @@ class AuthoritativeWorkerTests(unittest.TestCase):
         self.assertEqual(
             result.verdict,
             authoritative.GateVerdict.PROTECTED_CONTROL_CHANGE,
+        )
+
+    def test_protected_ascii_case_aliases_block_before_scanner(self) -> None:
+        cases = (
+            ".RepoSentinel.toml",
+            ".REPOSENTINEL.TOML",
+            ".reposentinel.TOML",
+            ".GitHub/workflows/test.yml",
+            ".github/Workflows/test.yml",
+            ".GITHUB/ACTIONS/example/action.yml",
+            "Scripts/repo_sentinel_gate.py",
+            "scripts/Repo_Sentinel_Authoritative.py",
+        )
+        for path in cases:
+            for change in ("changed", "deleted"):
+                with self.subTest(path=path, change=change):
+                    item = snapshot_file(path)
+                    harness = self.harness(
+                        base_files=(item,) if change == "deleted" else (),
+                        head_files=(item,) if change == "changed" else (),
+                    )
+
+                    result = harness.run(
+                        lambda _invocation: self.fail("scanner must not run")
+                    )
+
+                    self.assertEqual(
+                        result.verdict,
+                        authoritative.GateVerdict.PROTECTED_CONTROL_CHANGE,
+                    )
+                    self.assertEqual(result.refusal_code, "protected_control_change")
+
+    def test_nearby_names_do_not_match_protected_paths(self) -> None:
+        cases = (
+            ".reposentinel.toml.example",
+            ".reposentinel.tomlx",
+            ".github/workflows2/test.yml",
+            ".github/workflow/test.yml",
+            ".github/actions2/action.yml",
+            ".github/action/action.yml",
+            "scripts/repo_sentinel_authoritative.pyx",
+            "scripts/repo_sentinel_gate.py.backup",
+        )
+        for path in cases:
+            with self.subTest(path=path):
+                harness = self.harness(head_files=(snapshot_file(path),))
+                calls: list[authoritative.ScannerInvocation] = []
+
+                result = harness.run(self.passing_scanner(calls))
+
+                self.assertEqual(result.verdict, authoritative.GateVerdict.PASS)
+                self.assertEqual(len(calls), 1)
+                self.assertEqual(calls[0].changed_paths, (path,))
+
+    @unittest.skipUnless(
+        exact_scanner_available(),
+        "requires the exact production scanner",
+    )
+    def test_mixed_case_config_exploit_blocks_before_real_scanner(self) -> None:
+        harness = self.harness(
+            head_files=(
+                snapshot_file(
+                    ".RepoSentinel.toml",
+                    b'ignore_globs = [".env"]\n',
+                ),
+                snapshot_file(
+                    ".env",
+                    b"TOKEN=ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghij\n",
+                ),
+            )
+        )
+        calls: list[authoritative.ScannerInvocation] = []
+
+        def scanner(
+            invocation: authoritative.ScannerInvocation,
+        ) -> authoritative.ScannerExecution:
+            calls.append(invocation)
+            return authoritative._run_trusted_scanner(invocation)
+
+        result = harness.run(scanner)
+
+        self.assertEqual(
+            result.verdict,
+            authoritative.GateVerdict.PROTECTED_CONTROL_CHANGE,
+        )
+        self.assertEqual(result.refusal_code, "protected_control_change")
+        self.assertEqual(calls, [])
+
+    @unittest.skipUnless(
+        exact_scanner_available(),
+        "requires the exact production scanner",
+    )
+    def test_real_scanner_preserves_license_deletion_warning(self) -> None:
+        readme = snapshot_file("README.md")
+        license_file = snapshot_file("LICENSE")
+        gitignore = snapshot_file(".gitignore")
+        harness = self.harness(
+            base_files=(readme, license_file, gitignore),
+            head_files=(readme, gitignore),
+        )
+        calls: list[authoritative.ScannerInvocation] = []
+
+        def scanner(
+            invocation: authoritative.ScannerInvocation,
+        ) -> authoritative.ScannerExecution:
+            calls.append(invocation)
+            return authoritative._run_trusted_scanner(invocation)
+
+        result = harness.run(scanner)
+
+        self.assertEqual(result.verdict, authoritative.GateVerdict.PASS)
+        self.assertEqual(result.changed_count, 0)
+        self.assertEqual(result.deleted_count, 1)
+        self.assertEqual(result.scanner_version, "0.8.1")
+        self.assertIsNotNone(result.report_path)
+        self.assertGreater(result.report_size, 0)
+        self.assertIsNotNone(result.report_sha256)
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(calls[0].changed_paths, ())
+        assert result.report_path is not None
+        report = json.loads(result.report_path.read_text(encoding="utf-8"))
+        self.assertEqual(
+            [
+                (finding["rule_id"], finding["path"], finding["severity"])
+                for finding in report["findings"]
+            ],
+            [("repo.required_file_missing", "LICENSE", "warning")],
         )
 
     def test_inline_suppression_change_blocks_exact_scanner_syntax(self) -> None:
