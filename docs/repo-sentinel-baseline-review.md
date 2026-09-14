@@ -382,6 +382,88 @@ add `pull_request_target`, secrets, caches, Check API writes, permissions or
 repository enforcement. Rollback removes the acquisition helper/tests/docs;
 the merged reader and materializer remain independently usable.
 
+### Authoritative Worker Core
+
+`scripts/repo_sentinel_authoritative.py` adds the data-only worker core for a
+future authoritative gate. It is deliberately separate from GitHub event
+parsing and from the dedicated-App publisher. The caller supplies validated
+repository identity, pull request number, exact base/head object IDs, a trusted
+base object database, a scratch root and an evidence root. The worker neither
+derives identity from pull request text nor publishes a status.
+
+The worker reads the trusted base with `read_snapshot()`, acquires the exact
+head with `acquire_pull_snapshot()`, and computes D1 directly from immutable
+snapshot records. A path is changed when it is absent from base or its mode or
+blob object ID differs; a path is deleted when it is absent from head. There is
+no rename inference and no GitHub changed-files API input. Indexed maps plus
+deterministic sorting keep the operation O(n log n).
+
+Before materialization or scanner execution, changed and deleted paths are
+checked against the protected control plane:
+
+- `.reposentinel.toml` and `.reposentinel-baseline.json`;
+- `.github/workflows/**` and `.github/actions/**`;
+- the existing gate, acquisition, reader, materializer, authoritative worker
+  and integration-test scripts.
+
+Protected-path matching uses the materializer's portable-v1 ASCII case-alias
+model: `A-Z` map to `a-z`, while every other code point remains unchanged.
+This closes host aliases such as `.RepoSentinel.toml` without introducing
+general Unicode case folding or weakening exact path and subtree boundaries.
+
+The exact `repo-sentinel-lite==0.8.1` wheel was also inspected for target-owned
+suppression mechanisms. Its inline pattern is the concatenation of
+`r"repo-sentinel:\s*"` and
+`r"allow(?:\s+(?P<rules>[A-Za-z0-9_.\-, ]+))?"`, matched case-insensitively.
+With no rule list it allows all findings on the finding line; with a
+comma-separated kind/rule-ID list it allows matching findings. The scanner
+checks the finding line and the immediately preceding line. It attempts
+`utf-8`, `utf-8-sig`, `utf-16` and `cp1252` text decoding.
+
+The worker uses a conservative source-control policy: if any changed or
+deleted file contains that directive in either the base or head snapshot, the
+change is classified as protected rather than scanned. This can block an
+ordinary edit to a file that already carries a legitimate suppression, but it
+prevents pull-request-owned source annotations from weakening the
+authoritative result without introducing a bypass channel.
+
+Scanner configuration resolution in `0.8.1` reads only
+`<scan-root>/.reposentinel.toml`; it does not search parent directories, the
+home directory or environment-selected alternate paths. A changed or deleted
+root config is protected. The default baseline is always disabled. When the
+base snapshot contains `.reposentinel-baseline.json`, its exact bytes are
+written exclusively to a verifier-owned temporary file and passed with an
+explicit `--baseline` argument. Head-owned default-baseline discovery never
+becomes authoritative.
+
+Only the admitted head snapshot is passed to `materialized_snapshot()`. The
+worker additionally requires the acquired object database and materialized
+target to stay below the caller-owned scratch root, while the target remains
+disjoint from both object databases, the trusted execution directory and the
+evidence root. The scanner runs as `python -I -m repo_sentinel` from a separate
+trusted temporary control directory with `shell=False`, bounded stdout/stderr,
+an explicit timeout and a report-size cap. Pull-request files named
+`repo_sentinel.py`, `sitecustomize.py`, `usercustomize.py` or `*.pth` remain
+materialized data rather than import sources.
+
+Raw scanner output, report text and target paths are not printed. The result
+contains a fixed verdict, exact base/head identities, changed/deleted counts,
+report size and SHA-256, and the verified scanner version. Scanner errors,
+malformed or missing reports, timeouts, size violations and cleanup failures
+become fixed-code infrastructure refusals. Error findings block, warnings keep
+the scanner's existing non-blocking contract, and ordinary deletion paths are
+accounted separately rather than passed as changed-file arguments. A
+deletion-only delta still materializes the head and runs repository-level
+checks with an empty changed-path tuple, preserving evidence such as a missing
+required-file warning. Only an identical base/head snapshot with no changed or
+deleted paths may take the deterministic no-scan PASS path.
+
+This draft core does not add workflow YAML, credentials, GitHub App key or token
+handling, Commit Status or Checks API calls, repository settings, or the
+authoritative context name. Activation remains a later boundary after worker
+and signer review. Rollback removes this module, its isolated tests and this
+section without changing the existing informational workflow or baseline.
+
 ## Relationship To Issue #5
 
 This record closed [issue #5](https://github.com/stacknil/sec-writeups-public/issues/5)
