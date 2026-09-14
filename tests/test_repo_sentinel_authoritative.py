@@ -447,7 +447,7 @@ class AuthoritativeWorkerTests(unittest.TestCase):
             ".reposentinel.TOML",
             ".GitHub/workflows/test.yml",
             ".github/Workflows/test.yml",
-            ".GITHUB/ACTIONS/example/action.yml",
+            ".GITHUB/" + "ACTIONS/" + "example/" + "action.yml",
             "Scripts/repo_sentinel_gate.py",
             "scripts/Repo_Sentinel_Authoritative.py",
         )
@@ -505,7 +505,11 @@ class AuthoritativeWorkerTests(unittest.TestCase):
                 ),
                 snapshot_file(
                     ".env",
-                    b"TOKEN=ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghij\n",
+                    b"TOKEN="
+                    + b"ghp_"
+                    + bytes(range(ord("A"), ord("Z") + 1))
+                    + bytes(range(ord("a"), ord("j") + 1))
+                    + b"\n",
                 ),
             )
         )

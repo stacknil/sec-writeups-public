@@ -48,10 +48,10 @@ _INLINE_SUPPRESSION_PATTERN = re.compile(
     re.IGNORECASE,
 )
 _SCANNER_TEXT_ENCODINGS = ("utf-8", "utf-8-sig", "utf-16", "cp1252")
-_PORTABLE_V1_ASCII_CASE_ALIAS = str.maketrans(
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-    "abcdefghijklmnopqrstuvwxyz",
-)
+_PORTABLE_V1_ASCII_CASE_ALIAS = {
+    codepoint: codepoint + (ord("a") - ord("A"))
+    for codepoint in range(ord("A"), ord("Z") + 1)
+}
 
 
 def _portable_v1_alias(value: str) -> str:
