@@ -406,6 +406,11 @@ checked against the protected control plane:
 - the existing gate, acquisition, reader, materializer, authoritative worker
   and integration-test scripts.
 
+Protected-path matching uses the materializer's portable-v1 ASCII case-alias
+model: `A-Z` map to `a-z`, while every other code point remains unchanged.
+This closes host aliases such as `.RepoSentinel.toml` without introducing
+general Unicode case folding or weakening exact path and subtree boundaries.
+
 The exact `repo-sentinel-lite==0.8.1` wheel was also inspected for target-owned
 suppression mechanisms. Its inline pattern is the concatenation of
 `r"repo-sentinel:\s*"` and
@@ -446,8 +451,12 @@ contains a fixed verdict, exact base/head identities, changed/deleted counts,
 report size and SHA-256, and the verified scanner version. Scanner errors,
 malformed or missing reports, timeouts, size violations and cleanup failures
 become fixed-code infrastructure refusals. Error findings block, warnings keep
-the scanner's existing non-blocking contract, and ordinary deletions are
-accounted separately rather than scanned.
+the scanner's existing non-blocking contract, and ordinary deletion paths are
+accounted separately rather than passed as changed-file arguments. A
+deletion-only delta still materializes the head and runs repository-level
+checks with an empty changed-path tuple, preserving evidence such as a missing
+required-file warning. Only an identical base/head snapshot with no changed or
+deleted paths may take the deterministic no-scan PASS path.
 
 This draft core does not add workflow YAML, credentials, GitHub App key or token
 handling, Commit Status or Checks API calls, repository settings, or the
