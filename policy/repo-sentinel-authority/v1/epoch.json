@@ -5,7 +5,7 @@
     "dependencies.json": "a8acbdf5ba63d28ac2e8d6940d7618eb2bde1851696cbdd31ae07a7666037074",
     "protected-manifest.json": "307fc1e7c57879bc82ba9aab658d1ac318214addd16dd125057c5996a79bf466",
     "scanner-config.toml": "69d0c0d8748e8c113aa31f63c82992633b666a61c0eb60a4298138ee885dea33",
-    "suppression-manifest.json": "dc92c868e68a374b55359c1d089f3278a7d565ac1d15428638202049bce52bfa"
+    "suppression-manifest.json": "98265ad3389adbf19f55f1141b58151a7e35ad0dcf6a43dfc2b94848db0aec1d"
   },
   "policy_epoch": "repo-sentinel-authority-v1",
   "portable_path_policy_version": "portable-v1",

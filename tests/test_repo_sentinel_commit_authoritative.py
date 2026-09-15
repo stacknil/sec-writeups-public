@@ -795,6 +795,26 @@ class ReportFailureTests(HarnessTestCase):
 
 
 class EnvironmentTests(HarnessTestCase):
+    def test_scanner_receives_private_trusted_bundle_baseline(self) -> None:
+        harness = self.harness()
+        underlying = harness.scanner()
+
+        def scanner(
+            invocation: authoritative.ScannerInvocation,
+        ) -> authoritative.ScannerExecution:
+            self.assertEqual(
+                invocation.baseline_path.parent,
+                invocation.execution_directory,
+            )
+            self.assertEqual(
+                invocation.baseline_path.read_bytes(), harness.bundle.baseline
+            )
+            return underlying(invocation)
+
+        result = harness.run(scanner)
+
+        self.assertEqual(result.verdict, authoritative.CommitAuthorityVerdict.PASS)
+
     def test_real_child_receives_only_fixed_environment(self) -> None:
         with tempfile.TemporaryDirectory(prefix="commit-authority-env-") as temporary:
             marker = Path(temporary) / "executed"
