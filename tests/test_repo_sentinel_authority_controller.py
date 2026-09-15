@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
+import io
 import json
 import os
 import subprocess
 import sys
 import tempfile
 import unittest
-from contextlib import contextmanager
+from contextlib import contextmanager, redirect_stderr
 from dataclasses import replace
 from pathlib import Path
 from types import SimpleNamespace
@@ -485,14 +486,17 @@ class LaunchAndImportContractTests(HarnessTestCase):
             yield
 
         stack = replace(harness.stack(), acquire_pull_snapshot=injected)
-        result = controller.run_controller(
-            harness.request,
-            control_root=harness.control,
-            stack=stack,
-            runtime_facts_provider=lambda: EXACT_RUNTIME,
-            git_probe=harness.git_probe,
-        )
+        stderr = io.StringIO()
+        with redirect_stderr(stderr):
+            result = controller.run_controller(
+                harness.request,
+                control_root=harness.control,
+                stack=stack,
+                runtime_facts_provider=lambda: EXACT_RUNTIME,
+                git_probe=harness.git_probe,
+            )
         rendered = controller.render_result(result)
+        self.assertEqual(stderr.getvalue(), "")
         self.assertNotIn("::warning::", rendered)
         self.assertNotIn("secret-path", rendered)
         self.assertNotIn("\x1b", rendered)
