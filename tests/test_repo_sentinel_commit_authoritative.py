@@ -94,7 +94,12 @@ def with_file(
 
 
 class Harness:
-    def __init__(self, files: tuple[SnapshotFile, ...] | None = None) -> None:
+    def __init__(
+        self,
+        files: tuple[SnapshotFile, ...] | None = None,
+        *,
+        trusted_baseline: bytes | None = None,
+    ) -> None:
         self._temporary = tempfile.TemporaryDirectory(prefix="commit-authority-test-")
         self.root = Path(self._temporary.name)
         self.repository = self.root / "repository"
@@ -113,6 +118,17 @@ class Harness:
         self.bundle_digest = policy.build_policy_bundle(
             source_files, self.policy_root, RUNTIME
         )
+        if trusted_baseline is not None:
+            # Preserve the target baseline in the protected manifest while
+            # giving the independently authenticated bundle different bytes.
+            (self.policy_root / "baseline.json").write_bytes(trusted_baseline)
+            epoch_path = self.policy_root / "epoch.json"
+            epoch = json.loads(epoch_path.read_text(encoding="utf-8"))
+            epoch["component_sha256"]["baseline.json"] = policy.sha256_bytes(
+                trusted_baseline
+            )
+            epoch_path.write_bytes(policy._render(epoch))
+            self.bundle_digest = policy.bundle_sha256(self.policy_root)
         self.bundle = policy.load_policy_bundle(self.policy_root, self.bundle_digest)
         mirror_files = tuple(
             snapshot_file(
@@ -252,8 +268,13 @@ class Harness:
 
 
 class HarnessTestCase(unittest.TestCase):
-    def harness(self, files: tuple[SnapshotFile, ...] | None = None) -> Harness:
-        harness = Harness(files)
+    def harness(
+        self,
+        files: tuple[SnapshotFile, ...] | None = None,
+        *,
+        trusted_baseline: bytes | None = None,
+    ) -> Harness:
+        harness = Harness(files, trusted_baseline=trusted_baseline)
         self.addCleanup(harness.cleanup)
         return harness
 
@@ -796,7 +817,20 @@ class ReportFailureTests(HarnessTestCase):
 
 class EnvironmentTests(HarnessTestCase):
     def test_scanner_receives_private_trusted_bundle_baseline(self) -> None:
-        harness = self.harness()
+        target_baseline = (
+            b'{"findings": [], "generated_at": "2026-09-15T00:00:00Z", '
+            b'"schema_version": 1}\n'
+        )
+        trusted_baseline = (
+            b'{"findings": [], "generated_at": "2026-09-15T00:00:01Z", '
+            b'"schema_version": 1}\n'
+        )
+        files = replace_file(
+            minimum_files(),
+            ".reposentinel-baseline.json",
+            data=target_baseline,
+        )
+        harness = self.harness(files, trusted_baseline=trusted_baseline)
         underlying = harness.scanner()
 
         def scanner(
@@ -806,9 +840,11 @@ class EnvironmentTests(HarnessTestCase):
                 invocation.baseline_path.parent,
                 invocation.execution_directory,
             )
+            self.assertEqual(invocation.baseline_path.read_bytes(), trusted_baseline)
             self.assertEqual(
                 invocation.baseline_path.read_bytes(), harness.bundle.baseline
             )
+            self.assertNotEqual(invocation.baseline_path.read_bytes(), target_baseline)
             return underlying(invocation)
 
         result = harness.run(scanner)

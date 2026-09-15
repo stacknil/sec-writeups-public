@@ -117,6 +117,33 @@ installation. The scanner child uses an absolute interpreter, isolated mode, a
 trusted working directory, `shell=False`, and a fixed environment containing
 only locale and timezone values.
 
+### Launch-boundary ownership
+
+The commit-authoritative worker does not establish trust for the Python process
+that imports it. Interpreter startup, native-loader state, import path,
+user-site state, home-derived Python configuration, and equivalent pre-entry
+process state are trusted launch preconditions. `_scanner_environment()`
+protects the scanner child; it does not retroactively protect worker imports.
+
+Responsibility is divided into three explicit boundaries:
+
+```text
+outer process bootstrap isolation  -> future production controller
+worker semantic isolation          -> repo_sentinel_commit_authoritative.py
+scanner child isolation            -> worker child environment
+```
+
+The future production controller must launch an absolute trusted Python
+interpreter, use Python isolated mode where applicable, neutralize `PYTHON*`,
+user-site and import customization, relevant `HOME` and `XDG_*` inputs,
+`LD_PRELOAD`, `LD_LIBRARY_PATH`, and `DYLD_*`, use a controlled locale and
+trusted working directory, and either control `PATH` or avoid depending on it.
+Its acceptance tests must launch through hostile values for those inputs,
+including a marker-producing shadow standard-library module, and require zero
+marker execution, canonical bounded output, and the same `H`/epoch semantic
+result. That controller and its regression are intentionally outside this
+inactive worker PR.
+
 ### Config and baseline ownership
 
 The scanner config and baseline are trusted epoch components. Exact canonical
@@ -191,8 +218,8 @@ owned by trusted compute for the duration of evaluation. It defends against:
   encoding handling;
 - target Python shadow modules, startup hooks, `.pth` files, and executable
   repository content;
-- ambient environment influence over Python, loader, package, locale, home, or
-  path resolution;
+- post-entry ambient environment influence over scanner Python, loader,
+  package, locale, home, or path resolution;
 - malformed, contradictory, oversized, missing, or incomplete scanner reports;
 - temporary-directory, run-order, pull-request, or base-identity influence over
   the semantic digest.
@@ -238,6 +265,18 @@ environment isolation, deterministic digest behavior, materialized readback,
 and infrastructure cleanup. The final Draft PR records exact full-suite,
 mutation, and real scanner evidence after the bundle is generated from the
 staged reviewed state.
+
+Outer process bootstrap isolation is a mandatory acceptance test for the future
+production controller. It is not claimed by this worker's post-entry scanner
+environment tests.
+
+The baseline-provenance regression constructs a valid authenticated bundle
+whose trusted baseline bytes differ from the separately protected repository
+baseline in `H`. It asserts that the scanner receives the bundle bytes. Replacing
+`bundle.baseline` with the target snapshot's `.reposentinel-baseline.json` bytes
+changes the test result from PASS to infrastructure refusal and fails the test.
+This kills the target-derived-baseline mutation without changing the candidate
+policy bundle.
 
 The administrative bundle command is:
 
