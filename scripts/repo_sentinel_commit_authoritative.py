@@ -1,10 +1,4 @@
-"""Evaluate exact commits against an immutable Repo Sentinel policy epoch.
-
-The importing Python process is a trusted launch precondition. This module owns
-semantic isolation after entry and the scanner child's fixed environment; it
-cannot neutralize interpreter, import-path, or native-loader state consumed
-before its imports run.
-"""
+"""Evaluate exact commits against an immutable Repo Sentinel policy epoch."""
 
 from __future__ import annotations
 
