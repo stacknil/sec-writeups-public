@@ -1,0 +1,47 @@
+{
+  "approved_exclusions": [
+    {
+      "mode": "100644",
+      "path": ".reposentinel-baseline.json",
+      "reason": "config_ignore",
+      "sha256": "0b6e8641d58a8a4c927d6dd610562d6f6e40bddb7cb1dd0f7c42c103ae3193b5"
+    },
+    {
+      "mode": "100644",
+      "path": "reports/markdownlint-debt.txt",
+      "reason": "config_ignore",
+      "sha256": "85c81f3abf8dce8b1e08e95ceca33243adbd6829f2c4db586d1f23a152cb6197"
+    },
+    {
+      "mode": "100644",
+      "path": "reports/placeholder-audit.txt",
+      "reason": "config_ignore",
+      "sha256": "53228461cdc4e9db92612944d30152efff3ce50a80e850bdb6cdc82641e77a13"
+    }
+  ],
+  "effective_ignore_globs": [
+    ".reposentinel-baseline.json",
+    "%TEMP%",
+    "*.egg-info",
+    ".coverage",
+    ".mypy_cache",
+    ".nox",
+    ".pytest_cache",
+    ".ruff_cache",
+    ".tox",
+    ".venv",
+    ".venv-*",
+    "__pycache__",
+    "build",
+    "coverage",
+    "dist",
+    "dist-*",
+    "htmlcov",
+    "node_modules",
+    "venv",
+    "reports/markdownlint-debt.txt",
+    "reports/placeholder-audit.txt"
+  ],
+  "max_text_file_size": 1048576,
+  "schema_version": 1
+}

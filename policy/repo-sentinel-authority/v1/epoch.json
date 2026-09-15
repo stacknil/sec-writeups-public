@@ -1,0 +1,25 @@
+{
+  "component_sha256": {
+    "baseline.json": "0b6e8641d58a8a4c927d6dd610562d6f6e40bddb7cb1dd0f7c42c103ae3193b5",
+    "coverage-policy.json": "36b544546949b64e83bde547ca861f03446e7ef1f3321439795a90ffc8a6b0de",
+    "dependencies.json": "a8acbdf5ba63d28ac2e8d6940d7618eb2bde1851696cbdd31ae07a7666037074",
+    "protected-manifest.json": "307fc1e7c57879bc82ba9aab658d1ac318214addd16dd125057c5996a79bf466",
+    "scanner-config.toml": "69d0c0d8748e8c113aa31f63c82992633b666a61c0eb60a4298138ee885dea33",
+    "suppression-manifest.json": "98265ad3389adbf19f55f1141b58151a7e35ad0dcf6a43dfc2b94848db0aec1d"
+  },
+  "policy_epoch": "repo-sentinel-authority-v1",
+  "portable_path_policy_version": "portable-v1",
+  "runtime": {
+    "architecture": "x86_64",
+    "implementation": "cpython",
+    "os_family": "Linux",
+    "python_version": "3.12.3"
+  },
+  "scanner": {
+    "artifact_sha256": "0a949a4d00c6e6ae37eba60a6cb74e4e15bc3ec5fce2f1d4c99aa0ef309b36e3",
+    "distribution": "repo-sentinel-lite",
+    "version": "0.8.1"
+  },
+  "schema_version": 1,
+  "semantic_worker_policy_version": "commit-authoritative-v1"
+}
