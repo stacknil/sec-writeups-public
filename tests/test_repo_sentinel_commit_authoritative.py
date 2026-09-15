@@ -103,13 +103,28 @@ class Harness:
         self.artifact = self.root / "scanner.whl"
         for directory in (self.repository, self.scratch):
             directory.mkdir()
-        self.files = files or minimum_files()
-        self.snapshot = Snapshot(HEAD_OID, "c" * 40, self.files)
+        requested_files = files or minimum_files()
+        source_files = tuple(
+            item
+            for item in requested_files
+            if not item.path.startswith(policy.POLICY_BUNDLE_MIRROR_ROOT)
+        )
         self.artifact.write_bytes(b"test wheel bytes")
         self.bundle_digest = policy.build_policy_bundle(
-            self.files, self.policy_root, RUNTIME
+            source_files, self.policy_root, RUNTIME
         )
         self.bundle = policy.load_policy_bundle(self.policy_root, self.bundle_digest)
+        mirror_files = tuple(
+            snapshot_file(
+                f"{policy.POLICY_BUNDLE_MIRROR_ROOT}{name}",
+                data,
+            )
+            for name, data in self.bundle.bundle_files
+        )
+        self.files = tuple(
+            sorted((*source_files, *mirror_files), key=lambda item: item.path)
+        )
+        self.snapshot = Snapshot(HEAD_OID, "c" * 40, self.files)
         self.request = authoritative.CommitAuthoritativeRequest(
             123456,
             HEAD_OID,
@@ -128,6 +143,16 @@ class Harness:
     def reader(self, *_args: object, **_kwargs: object) -> Snapshot:
         return self.snapshot
 
+    def with_policy_mirror(
+        self, files: tuple[SnapshotFile, ...]
+    ) -> tuple[SnapshotFile, ...]:
+        mirror = tuple(
+            item
+            for item in self.files
+            if item.path.startswith(policy.POLICY_BUNDLE_MIRROR_ROOT)
+        )
+        return tuple(sorted((*files, *mirror), key=lambda item: item.path))
+
     @contextmanager
     def materializer(
         self, *_args: object, **_kwargs: object
@@ -145,16 +170,27 @@ class Harness:
     def report(self) -> dict[str, object]:
         files = {item.path: item for item in self.snapshot.files}
         inventory = authoritative._coverage_inventory(files, self.bundle)
-        skips = [
-            {"path": path, "reason": reason} for path, reason in inventory.scanner_skips
-        ]
+        skips = sorted(
+            (
+                {"path": path, "reason": reason}
+                for path, reason in inventory.scanner_skips
+            ),
+            key=lambda item: (
+                str(item["path"]).casefold(),
+                str(item["path"]),
+                str(item["reason"]),
+            ),
+        )
         counts = {
             reason: sum(1 for item in skips if item["reason"] == reason)
             for reason in {str(item["reason"]) for item in skips}
         }
         return {
             "authority_coverage": {
-                "scanned_paths": list(inventory.scanned_paths),
+                "scanned_paths": sorted(
+                    inventory.scanned_paths,
+                    key=lambda path: (path.casefold(), path),
+                ),
             },
             "coverage": {
                 "files_considered": len(inventory.scanned_paths) + len(skips),
@@ -272,7 +308,10 @@ class HappyPathTests(HarnessTestCase):
         self.assertEqual(result.verdict, authoritative.CommitAuthorityVerdict.PASS)
         self.assertIsNotNone(result.semantic_sha256)
         self.assertEqual(result.files_total, len(harness.files))
-        self.assertEqual(result.files_policy_excluded, 1)
+        self.assertEqual(
+            result.files_policy_excluded,
+            1 + len(policy.BUNDLE_FILENAMES),
+        )
         self.assertEqual(result.files_scanner_skipped, 0)
         self.assertEqual(
             result.files_total,
@@ -321,14 +360,40 @@ class HappyPathTests(HarnessTestCase):
                 harness = self.harness()
 
                 def finding(report: dict[str, object]) -> None:
-                    report["findings"] = [
-                        {
-                            "kind": "suspicious_file",
-                            "path": "README.md",
-                            "severity": severity,
-                            "fingerprint": "d" * 64,
-                        }
-                    ]
+                    if severity == "warning":
+                        report["findings"] = [
+                            {
+                                "evidence": {
+                                    "line": 1,
+                                    "path": "README.md",
+                                    "token_sha256": "a" * 64,
+                                },
+                                "file": "README.md",
+                                "fingerprint": "d" * 64,
+                                "kind": "assignment_context",
+                                "line": 1,
+                                "path": "README.md",
+                                "remediation_hint": "review the fixture",
+                                "rule_id": "secret.assignment_context",
+                                "rule_version": "1",
+                                "severity": "warning",
+                                "token": "<redacted:sha256:aaaaaaaaaaaa>",
+                            }
+                        ]
+                    else:
+                        report["findings"] = [
+                            {
+                                "evidence": {"path": "README.md"},
+                                "fingerprint": "d" * 64,
+                                "kind": "suspicious_file",
+                                "path": "README.md",
+                                "remediation_hint": "review the fixture",
+                                "rule_id": "repo.suspicious_filename",
+                                "rule_version": "1",
+                                "severity": "error",
+                            }
+                        ]
+                        report["suspicious_files"] = ["README.md"]
 
                 result = harness.run(harness.scanner(finding, returncode=returncode))
                 self.assertEqual(result.verdict, verdict)
@@ -397,7 +462,9 @@ class ProtectedAdmissionTests(HarnessTestCase):
         trusted = self.harness(original)
         for name, mutated in cases.items():
             with self.subTest(name=name):
-                trusted.snapshot = Snapshot(HEAD_OID, "c" * 40, mutated)
+                trusted.snapshot = Snapshot(
+                    HEAD_OID, "c" * 40, trusted.with_policy_mirror(mutated)
+                )
                 result = trusted.run()
                 self.assertEqual(
                     result.verdict,
@@ -405,6 +472,37 @@ class ProtectedAdmissionTests(HarnessTestCase):
                 )
                 self.assertEqual(result.refusal_code, "protected_control_mismatch")
                 self.assertEqual(trusted.materializer_calls, 0)
+
+
+class PolicyBundleMirrorAdmissionTests(HarnessTestCase):
+    def test_bundle_mirror_mutations_fail_before_materialization(self) -> None:
+        harness = self.harness()
+        original = harness.files
+        path = f"{policy.POLICY_BUNDLE_MIRROR_ROOT}epoch.json"
+        cases = {
+            "content": replace_file(original, path, data=b"{}\n"),
+            "mode": replace_file(original, path, mode="100755"),
+            "missing": without(original, path),
+            "alias": with_file(
+                without(original, path),
+                snapshot_file("Policy/repo-sentinel-authority/v1/epoch.json"),
+            ),
+            "extra": with_file(
+                original,
+                snapshot_file(f"{policy.POLICY_BUNDLE_MIRROR_ROOT}unreviewed.json"),
+            ),
+        }
+
+        for name, mutated in cases.items():
+            with self.subTest(name=name):
+                harness.snapshot = Snapshot(HEAD_OID, "c" * 40, mutated)
+                result = harness.run()
+                self.assertEqual(
+                    result.verdict,
+                    authoritative.CommitAuthorityVerdict.POLICY_ADMISSION_FAILURE,
+                )
+                self.assertEqual(result.refusal_code, "policy_bundle_mirror_mismatch")
+                self.assertEqual(harness.materializer_calls, 0)
 
 
 class SuppressionAdmissionTests(HarnessTestCase):
@@ -445,7 +543,9 @@ class SuppressionAdmissionTests(HarnessTestCase):
         trusted = self.harness(original)
         for name, mutated in cases.items():
             with self.subTest(name=name):
-                trusted.snapshot = Snapshot(HEAD_OID, "c" * 40, mutated)
+                trusted.snapshot = Snapshot(
+                    HEAD_OID, "c" * 40, trusted.with_policy_mirror(mutated)
+                )
                 result = trusted.run()
                 self.assertEqual(
                     result.verdict,
@@ -467,7 +567,9 @@ class CoverageTests(HarnessTestCase):
             with self.subTest(name=name):
                 trusted = self.harness(original)
                 mutated = with_file(original, item)
-                trusted.snapshot = Snapshot(HEAD_OID, "c" * 40, mutated)
+                trusted.snapshot = Snapshot(
+                    HEAD_OID, "c" * 40, trusted.with_policy_mirror(mutated)
+                )
                 rejected = trusted.run()
                 self.assertEqual(rejected.refusal_code, "coverage_policy_mismatch")
 
@@ -491,7 +593,9 @@ class CoverageTests(HarnessTestCase):
         )
         trusted = self.harness(configured)
         oversized = with_file(configured, snapshot_file("large.txt", b"x" * 129))
-        trusted.snapshot = Snapshot(HEAD_OID, "c" * 40, oversized)
+        trusted.snapshot = Snapshot(
+            HEAD_OID, "c" * 40, trusted.with_policy_mirror(oversized)
+        )
         self.assertEqual(
             trusted.run().refusal_code,
             "coverage_policy_mismatch",
@@ -506,6 +610,9 @@ class CoverageTests(HarnessTestCase):
             "missing": lambda report: report.pop("coverage"),
             "count": lambda report: report["coverage"].__setitem__(
                 "files_inspected", 999
+            ),
+            "boolean-count": lambda report: report["coverage"].__setitem__(
+                "files_inspected", True
             ),
             "path": lambda report: report["authority_coverage"].__setitem__(
                 "scanned_paths", ["unknown.txt"]
@@ -526,6 +633,27 @@ class CoverageTests(HarnessTestCase):
                     result.verdict,
                     authoritative.CommitAuthorityVerdict.INFRASTRUCTURE_REFUSAL,
                 )
+                self.assertEqual(result.refusal_code, "scanner_result_invalid")
+
+    def test_report_derived_views_must_match_findings(self) -> None:
+        mutators: dict[str, Callable[[dict[str, object]], None]] = {
+            "entropy": lambda report: report["high_entropy_findings"].append(
+                {
+                    "entropy": 4.2,
+                    "file": "README.md",
+                    "line": 1,
+                    "token": "<redacted:sha256:aaaaaaaaaaaa>",
+                }
+            ),
+            "suspicious": lambda report: report["suspicious_files"].append("README.md"),
+            "missing": lambda report: report["missing_files"].__setitem__(
+                "LICENSE", True
+            ),
+        }
+        for name, mutate in mutators.items():
+            with self.subTest(name=name):
+                harness = self.harness()
+                result = harness.run(harness.scanner(mutate))
                 self.assertEqual(result.refusal_code, "scanner_result_invalid")
 
     def test_skip_reason_and_skip_path_must_match_approved_entry(self) -> None:
@@ -646,7 +774,7 @@ class ReportFailureTests(HarnessTestCase):
         self.assertEqual(result.refusal_code, "invalid_snapshot")
 
 
-class EnvironmentTests(unittest.TestCase):
+class EnvironmentTests(HarnessTestCase):
     def test_real_child_receives_only_fixed_environment(self) -> None:
         with tempfile.TemporaryDirectory(prefix="commit-authority-env-") as temporary:
             marker = Path(temporary) / "executed"
@@ -682,6 +810,38 @@ class EnvironmentTests(unittest.TestCase):
             self.assertEqual(observed, authoritative._scanner_environment())
             self.assertFalse(marker.exists())
 
+    def test_target_python_hooks_and_executable_content_remain_data(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="commit-authority-marker-") as temp:
+            marker = Path(temp) / "executed"
+            payload = (
+                f"from pathlib import Path\nPath({str(marker)!r}).touch()\n"
+            ).encode()
+            files = minimum_files()
+            for path, mode in (
+                ("repo_sentinel.py", "100644"),
+                ("sitecustomize.py", "100644"),
+                ("usercustomize.py", "100644"),
+                ("bootstrap.pth", "100644"),
+                ("run.py", "100755"),
+            ):
+                files = with_file(files, snapshot_file(path, payload, mode))
+            harness = self.harness(files)
+            underlying = harness.scanner()
+
+            def scanner(
+                invocation: authoritative.ScannerInvocation,
+            ) -> authoritative.ScannerExecution:
+                self.assertNotEqual(
+                    invocation.target_root, invocation.execution_directory
+                )
+                self.assertFalse(marker.exists())
+                return underlying(invocation)
+
+            result = harness.run(scanner)
+
+            self.assertEqual(result.verdict, authoritative.CommitAuthorityVerdict.PASS)
+            self.assertFalse(marker.exists())
+
     def test_scanner_command_uses_verified_wheel_and_no_changed_files(self) -> None:
         with tempfile.TemporaryDirectory(
             prefix="commit-authority-command-"
@@ -691,6 +851,7 @@ class EnvironmentTests(unittest.TestCase):
                 root / "target",
                 root / "scanner.whl",
                 root / "baseline.json",
+                root / "policy-exclusions.json",
                 root / "report.json",
                 root,
                 5,
@@ -717,8 +878,13 @@ class EnvironmentTests(unittest.TestCase):
             self.assertEqual(len(calls), 2)
             self.assertEqual(calls[1][1:3], ["-I", "-c"])
             self.assertIn(str(invocation.scanner_artifact), calls[1])
+            self.assertIn(str(invocation.policy_exclusions_path), calls[1])
             self.assertNotIn("--changed-files", calls[1])
             self.assertNotIn(str(invocation.target_root), calls[1][:4])
+            self.assertIn('"--no-default-baseline"', authoritative._SCANNER_DRIVER)
+            self.assertIn('"--baseline"', authoritative._SCANNER_DRIVER)
+            self.assertIn('"--fail-on-severity"', authoritative._SCANNER_DRIVER)
+            self.assertNotIn('"--changed-files"', authoritative._SCANNER_DRIVER)
 
     def test_real_bounded_command_rejects_timeout_and_output_overflow(self) -> None:
         with tempfile.TemporaryDirectory(
@@ -795,6 +961,19 @@ class PolicyBundleTests(HarnessTestCase):
         epoch["component_sha256"][name] = policy.sha256_bytes(data)
         epoch_path.write_bytes(policy._render(epoch))
         return policy.bundle_sha256(harness.policy_root)
+
+    def test_rebuild_ignores_the_exact_in_tree_bundle_mirror(self) -> None:
+        harness = self.harness()
+        rebuilt = harness.root / "rebuilt-policy"
+
+        digest = policy.build_policy_bundle(harness.files, rebuilt, RUNTIME)
+
+        self.assertEqual(digest, harness.bundle_digest)
+        for name in policy.BUNDLE_FILENAMES:
+            self.assertEqual(
+                (rebuilt / name).read_bytes(),
+                (harness.policy_root / name).read_bytes(),
+            )
 
     def test_unknown_missing_and_digest_mismatch_fail_closed(self) -> None:
         for name in ("unknown", "missing", "digest"):
