@@ -428,8 +428,10 @@ class LaunchAndImportContractTests(HarnessTestCase):
         )
 
     def test_launch_requires_exact_fixed_environment_and_isolation_flags(self) -> None:
+        executable = str(self.harness().artifact)
         with (
             patch.object(controller.sys, "flags", self.isolated_flags()),
+            patch.object(controller.sys, "executable", executable),
             patch.dict(os.environ, controller.FIXED_ENVIRONMENT, clear=True),
         ):
             controller._validate_launch(lambda: EXACT_RUNTIME)
@@ -437,6 +439,7 @@ class LaunchAndImportContractTests(HarnessTestCase):
         hostile = dict(controller.FIXED_ENVIRONMENT, PYTHONPATH="marker")
         with (
             patch.object(controller.sys, "flags", self.isolated_flags()),
+            patch.object(controller.sys, "executable", executable),
             patch.dict(os.environ, hostile, clear=True),
         ):
             with self.assertRaisesRegex(
@@ -447,6 +450,7 @@ class LaunchAndImportContractTests(HarnessTestCase):
         flags = replace_flags(self.isolated_flags(), isolated=0)
         with (
             patch.object(controller.sys, "flags", flags),
+            patch.object(controller.sys, "executable", executable),
             patch.dict(os.environ, controller.FIXED_ENVIRONMENT, clear=True),
         ):
             with self.assertRaisesRegex(
