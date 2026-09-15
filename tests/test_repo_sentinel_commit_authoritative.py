@@ -638,6 +638,23 @@ class CoverageTests(HarnessTestCase):
                 )
                 self.assertEqual(result.refusal_code, "scanner_result_invalid")
 
+    def test_report_scanned_path_set_must_match_even_when_counts_are_valid(
+        self,
+    ) -> None:
+        def substitute_policy_excluded_path(report: dict[str, object]) -> None:
+            paths = report["authority_coverage"]["scanned_paths"]
+            paths[0] = ".reposentinel-baseline.json"
+            paths.sort(key=lambda path: (path.casefold(), path))
+
+        harness = self.harness()
+        result = harness.run(harness.scanner(substitute_policy_excluded_path))
+
+        self.assertEqual(
+            result.verdict,
+            authoritative.CommitAuthorityVerdict.INFRASTRUCTURE_REFUSAL,
+        )
+        self.assertEqual(result.refusal_code, "scanner_result_invalid")
+
     def test_report_derived_views_must_match_findings(self) -> None:
         mutators: dict[str, Callable[[dict[str, object]], None]] = {
             "entropy": lambda report: report["high_entropy_findings"].append(
