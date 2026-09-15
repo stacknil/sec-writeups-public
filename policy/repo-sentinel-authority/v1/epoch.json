@@ -1,9 +1,9 @@
 {
   "component_sha256": {
-    "baseline.json": "9fbc2b4f2a1ba78255281c465bd99d9cd45bbac98f9fa994551c84c1eb1a43f5",
-    "coverage-policy.json": "f9f2a9f2c213e8639ece0001c8c29d3a860ec4a7a4843b727c40b3dad3705663",
+    "baseline.json": "0b6e8641d58a8a4c927d6dd610562d6f6e40bddb7cb1dd0f7c42c103ae3193b5",
+    "coverage-policy.json": "36b544546949b64e83bde547ca861f03446e7ef1f3321439795a90ffc8a6b0de",
     "dependencies.json": "a8acbdf5ba63d28ac2e8d6940d7618eb2bde1851696cbdd31ae07a7666037074",
-    "protected-manifest.json": "a91fb35d401f8dd5470d3cda5492d2eef2e5a1408e994676cb45c530569ea5d2",
+    "protected-manifest.json": "307fc1e7c57879bc82ba9aab658d1ac318214addd16dd125057c5996a79bf466",
     "scanner-config.toml": "69d0c0d8748e8c113aa31f63c82992633b666a61c0eb60a4298138ee885dea33",
     "suppression-manifest.json": "f48c1ce5e409523b198c7dd6bf81118b1ae047401aed5250148ddc3ab8baf82b"
   },
@@ -12,7 +12,7 @@
   "runtime": {
     "architecture": "x86_64",
     "implementation": "cpython",
-    "os_family": "Linux",
+    "os_family": "linux",
     "python_version": "3.12.3"
   },
   "scanner": {
