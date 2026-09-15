@@ -1,0 +1,9 @@
+{
+  "runtime_dependencies": [],
+  "scanner": {
+    "distribution": "repo-sentinel-lite",
+    "version": "0.8.1",
+    "wheel_sha256": "0a949a4d00c6e6ae37eba60a6cb74e4e15bc3ec5fce2f1d4c99aa0ef309b36e3"
+  },
+  "schema_version": 1
+}

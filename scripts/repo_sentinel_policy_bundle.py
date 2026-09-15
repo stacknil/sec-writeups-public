@@ -90,6 +90,7 @@ DEFAULT_REQUIRED_FILES = ("README.md", "LICENSE", ".gitignore")
 PROTECTED_NAMESPACES = (".github/actions/", ".github/workflows/")
 MANDATORY_PROTECTED_PATHS = frozenset(
     {
+        ".gitattributes",
         ".reposentinel.toml",
         ".reposentinel-baseline.json",
         "scripts/repo_sentinel_gate.py",

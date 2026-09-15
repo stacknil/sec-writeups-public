@@ -1,0 +1,15 @@
+{
+  "entries": [
+    {
+      "mode": "100644",
+      "path": "tests/test_repo_sentinel_authoritative.py",
+      "sha256": "203e057697436bd2db73313ec8d27e7564d04684218a3c2e51608f9066a420e2"
+    },
+    {
+      "mode": "100644",
+      "path": "tests/test_repo_sentinel_commit_authoritative.py",
+      "sha256": "5c7150a03c18600364d8ce938b086a7076d458c09ac2a631b564d89ed19e4216"
+    }
+  ],
+  "schema_version": 1
+}

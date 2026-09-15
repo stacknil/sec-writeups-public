@@ -418,6 +418,9 @@ class ProtectedAdmissionTests(HarnessTestCase):
     def test_protected_mutations_fail_before_materialization(self) -> None:
         original = minimum_files()
         cases = {
+            "attributes-content": replace_file(
+                original, ".gitattributes", data=b"* text=auto\n"
+            ),
             "config-content": replace_file(
                 original, ".reposentinel.toml", data=b"ignore_globs = ['*']\n"
             ),
