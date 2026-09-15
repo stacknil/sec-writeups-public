@@ -12,7 +12,7 @@
   "runtime": {
     "architecture": "x86_64",
     "implementation": "cpython",
-    "os_family": "linux",
+    "os_family": "Linux",
     "python_version": "3.12.3"
   },
   "scanner": {
