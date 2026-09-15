@@ -295,11 +295,14 @@ def _trusted_git_probe(control_root: Path) -> None:
         )
     except (ControllerRefused, OSError, subprocess.TimeoutExpired):
         raise ControllerRefused("git_identity_mismatch") from None
+    try:
+        version = completed.stdout.decode("ascii", "strict")
+    except UnicodeDecodeError:
+        raise ControllerRefused("git_identity_mismatch") from None
     if (
         completed.returncode != 0
         or len(completed.stdout) > 128
-        or _SAFE_GIT_VERSION.fullmatch(completed.stdout.decode("ascii", "strict"))
-        is None
+        or _SAFE_GIT_VERSION.fullmatch(version) is None
     ):
         raise ControllerRefused("git_identity_mismatch")
 
@@ -362,7 +365,7 @@ def load_trusted_stack(control_root: Path) -> TrustedStack:
 
 
 def _parse_decimal(value: str) -> int:
-    if _DECIMAL.fullmatch(value) is None:
+    if len(value) > 10 or _DECIMAL.fullmatch(value) is None:
         raise ControllerRefused("invalid_request")
     return int(value)
 
@@ -422,6 +425,14 @@ def _validate_request(
         raise ControllerRefused("policy_bundle_mismatch")
     if _OID.fullmatch(request.head_oid) is None:
         raise ControllerRefused("invalid_head_oid")
+    for path in (request.scratch_root, request.scanner_artifact):
+        value = os.fspath(path)
+        if (
+            not 0 < len(value) <= 4096
+            or re.search(r"[\x00-\x1f\x7f]", value)
+            or ".." in path.parts
+        ):
+            raise ControllerRefused("invalid_request")
     scratch = _without_aliases(request.scratch_root, directory=True)
     artifact = _without_aliases(request.scanner_artifact, directory=False)
     if _overlaps(control_root, scratch):
@@ -516,7 +527,15 @@ def _validate_worker_result(
     if verdict == "POLICY_ADMISSION_FAILURE":
         if refusal not in _POLICY_REFUSALS:
             raise ControllerRefused("worker_result_invalid")
+        if (
+            any(counts[1:4])
+            or payload["report_sha256"] is not None
+            or payload["report_size"] != 0
+        ):
+            raise ControllerRefused("worker_result_invalid")
     elif refusal is not None:
+        raise ControllerRefused("worker_result_invalid")
+    elif payload["report_sha256"] is None or payload["report_size"] == 0:
         raise ControllerRefused("worker_result_invalid")
     if (
         payload["policy_schema_version"] != 1

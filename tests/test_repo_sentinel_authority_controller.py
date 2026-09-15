@@ -187,6 +187,7 @@ class RequestContractTests(HarnessTestCase):
             [*argv, "--extra", "value"],
             ["--repository-id", "1", *argv[2:-2], "--repository-id", "2"],
             ["--repository-id=1130304545", *argv[2:]],
+            ["--repository-id", "9" * 100, *argv[2:]],
         ):
             with self.subTest(candidate=candidate):
                 with self.assertRaisesRegex(
@@ -240,15 +241,22 @@ class RequestContractTests(HarnessTestCase):
 
     def test_scratch_must_be_absolute_non_aliasing_and_outside_control(self) -> None:
         harness = self.harness()
-        for request in (
-            replace(harness.request, scratch_root=Path("relative")),
-            replace(harness.request, scratch_root=harness.control),
+        for request, code in (
+            (
+                replace(harness.request, scratch_root=Path("relative")),
+                "unsafe_root_layout",
+            ),
+            (
+                replace(harness.request, scratch_root=harness.control),
+                "unsafe_root_layout",
+            ),
+            (
+                replace(harness.request, scratch_root=Path("bad\npath")),
+                "invalid_request",
+            ),
         ):
             with self.subTest(path=request.scratch_root):
-                self.assertEqual(
-                    harness.run(request).fixed_refusal_code,
-                    "unsafe_root_layout",
-                )
+                self.assertEqual(harness.run(request).fixed_refusal_code, code)
 
 
 class OrchestrationTests(HarnessTestCase):
@@ -577,10 +585,16 @@ class BootstrapTests(unittest.TestCase):
                     "LD_LIBRARY_PATH": str(hostile),
                     "PATH": f"{fake_bin}{os.pathsep}{environment.get('PATH', '')}",
                     "PIP_CONFIG_FILE": str(root / "pip.ini"),
+                    "PIP_INDEX_URL": "https://example.invalid/simple",
+                    "PYTHONBREAKPOINT": "marker.breakpoint",
                     "PYTHONHOME": str(hostile),
                     "PYTHONINSPECT": "1",
                     "PYTHONPATH": str(hostile),
+                    "PYTHONPYCACHEPREFIX": str(hostile),
+                    "PYTHONSAFEPATH": "0",
                     "PYTHONSTARTUP": str(startup),
+                    "PYTHONUSERBASE": str(hostile),
+                    "PYTHONWARNINGS": "error",
                     "REPO_SENTINEL_CONFIG": "hostile",
                     "VIRTUAL_ENV": str(hostile),
                     "XDG_CONFIG_HOME": str(hostile),
