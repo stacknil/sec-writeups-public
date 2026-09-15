@@ -39,6 +39,7 @@ BUNDLE_FILENAMES = frozenset(
         "suppression-manifest.json",
     }
 )
+POLICY_BUNDLE_MIRROR_ROOT = "policy/repo-sentinel-authority/v1/"
 _COMPONENT_FILENAMES = BUNDLE_FILENAMES - {"epoch.json"}
 _BUNDLE_DOMAIN = b"repo-sentinel-authority-policy-bundle-v1\0"
 _MAX_BUNDLE_FILE_BYTES = 2 * 1024 * 1024
@@ -139,6 +140,7 @@ class VerifiedPolicyBundle:
     runtime: RuntimeContract
     scanner_config: bytes = field(repr=False)
     baseline: bytes = field(repr=False)
+    bundle_files: tuple[tuple[str, bytes], ...] = field(repr=False)
     protected_manifest_sha256: str
     suppression_manifest_sha256: str
     coverage_policy_sha256: str
@@ -495,6 +497,7 @@ def load_policy_bundle(root: Path, expected_sha256: str) -> VerifiedPolicyBundle
         runtime=runtime_contract,
         scanner_config=files["scanner-config.toml"],
         baseline=files["baseline.json"],
+        bundle_files=tuple(sorted(files.items())),
         protected_manifest_sha256=sha256_bytes(files["protected-manifest.json"]),
         suppression_manifest_sha256=sha256_bytes(files["suppression-manifest.json"]),
         coverage_policy_sha256=sha256_bytes(files["coverage-policy.json"]),
@@ -602,8 +605,19 @@ def build_policy_bundle(
 ) -> str:
     """Generate a candidate bundle from an explicitly staged repository state."""
 
-    by_path = {item.path: item for item in files}
-    if len(by_path) != len(files) or not MANDATORY_PROTECTED_PATHS.issubset(by_path):
+    mirror_paths = {f"{POLICY_BUNDLE_MIRROR_ROOT}{name}" for name in BUNDLE_FILENAMES}
+    mirror_alias_root = portable_v1_alias(POLICY_BUNDLE_MIRROR_ROOT)
+    if any(
+        portable_v1_alias(item.path).startswith(mirror_alias_root)
+        and item.path not in mirror_paths
+        for item in files
+    ):
+        raise PolicyBundleRefused("policy_source_invalid")
+    source_files = tuple(item for item in files if item.path not in mirror_paths)
+    by_path = {item.path: item for item in source_files}
+    if len(by_path) != len(source_files) or not MANDATORY_PROTECTED_PATHS.issubset(
+        by_path
+    ):
         raise PolicyBundleRefused("policy_source_invalid")
     scanner_config = by_path[".reposentinel.toml"].data
     baseline = by_path[".reposentinel-baseline.json"].data
@@ -616,11 +630,11 @@ def build_policy_bundle(
     protected_entries = [_entry(by_path[path]) for path in protected_paths]
     suppression_entries = [
         _entry(item)
-        for item in sorted(files, key=lambda candidate: candidate.path)
+        for item in sorted(source_files, key=lambda candidate: candidate.path)
         if contains_inline_suppression(item.data)
     ]
     coverage_entries: list[PolicyEntry] = []
-    for item in sorted(files, key=lambda candidate: candidate.path):
+    for item in sorted(source_files, key=lambda candidate: candidate.path):
         reason = (
             "config_ignore"
             if is_config_ignored(item.path, effective)
@@ -788,6 +802,7 @@ if __name__ == "__main__":
 __all__ = [
     "BUNDLE_FILENAMES",
     "MANDATORY_PROTECTED_PATHS",
+    "POLICY_BUNDLE_MIRROR_ROOT",
     "POLICY_EPOCH",
     "POLICY_SCHEMA_VERSION",
     "PolicyBundleRefused",

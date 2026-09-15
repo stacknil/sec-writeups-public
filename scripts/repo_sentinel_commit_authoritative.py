@@ -27,7 +27,9 @@ from repo_sentinel_materialize import (
     materialized_snapshot,
 )
 from repo_sentinel_policy_bundle import (
+    BUNDLE_FILENAMES,
     MANDATORY_PROTECTED_PATHS,
+    POLICY_BUNDLE_MIRROR_ROOT,
     PolicyBundleRefused,
     PolicyEntry,
     RuntimeContract,
@@ -44,6 +46,16 @@ from repo_sentinel_reader import read_snapshot
 
 _OID = re.compile(r"[0-9a-f]{40}|[0-9a-f]{64}")
 _DIGEST = re.compile(r"[0-9a-f]{64}")
+_REDACTED_TOKEN = re.compile(r"<redacted:sha256:[0-9a-f]{12}>")
+_FINDING_RULES = {
+    "assignment_context": ("secret.assignment_context", "warning", True),
+    "aws_access_key_id": ("secret.aws_access_key_id", "error", True),
+    "github_token": ("secret.github_token", "error", True),
+    "high_entropy": ("secret.high_entropy", "error", True),
+    "missing_file": ("repo.required_file_missing", "warning", False),
+    "pem_private_key": ("secret.pem_private_key", "error", False),
+    "suspicious_file": ("repo.suspicious_filename", "error", False),
+}
 _SEMANTIC_DOMAIN = b"repo-sentinel-commit-authority-result-v1\0"
 _MAX_SCANNER_ARTIFACT_BYTES = 2 * 1024 * 1024
 _FIXED_SCANNER_ENVIRONMENT = {
@@ -82,6 +94,7 @@ _INFRASTRUCTURE_CODES = frozenset(
 _POLICY_CODES = frozenset(
     {
         "coverage_policy_mismatch",
+        "policy_bundle_mirror_mismatch",
         "protected_control_mismatch",
         "suppression_manifest_mismatch",
     }
@@ -91,16 +104,26 @@ import json
 import sys
 from pathlib import Path
 
-wheel, target_text, baseline_text, output_text = sys.argv[1:]
+wheel, target_text, baseline_text, output_text, exclusions_text = sys.argv[1:]
 sys.path.insert(0, wheel)
+import repo_sentinel.cli as cli
 import repo_sentinel.scanner as scanner
 from repo_sentinel.config import relative_path, sort_key
 from repo_sentinel.coverage import build_coverage
 from repo_sentinel.walk import TextReadSuccess
 
 target = Path(target_text).resolve()
+policy_exclusions = json.loads(Path(exclusions_text).read_text(encoding="utf-8"))
+if (
+    not isinstance(policy_exclusions, list)
+    or not all(isinstance(path, str) for path in policy_exclusions)
+    or len(policy_exclusions) != len(set(policy_exclusions))
+):
+    raise SystemExit(2)
+policy_exclusions = set(policy_exclusions)
 scanned = []
 inspect_text_file = scanner.inspect_text_file
+iter_files = scanner.iter_files
 
 def tracked(path, limit):
     result = inspect_text_file(path, limit)
@@ -109,25 +132,35 @@ def tracked(path, limit):
     return result
 
 scanner.inspect_text_file = tracked
-report = scanner.scan_repository(target)
+
+def policy_scoped_iter_files(*args, **kwargs):
+    for path in iter_files(*args, **kwargs):
+        if relative_path(path, target) not in policy_exclusions:
+            yield path
+
+scanner.iter_files = policy_scoped_iter_files
+returncode = cli.main([
+    "scan",
+    "--format", "json",
+    "--no-default-baseline",
+    "--baseline", baseline_text,
+    "--fail-on-severity", "error",
+    "--output", output_text,
+    target_text,
+])
+if returncode not in (0, 1):
+    raise SystemExit(returncode)
+report = json.loads(Path(output_text).read_text(encoding="utf-8"))
 if "coverage" not in report:
     report["coverage"] = build_coverage(len(scanned), [])
-report = scanner.apply_baseline(
-    report,
-    scanner.load_baseline(Path(baseline_text)),
-)
-normalized = scanner.normalize_report(report)
-redacted = scanner.redact_report(normalized)
-redacted["authority_coverage"] = {
+report["authority_coverage"] = {
     "scanned_paths": sorted(scanned, key=sort_key),
 }
 Path(output_text).write_text(
-    json.dumps(redacted, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+    json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
     encoding="utf-8",
 )
-raise SystemExit(
-    1 if scanner.has_findings_at_or_above_severity(normalized, "error") else 0
-)
+raise SystemExit(returncode)
 """
 _VERSION_DRIVER = (
     "import sys;sys.path.insert(0,sys.argv[1]);"
@@ -228,6 +261,7 @@ class ScannerInvocation:
     target_root: Path = field(repr=False)
     scanner_artifact: Path = field(repr=False)
     baseline_path: Path = field(repr=False)
+    policy_exclusions_path: Path = field(repr=False)
     report_path: Path = field(repr=False)
     execution_directory: Path = field(repr=False)
     timeout_seconds: float
@@ -370,6 +404,30 @@ def _admit_protected(
         raise PolicyAdmissionRefused("protected_control_mismatch")
 
 
+def _admit_policy_bundle_mirror(
+    files: dict[str, SnapshotFile], bundle: VerifiedPolicyBundle
+) -> None:
+    expected = {
+        f"{POLICY_BUNDLE_MIRROR_ROOT}{name}": data for name, data in bundle.bundle_files
+    }
+    expected_aliases = {portable_v1_alias(path): path for path in expected}
+    mirror_alias_root = portable_v1_alias(POLICY_BUNDLE_MIRROR_ROOT)
+    observed = {
+        path: item
+        for path, item in files.items()
+        if portable_v1_alias(path).startswith(mirror_alias_root)
+    }
+    if set(observed) != set(expected):
+        raise PolicyAdmissionRefused("policy_bundle_mirror_mismatch")
+    for path, item in observed.items():
+        if (
+            expected_aliases.get(portable_v1_alias(path)) != path
+            or item.mode != "100644"
+            or item.data != expected[path]
+        ):
+            raise PolicyAdmissionRefused("policy_bundle_mirror_mismatch")
+
+
 def _admit_suppressions(
     files: dict[str, SnapshotFile], bundle: VerifiedPolicyBundle
 ) -> None:
@@ -393,7 +451,11 @@ def _coverage_inventory(
     scanned: list[str] = []
     ignored: list[str] = []
     skipped: list[tuple[str, str]] = []
+    mirror_paths = {f"{POLICY_BUNDLE_MIRROR_ROOT}{name}" for name in BUNDLE_FILENAMES}
     for path, item in sorted(files.items()):
+        if path in mirror_paths:
+            ignored.append(path)
+            continue
         reason = (
             "config_ignore"
             if is_config_ignored(path, bundle.effective_ignore_globs)
@@ -454,8 +516,8 @@ def _run_command_bounded(
     executable = Path(sys.executable)
     if not executable.is_absolute():
         raise WorkerRefused("scanner_launch_failed")
-    command[0] = str(executable.resolve(strict=True))
     try:
+        command[0] = str(executable.resolve(strict=True))
         process = subprocess.Popen(
             command,
             cwd=cwd,
@@ -532,6 +594,7 @@ def _run_trusted_scanner(invocation: ScannerInvocation) -> ScannerExecution:
             str(invocation.target_root),
             str(invocation.baseline_path),
             str(invocation.report_path),
+            str(invocation.policy_exclusions_path),
         ],
         cwd=invocation.execution_directory,
         timeout_seconds=invocation.timeout_seconds,
@@ -570,6 +633,10 @@ def _parse_report(data: bytes) -> dict[str, Any]:
     if not isinstance(parsed, dict):
         raise WorkerRefused("scanner_result_invalid")
     return parsed
+
+
+def _non_negative_integer(value: object) -> bool:
+    return type(value) is int and value >= 0
 
 
 def _expected_missing(
@@ -636,6 +703,7 @@ def _validated_report(
         not isinstance(scanned, list)
         or not all(isinstance(path, str) for path in scanned)
         or len(scanned) != len(set(scanned))
+        or scanned != sorted(scanned, key=lambda path: (path.casefold(), path))
         or set(scanned) != set(inventory.scanned_paths)
     ):
         raise WorkerRefused("scanner_result_invalid")
@@ -665,8 +733,11 @@ def _validated_report(
         if not isinstance(path, str) or not isinstance(reason, str):
             raise WorkerRefused("scanner_result_invalid")
         observed_skips.append((path, reason))
-    if len(observed_skips) != len(set(observed_skips)) or set(observed_skips) != set(
-        inventory.scanner_skips
+    if (
+        len(observed_skips) != len(set(observed_skips))
+        or observed_skips
+        != sorted(observed_skips, key=lambda item: (item[0].casefold(), *item))
+        or set(observed_skips) != set(inventory.scanner_skips)
     ):
         raise WorkerRefused("scanner_result_invalid")
     if any(reason in ("unreadable", "symlink_policy") for _, reason in observed_skips):
@@ -675,11 +746,22 @@ def _validated_report(
         reason: sum(1 for _, candidate in observed_skips if candidate == reason)
         for reason in {candidate for _, candidate in observed_skips}
     }
+    reported_reason_counts = coverage["skipped_by_reason"]
     if (
-        coverage["files_inspected"] != len(scanned)
+        not all(
+            _non_negative_integer(coverage[key])
+            for key in ("files_inspected", "files_skipped", "files_considered")
+        )
+        or not isinstance(reported_reason_counts, dict)
+        or not all(
+            isinstance(reason, str) and _non_negative_integer(count)
+            for reason, count in reported_reason_counts.items()
+        )
+        or coverage["files_inspected"] != len(scanned)
         or coverage["files_skipped"] != len(observed_skips)
         or coverage["files_considered"] != len(scanned) + len(observed_skips)
-        or coverage["skipped_by_reason"] != reason_counts
+        or reported_reason_counts != reason_counts
+        or not _non_negative_integer(coverage.get("directories_skipped", 0))
         or coverage.get("directories_skipped", 0) != 0
         or coverage.get("skipped_directories", []) != []
     ):
@@ -690,24 +772,86 @@ def _validated_report(
         raise WorkerRefused("scanner_result_invalid")
     has_error = False
     fingerprints: set[str] = set()
+    expected_entropy: list[dict[str, object]] = []
+    expected_suspicious: list[str] = []
+    expected_missing_findings: list[str] = []
     for finding in findings:
         if not isinstance(finding, dict):
             raise WorkerRefused("scanner_result_invalid")
+        kind = finding.get("kind")
         severity = finding.get("severity")
         fingerprint = finding.get("fingerprint")
-        if severity not in ("warning", "error") or not isinstance(fingerprint, str):
+        rule = _FINDING_RULES.get(kind) if isinstance(kind, str) else None
+        if (
+            rule is None
+            or finding.get("rule_id") != rule[0]
+            or severity != rule[1]
+            or finding.get("rule_version") != "1"
+            or not isinstance(finding.get("remediation_hint"), str)
+            or not finding["remediation_hint"]
+            or not isinstance(finding.get("evidence"), dict)
+            or not isinstance(fingerprint, str)
+            or _DIGEST.fullmatch(fingerprint) is None
+        ):
             raise WorkerRefused("scanner_result_invalid")
         if fingerprint in fingerprints:
             raise WorkerRefused("scanner_result_invalid")
         fingerprints.add(fingerprint)
         path = finding.get("path", finding.get("file"))
-        if finding.get("kind") != "missing_file" and path not in files:
+        if not isinstance(path, str) or (kind != "missing_file" and path not in files):
             raise WorkerRefused("scanner_result_invalid")
+        line = finding.get("line")
+        line_required = kind not in {"missing_file", "suspicious_file"}
+        if line_required != (type(line) is int and line >= 1):
+            raise WorkerRefused("scanner_result_invalid")
+        token = finding.get("token")
+        if rule[2] != (
+            isinstance(token, str) and _REDACTED_TOKEN.fullmatch(token) is not None
+        ):
+            raise WorkerRefused("scanner_result_invalid")
+        if line_required and (
+            finding.get("file") != path or finding.get("path") != path
+        ):
+            raise WorkerRefused("scanner_result_invalid")
+        evidence = finding["evidence"]
+        if rule[2] and (
+            not isinstance(evidence.get("token_sha256"), str)
+            or _DIGEST.fullmatch(evidence["token_sha256"]) is None
+        ):
+            raise WorkerRefused("scanner_result_invalid")
+        if kind == "high_entropy":
+            entropy = finding.get("entropy")
+            if (
+                type(entropy) not in (int, float)
+                or not math.isfinite(entropy)
+                or evidence.get("entropy") != entropy
+                or evidence.get("line") != line
+            ):
+                raise WorkerRefused("scanner_result_invalid")
+            expected_entropy.append(
+                {
+                    "entropy": entropy,
+                    "file": path,
+                    "line": line,
+                    "token": token,
+                }
+            )
+        elif kind == "suspicious_file":
+            expected_suspicious.append(path)
+        elif kind == "missing_file":
+            expected_missing_findings.append(path)
         has_error = has_error or severity == "error"
+    expected_missing = _expected_missing(files, bundle.required_files)
     if (
-        not isinstance(parsed["high_entropy_findings"], list)
-        or not isinstance(parsed["suspicious_files"], list)
-        or parsed["missing_files"] != _expected_missing(files, bundle.required_files)
+        parsed["high_entropy_findings"] != expected_entropy
+        or parsed["suspicious_files"]
+        != sorted(expected_suspicious, key=lambda path: (path.casefold(), path))
+        or parsed["missing_files"] != expected_missing
+        or sorted(expected_missing_findings, key=lambda path: (path.casefold(), path))
+        != sorted(
+            (path for path, missing in expected_missing.items() if missing),
+            key=lambda path: (path.casefold(), path),
+        )
         or (execution.returncode == 1) != has_error
     ):
         raise WorkerRefused("scanner_result_invalid")
@@ -894,6 +1038,7 @@ def _execute(
     files = _snapshot_files(snapshot)
     try:
         _admit_protected(files, bundle)
+        _admit_policy_bundle_mirror(files, bundle)
         _admit_suppressions(files, bundle)
         inventory = _coverage_inventory(files, bundle)
     except PolicyAdmissionRefused as error:
@@ -909,9 +1054,21 @@ def _execute(
         with _private_directory(scratch_root) as control:
             wheel_path = control / "repo_sentinel_lite-0.8.1-py3-none-any.whl"
             baseline_path = control / "baseline.json"
+            policy_exclusions_path = control / "policy-exclusions.json"
             report_path = control / "report.json"
             _write_private(wheel_path, artifact)
             _write_private(baseline_path, bundle.baseline)
+            _write_private(
+                policy_exclusions_path,
+                (
+                    json.dumps(
+                        list(inventory.policy_excluded_paths),
+                        ensure_ascii=False,
+                        separators=(",", ":"),
+                    )
+                    + "\n"
+                ).encode("utf-8"),
+            )
             with snapshot_materializer(
                 repository,
                 request.head_oid,
@@ -935,6 +1092,7 @@ def _execute(
                         materialized_root,
                         wheel_path,
                         baseline_path,
+                        policy_exclusions_path,
                         report_path,
                         control,
                         limits.scanner_timeout_seconds,
