@@ -11,6 +11,7 @@ import tempfile
 import unittest
 from collections.abc import Callable, Iterator
 from contextlib import contextmanager
+from dataclasses import replace
 from pathlib import Path
 from unittest.mock import patch
 
@@ -38,7 +39,9 @@ def snapshot_file(
     return SnapshotFile(path, mode, oid, data)
 
 
-def minimum_files() -> tuple[SnapshotFile, ...]:
+def minimum_files(
+    contract: policy.PolicyBundleContract = policy.V1_POLICY_CONTRACT,
+) -> tuple[SnapshotFile, ...]:
     files = [
         snapshot_file("README.md"),
         snapshot_file("LICENSE"),
@@ -54,7 +57,7 @@ def minimum_files() -> tuple[SnapshotFile, ...]:
     existing = {item.path for item in files}
     files.extend(
         snapshot_file(path)
-        for path in policy.MANDATORY_PROTECTED_PATHS
+        for path in contract.mandatory_protected_paths
         if path not in existing
     )
     unique = {item.path: item for item in files}
@@ -94,7 +97,12 @@ def with_file(
 
 
 class Harness:
-    def __init__(self, files: tuple[SnapshotFile, ...] | None = None) -> None:
+    def __init__(
+        self,
+        files: tuple[SnapshotFile, ...] | None = None,
+        *,
+        policy_selector: str = "v1",
+    ) -> None:
         self._temporary = tempfile.TemporaryDirectory(prefix="commit-authority-test-")
         self.root = Path(self._temporary.name)
         self.repository = self.root / "repository"
@@ -103,20 +111,28 @@ class Harness:
         self.artifact = self.root / "scanner.whl"
         for directory in (self.repository, self.scratch):
             directory.mkdir()
-        requested_files = files or minimum_files()
+        self.contract = policy.trusted_policy_contract(policy_selector)
+        requested_files = files or minimum_files(self.contract)
         source_files = tuple(
             item
             for item in requested_files
-            if not item.path.startswith(policy.POLICY_BUNDLE_MIRROR_ROOT)
+            if not item.path.startswith(self.contract.mirror_root)
         )
         self.artifact.write_bytes(b"test wheel bytes")
         self.bundle_digest = policy.build_policy_bundle(
-            source_files, self.policy_root, RUNTIME
+            source_files,
+            self.policy_root,
+            RUNTIME,
+            policy_selector=policy_selector,
         )
-        self.bundle = policy.load_policy_bundle(self.policy_root, self.bundle_digest)
+        self.bundle = policy.load_policy_bundle(
+            self.policy_root,
+            self.bundle_digest,
+            policy_selector=policy_selector,
+        )
         mirror_files = tuple(
             snapshot_file(
-                f"{policy.POLICY_BUNDLE_MIRROR_ROOT}{name}",
+                f"{self.contract.mirror_root}{name}",
                 data,
             )
             for name, data in self.bundle.bundle_files
@@ -131,6 +147,7 @@ class Harness:
             self.repository,
             self.policy_root,
             self.bundle_digest,
+            policy_selector,
             self.artifact,
             self.scratch,
         )
@@ -149,7 +166,7 @@ class Harness:
         mirror = tuple(
             item
             for item in self.files
-            if item.path.startswith(policy.POLICY_BUNDLE_MIRROR_ROOT)
+            if item.path.startswith(self.contract.mirror_root)
         )
         return tuple(sorted((*files, *mirror), key=lambda item: item.path))
 
@@ -252,8 +269,13 @@ class Harness:
 
 
 class HarnessTestCase(unittest.TestCase):
-    def harness(self, files: tuple[SnapshotFile, ...] | None = None) -> Harness:
-        harness = Harness(files)
+    def harness(
+        self,
+        files: tuple[SnapshotFile, ...] | None = None,
+        *,
+        policy_selector: str = "v1",
+    ) -> Harness:
+        harness = Harness(files, policy_selector=policy_selector)
         self.addCleanup(harness.cleanup)
         return harness
 
@@ -263,6 +285,7 @@ class AuthoritySchemaTests(unittest.TestCase):
         fields = inspect.signature(authoritative.CommitAuthoritativeRequest).parameters
         self.assertIn("repository_id", fields)
         self.assertIn("head_oid", fields)
+        self.assertIn("policy_selector", fields)
         self.assertNotIn("pull_number", fields)
         self.assertNotIn("base_oid", fields)
 
@@ -505,6 +528,115 @@ class PolicyBundleMirrorAdmissionTests(HarnessTestCase):
                     authoritative.CommitAuthorityVerdict.POLICY_ADMISSION_FAILURE,
                 )
                 self.assertEqual(result.refusal_code, "policy_bundle_mirror_mismatch")
+                self.assertEqual(harness.materializer_calls, 0)
+
+
+class V2PolicyContractTests(HarnessTestCase):
+    def test_v2_contract_passes_with_its_exact_mirror_and_controls(self) -> None:
+        harness = self.harness(policy_selector="v2")
+
+        result = harness.run()
+
+        self.assertEqual(result.verdict, authoritative.CommitAuthorityVerdict.PASS)
+        self.assertEqual(result.policy_epoch, "repo-sentinel-authority-v2")
+        self.assertEqual(harness.bundle.contract, policy.V2_POLICY_CONTRACT)
+
+    def test_v2_bootstrap_controller_and_namespace_members_are_protected(
+        self,
+    ) -> None:
+        contract = policy.V2_POLICY_CONTRACT
+        original = minimum_files(contract)
+        trusted = self.harness(original, policy_selector="v2")
+        cases = {
+            "bootstrap": replace_file(
+                original,
+                "scripts/repo_sentinel_authority_bootstrap.sh",
+                data=b"changed\n",
+            ),
+            "controller": replace_file(
+                original,
+                "scripts/repo_sentinel_authority_controller.py",
+                data=b"changed\n",
+            ),
+            "controller-alias": with_file(
+                original,
+                snapshot_file("scripts/Repo_Sentinel_Authority_Controller.py"),
+            ),
+            "workflow": with_file(
+                original,
+                snapshot_file(".github/workflows/unreviewed.yml"),
+            ),
+            "action": with_file(
+                original,
+                snapshot_file(".github/actions/unreviewed/action.yml"),
+            ),
+        }
+        for name, mutated in cases.items():
+            with self.subTest(name=name):
+                trusted.snapshot = Snapshot(
+                    HEAD_OID,
+                    "c" * 40,
+                    trusted.with_policy_mirror(mutated),
+                )
+                result = trusted.run()
+                self.assertEqual(
+                    result.verdict,
+                    authoritative.CommitAuthorityVerdict.POLICY_ADMISSION_FAILURE,
+                )
+                self.assertEqual(result.refusal_code, "protected_control_mismatch")
+                self.assertEqual(trusted.materializer_calls, 0)
+
+    def test_v2_rejects_v1_mirror_and_v1_rejects_v2_mirror(self) -> None:
+        for selector, wrong_root in (
+            ("v2", policy.V1_POLICY_CONTRACT.mirror_root),
+            ("v1", policy.V2_POLICY_CONTRACT.mirror_root),
+        ):
+            with self.subTest(selector=selector):
+                harness = self.harness(policy_selector=selector)
+                right_root = harness.contract.mirror_root
+                wrong = tuple(
+                    snapshot_file(
+                        item.path.replace(right_root, wrong_root, 1),
+                        item.data,
+                        item.mode,
+                    )
+                    if item.path.startswith(right_root)
+                    else item
+                    for item in harness.files
+                )
+                harness.snapshot = Snapshot(HEAD_OID, "c" * 40, wrong)
+                result = harness.run()
+                self.assertEqual(
+                    result.verdict,
+                    authoritative.CommitAuthorityVerdict.POLICY_ADMISSION_FAILURE,
+                )
+                self.assertEqual(
+                    result.refusal_code,
+                    "policy_bundle_mirror_mismatch",
+                )
+                self.assertEqual(harness.materializer_calls, 0)
+
+    def test_epoch_path_cross_wiring_and_unknown_selector_fail_closed(self) -> None:
+        for bundle_selector, request_selector, refusal in (
+            ("v1", "v2", "policy_bundle_invalid"),
+            ("v2", "v1", "policy_schema_unsupported"),
+            ("v2", "unknown", "policy_schema_unsupported"),
+        ):
+            with self.subTest(
+                bundle_selector=bundle_selector,
+                request_selector=request_selector,
+            ):
+                harness = self.harness(policy_selector=bundle_selector)
+                harness.request = replace(
+                    harness.request,
+                    policy_selector=request_selector,
+                )
+                result = harness.run()
+                self.assertEqual(
+                    result.verdict,
+                    authoritative.CommitAuthorityVerdict.INFRASTRUCTURE_REFUSAL,
+                )
+                self.assertEqual(result.refusal_code, refusal)
                 self.assertEqual(harness.materializer_calls, 0)
 
 

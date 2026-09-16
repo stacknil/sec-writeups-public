@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import io
+import inspect
 import json
 import os
 import subprocess
@@ -24,6 +25,7 @@ import repo_sentinel_authority_controller as controller  # noqa: E402
 HEAD_OID = "b" * 40
 OTHER_OID = "c" * 40
 EXACT_RUNTIME = controller.RuntimeFacts("cpython", "3.12.3", "Linux", "x86_64")
+EXTERNAL_POLICY_DIGEST = "e" * 64
 
 
 class FakeAcquisitionRefused(ValueError):
@@ -35,6 +37,8 @@ def worker_payload(
     *,
     head_oid: str = HEAD_OID,
     refusal_code: str | None = None,
+    policy_bundle_sha256: str = EXTERNAL_POLICY_DIGEST,
+    policy_epoch: str = controller.EXPECTED_POLICY_EPOCH,
 ) -> dict[str, object]:
     semantic = verdict != "INFRASTRUCTURE_REFUSAL"
     report = semantic and verdict != "POLICY_ADMISSION_FAILURE"
@@ -45,8 +49,8 @@ def worker_payload(
         "files_scanner_skipped": 0,
         "files_total": 3 if semantic else 0,
         "head_oid": head_oid if semantic else "",
-        "policy_bundle_sha256": (controller.POLICY_BUNDLE_SHA256 if semantic else None),
-        "policy_epoch": controller.WORKER_POLICY_EPOCH if semantic else None,
+        "policy_bundle_sha256": policy_bundle_sha256 if semantic else None,
+        "policy_epoch": policy_epoch if semantic else None,
         "policy_schema_version": 1 if semantic else None,
         "protected_manifest_sha256": "b" * 64 if semantic else None,
         "refusal_code": refusal_code,
@@ -75,6 +79,7 @@ class Harness:
         self.scratch = self.root / "scratch"
         self.artifact = self.root / "scanner.whl"
         (self.control / "policy" / "repo-sentinel-authority" / "v1").mkdir(parents=True)
+        (self.control / "policy" / "repo-sentinel-authority" / "v2").mkdir(parents=True)
         self.scratch.mkdir()
         self.artifact.write_bytes(b"fixture")
         self.request = controller.ControllerRequest(
@@ -84,8 +89,8 @@ class Harness:
             controller.REMOTE_URL,
             7,
             HEAD_OID,
-            controller.POLICY_EPOCH,
-            controller.POLICY_BUNDLE_SHA256,
+            controller.POLICY_SELECTOR,
+            EXTERNAL_POLICY_DIGEST,
             self.scratch,
             self.artifact,
         )
@@ -176,8 +181,8 @@ class RequestContractTests(HarnessTestCase):
             str(request.pull_number),
             "--head-oid",
             request.head_oid,
-            "--policy-epoch",
-            request.policy_epoch,
+            "--policy-selector",
+            request.policy_selector,
             "--policy-bundle-sha256",
             request.expected_policy_bundle_sha256,
             "--scratch-root",
@@ -205,6 +210,10 @@ class RequestContractTests(HarnessTestCase):
 
     def test_repository_policy_and_head_inputs_fail_closed(self) -> None:
         harness = self.harness()
+
+        class StringAlias(str):
+            pass
+
         cases = {
             "repository-id": (
                 replace(harness.request, repository_id=1),
@@ -223,12 +232,28 @@ class RequestContractTests(HarnessTestCase):
                 "repository_identity_mismatch",
             ),
             "epoch": (
-                replace(harness.request, policy_epoch="v2"),
+                replace(harness.request, policy_selector="v1"),
                 "unknown_policy_epoch",
             ),
             "digest": (
-                replace(harness.request, expected_policy_bundle_sha256="0" * 64),
-                "policy_bundle_mismatch",
+                replace(harness.request, expected_policy_bundle_sha256="A" * 64),
+                "invalid_request",
+            ),
+            "digest-subclass": (
+                replace(
+                    harness.request,
+                    expected_policy_bundle_sha256=StringAlias(
+                        harness.request.expected_policy_bundle_sha256
+                    ),
+                ),
+                "invalid_request",
+            ),
+            "selector-subclass": (
+                replace(
+                    harness.request,
+                    policy_selector=StringAlias(controller.POLICY_SELECTOR),
+                ),
+                "invalid_request",
             ),
             "head": (
                 replace(harness.request, head_oid="HEAD\n::error::secret"),
@@ -268,11 +293,68 @@ class RequestContractTests(HarnessTestCase):
 
 
 class OrchestrationTests(HarnessTestCase):
+    def test_any_well_formed_external_digest_is_passed_through_unchanged(self) -> None:
+        harness = self.harness()
+        digest = "0" * 64
+        request = replace(
+            harness.request,
+            expected_policy_bundle_sha256=digest,
+        )
+        harness.worker = worker_payload(policy_bundle_sha256=digest)
+
+        result = harness.run(request)
+
+        self.assertEqual(result.controller_outcome.value, "AUTHORITY_RESULT")
+        self.assertEqual(result.policy_bundle_sha256, digest)
+        self.assertEqual(result.worker_result["policy_bundle_sha256"], digest)
+        assert harness.worker_arguments is not None
+        self.assertEqual(harness.worker_arguments[4], digest)
+
+    def test_worker_digest_or_epoch_disagreement_is_not_authority(self) -> None:
+        for worker in (
+            worker_payload(policy_bundle_sha256="0" * 64),
+            worker_payload(policy_epoch="repo-sentinel-authority-v1"),
+        ):
+            with self.subTest(worker=worker):
+                harness = self.harness()
+                harness.worker = worker
+                result = harness.run()
+                self.assertEqual(
+                    result.controller_outcome.value,
+                    "INFRASTRUCTURE_REFUSAL",
+                )
+                self.assertEqual(result.fixed_refusal_code, "worker_result_invalid")
+                self.assertIsNone(result.worker_result)
+                self.assertEqual(
+                    result.policy_bundle_sha256,
+                    harness.request.expected_policy_bundle_sha256,
+                )
+
+    def test_caller_cannot_select_policy_bundle_path(self) -> None:
+        fields = controller.ControllerRequest.__dataclass_fields__
+        self.assertNotIn("policy_bundle_root", fields)
+        self.assertNotIn("policy_path", fields)
+        self.assertEqual(
+            controller.POLICY_BUNDLE_ROOT,
+            "policy/repo-sentinel-authority/v2",
+        )
+        source = inspect.getsource(controller.run_controller)
+        self.assertIn(
+            'control.joinpath(*POLICY_BUNDLE_ROOT.split("/"))',
+            source,
+        )
+        self.assertNotIn(".iterdir()", source)
+
     def test_pass_is_bounded_and_worker_handoff_is_commit_intrinsic(self) -> None:
         harness = self.harness()
         result = harness.run()
 
         self.assertEqual(result.controller_outcome.value, "AUTHORITY_RESULT")
+        self.assertEqual(result.controller_protocol, controller.CONTROLLER_PROTOCOL)
+        self.assertEqual(result.controller_schema_version, 1)
+        self.assertEqual(result.policy_selector, controller.POLICY_SELECTOR)
+        self.assertEqual(result.policy_epoch, controller.EXPECTED_POLICY_EPOCH)
+        self.assertEqual(result.policy_bundle_sha256, EXTERNAL_POLICY_DIGEST)
         self.assertIsNone(result.fixed_refusal_code)
         self.assertEqual(result.worker_result, harness.worker)
         self.assert_worker_semantic_digest(
@@ -287,10 +369,11 @@ class OrchestrationTests(HarnessTestCase):
         self.assertEqual(arguments[1], HEAD_OID)
         self.assertEqual(
             arguments[3],
-            harness.control / "policy" / "repo-sentinel-authority" / "v1",
+            harness.control / "policy" / "repo-sentinel-authority" / "v2",
         )
-        self.assertEqual(arguments[4], controller.POLICY_BUNDLE_SHA256)
-        self.assertEqual(arguments[5], harness.artifact)
+        self.assertEqual(arguments[4], EXTERNAL_POLICY_DIGEST)
+        self.assertEqual(arguments[5], controller.POLICY_SELECTOR)
+        self.assertEqual(arguments[6], harness.artifact)
         self.assertNotIn(harness.request.pull_number, arguments[0:2])
         self.assertEqual(list(harness.scratch.iterdir()), [])
 
@@ -345,7 +428,7 @@ class OrchestrationTests(HarnessTestCase):
             ("policy_schema_version", 1.0),
             ("repository_id", float(controller.REPOSITORY_ID)),
             ("verdict", StringAlias("PASS")),
-            ("policy_epoch", StringAlias(controller.WORKER_POLICY_EPOCH)),
+            ("policy_epoch", StringAlias(controller.EXPECTED_POLICY_EPOCH)),
             ("head_oid", StringAlias(HEAD_OID)),
             ("scanner_distribution", StringAlias("repo-sentinel-lite")),
             ("scanner_version", StringAlias("0.8.1")),
