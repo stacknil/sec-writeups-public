@@ -9573,6 +9573,24 @@
       "rule_version": "1",
       "severity": "warning",
       "token": "<redacted:sha256:96d62e2abd3e>"
+    },
+    {
+      "entropy": 4.0353,
+      "evidence": {
+        "entropy": 4.0353,
+        "line": 6,
+        "token_sha256": "aa3b5b6ccd82e21da8bd6c5c59491f51d9f0a8de079c95f13a0bd684e40c2786"
+      },
+      "file": ".gitattributes",
+      "fingerprint": "f112a4d0fe6f986695ee56d1317ac6f6bd76c0413ba374ac657db34ce34b0d5a",
+      "kind": "high_entropy",
+      "line": 6,
+      "path": ".gitattributes",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:aa3b5b6ccd82>"
     }
   ],
   "generated_at": "2026-09-15T03:40:36Z",
