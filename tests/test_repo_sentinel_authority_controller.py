@@ -329,6 +329,47 @@ class OrchestrationTests(HarnessTestCase):
         harness.worker["head_oid"] = OTHER_OID
         self.assertEqual(harness.run().fixed_refusal_code, "worker_result_invalid")
 
+    def test_worker_identity_fields_require_exact_types(self) -> None:
+        class StringAlias(str):
+            pass
+
+        cases = (
+            ("policy_schema_version", True),
+            ("policy_schema_version", 1.0),
+            ("repository_id", float(controller.REPOSITORY_ID)),
+            ("verdict", StringAlias("PASS")),
+            ("policy_epoch", StringAlias(controller.WORKER_POLICY_EPOCH)),
+            ("head_oid", StringAlias(HEAD_OID)),
+            ("scanner_distribution", StringAlias("repo-sentinel-lite")),
+            ("scanner_version", StringAlias("0.8.1")),
+        )
+        for field, value in cases:
+            with self.subTest(field=field, value=value):
+                harness = self.harness()
+                harness.worker[field] = value
+                harness.worker["semantic_sha256"] = controller._worker_semantic_digest(
+                    harness.worker
+                )
+                result = harness.run()
+                self.assertEqual(
+                    result.controller_outcome.value,
+                    "INFRASTRUCTURE_REFUSAL",
+                )
+                self.assertEqual(result.fixed_refusal_code, "worker_result_invalid")
+                self.assertIsNone(result.worker_result)
+                self.assertIsNone(result.worker_semantic_sha256)
+
+        harness = self.harness()
+        harness.worker = worker_payload(
+            "POLICY_ADMISSION_FAILURE",
+            refusal_code=StringAlias("protected_control_mismatch"),
+        )
+        result = harness.run()
+        self.assertEqual(result.controller_outcome.value, "INFRASTRUCTURE_REFUSAL")
+        self.assertEqual(result.fixed_refusal_code, "worker_result_invalid")
+        self.assertIsNone(result.worker_result)
+        self.assertIsNone(result.worker_semantic_sha256)
+
     def test_worker_semantic_digest_is_recomputed(self) -> None:
         harness = self.harness()
         harness.worker["files_scanned"] = 1

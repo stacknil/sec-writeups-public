@@ -494,9 +494,25 @@ def _validate_worker_result(
         raise ControllerRefused("worker_result_invalid")
     payload = dict(value)
     verdict = payload["verdict"]
+    if type(verdict) is not str:
+        raise ControllerRefused("worker_result_invalid")
     if verdict == "INFRASTRUCTURE_REFUSAL":
         raise ControllerRefused("worker_infrastructure_refusal")
     if verdict not in {"PASS", "SCANNER_FINDING", "POLICY_ADMISSION_FAILURE"}:
+        raise ControllerRefused("worker_result_invalid")
+    identity_strings = (
+        payload["policy_epoch"],
+        payload["head_oid"],
+        payload["scanner_distribution"],
+        payload["scanner_version"],
+    )
+    refusal = payload["refusal_code"]
+    if (
+        type(payload["policy_schema_version"]) is not int
+        or type(payload["repository_id"]) is not int
+        or not all(type(item) is str for item in identity_strings)
+        or (refusal is not None and type(refusal) is not str)
+    ):
         raise ControllerRefused("worker_result_invalid")
     counts = (
         payload["files_total"],
@@ -523,7 +539,6 @@ def _validate_worker_result(
         raise ControllerRefused("worker_result_invalid")
     if not _valid_digest(payload["report_sha256"], optional=True):
         raise ControllerRefused("worker_result_invalid")
-    refusal = payload["refusal_code"]
     if verdict == "POLICY_ADMISSION_FAILURE":
         if refusal not in _POLICY_REFUSALS:
             raise ControllerRefused("worker_result_invalid")
