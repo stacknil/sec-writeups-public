@@ -8134,6 +8134,1445 @@
       "rule_version": "1",
       "severity": "error",
       "token": "<redacted:sha256:e6db4eb24091>"
+    },
+    {
+      "entropy": 4.0353,
+      "evidence": {
+        "entropy": 4.0353,
+        "line": 5,
+        "token_sha256": "a4e1da4f5e47eaadb2f6b28a80be58e97b4b6088ff55226d90c322e8cb7b577f"
+      },
+      "file": ".reposentinel.toml",
+      "fingerprint": "8277981fffa2626b0be876bcadcdbd414e6f191148b1c847bc6a0c088d7366de",
+      "kind": "high_entropy",
+      "line": 5,
+      "path": ".reposentinel.toml",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:a4e1da4f5e47>"
+    },
+    {
+      "entropy": 4.0353,
+      "evidence": {
+        "entropy": 4.0353,
+        "line": 6,
+        "token_sha256": "aa3b5b6ccd82e21da8bd6c5c59491f51d9f0a8de079c95f13a0bd684e40c2786"
+      },
+      "file": ".reposentinel.toml",
+      "fingerprint": "9e7d0206e742cb3bf1aab67e8e84251909aad15d9a52972516ec4fff9b18073b",
+      "kind": "high_entropy",
+      "line": 6,
+      "path": ".reposentinel.toml",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:aa3b5b6ccd82>"
+    },
+    {
+      "entropy": 4.1423,
+      "evidence": {
+        "entropy": 4.1423,
+        "line": 140,
+        "token_sha256": "60b59ea645ff24c792926c33141b739913782f516a7bfc1dd0702d3814dca424"
+      },
+      "file": "docs/design-decisions/repo-sentinel-authority-controller-v1.md",
+      "fingerprint": "ef59c8ca932ed02b102fdad10581239e9c9e94a9445d43e3015f6708b512f018",
+      "kind": "high_entropy",
+      "line": 140,
+      "path": "docs/design-decisions/repo-sentinel-authority-controller-v1.md",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:60b59ea645ff>"
+    },
+    {
+      "entropy": 4.0153,
+      "evidence": {
+        "entropy": 4.0153,
+        "line": 151,
+        "token_sha256": "6dbcab8d4cc8b10135c40b1dafd156f310e7db0f7970ea0e9f33830fc9e805ea"
+      },
+      "file": "docs/design-decisions/repo-sentinel-authority-controller-v1.md",
+      "fingerprint": "871f87c11076e7c9dd22918579bac0b2cb7341a2761a838349fbfc89249e4b57",
+      "kind": "high_entropy",
+      "line": 151,
+      "path": "docs/design-decisions/repo-sentinel-authority-controller-v1.md",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:6dbcab8d4cc8>"
+    },
+    {
+      "entropy": 4.0353,
+      "evidence": {
+        "entropy": 4.0353,
+        "line": 167,
+        "token_sha256": "a4e1da4f5e47eaadb2f6b28a80be58e97b4b6088ff55226d90c322e8cb7b577f"
+      },
+      "file": "docs/design-decisions/repo-sentinel-authority-controller-v1.md",
+      "fingerprint": "0356782f8a04029368fbb1544e89af01e43a8aa7b99f2abfa4a92c2d97131168",
+      "kind": "high_entropy",
+      "line": 167,
+      "path": "docs/design-decisions/repo-sentinel-authority-controller-v1.md",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:a4e1da4f5e47>"
+    },
+    {
+      "entropy": 4.1219,
+      "evidence": {
+        "entropy": 4.1219,
+        "line": 235,
+        "token_sha256": "881bd682f6515036d009b199df823dbc52f51dce9f8c5f90148ed9cde1368984"
+      },
+      "file": "docs/design-decisions/repo-sentinel-authority-controller-v1.md",
+      "fingerprint": "09bb6323eed3817e3cade40cd6c67cc9ec2a2c571717a5efa24ce7f92604219a",
+      "kind": "high_entropy",
+      "line": 235,
+      "path": "docs/design-decisions/repo-sentinel-authority-controller-v1.md",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:881bd682f651>"
+    },
+    {
+      "entropy": 4.0049,
+      "evidence": {
+        "entropy": 4.0049,
+        "line": 237,
+        "token_sha256": "874603f472c93da3a200c2536635499bfda0667ca6353cec09758ae379418136"
+      },
+      "file": "docs/design-decisions/repo-sentinel-authority-controller-v1.md",
+      "fingerprint": "ac5b53a90e0175df9ed20d29dddac461bf49074ec7d888581e5b577f89325386",
+      "kind": "high_entropy",
+      "line": 237,
+      "path": "docs/design-decisions/repo-sentinel-authority-controller-v1.md",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:874603f472c9>"
+    },
+    {
+      "entropy": 4.0353,
+      "evidence": {
+        "entropy": 4.0353,
+        "line": 43,
+        "token_sha256": "aa3b5b6ccd82e21da8bd6c5c59491f51d9f0a8de079c95f13a0bd684e40c2786"
+      },
+      "file": "docs/design-decisions/repo-sentinel-external-policy-root-v1.md",
+      "fingerprint": "5f4dd464c89687cdc410b020df8f30f7a5372d47779801b9666e96d620d1ee56",
+      "kind": "high_entropy",
+      "line": 43,
+      "path": "docs/design-decisions/repo-sentinel-external-policy-root-v1.md",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:aa3b5b6ccd82>"
+    },
+    {
+      "entropy": 4.0373,
+      "evidence": {
+        "entropy": 4.0373,
+        "line": 92,
+        "token_sha256": "4a9ab723a0eb41d16c4d327846b6546467478e68c92da0ad28a36ecd5bf4ca15"
+      },
+      "file": "docs/design-decisions/repo-sentinel-external-policy-root-v1.md",
+      "fingerprint": "471358c0a426f12fd4b71a19204127a19843eea8ff612f88096683e50b17c731",
+      "kind": "high_entropy",
+      "line": 92,
+      "path": "docs/design-decisions/repo-sentinel-external-policy-root-v1.md",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:4a9ab723a0eb>"
+    },
+    {
+      "entropy": 4.0353,
+      "evidence": {
+        "entropy": 4.0353,
+        "line": 295,
+        "token_sha256": "a4e1da4f5e47eaadb2f6b28a80be58e97b4b6088ff55226d90c322e8cb7b577f"
+      },
+      "file": "docs/design-decisions/repo-sentinel-external-policy-root-v1.md",
+      "fingerprint": "cedd4fe83cb192691d9662f059f306470381823f04236af1e31c3d920d7139e8",
+      "kind": "high_entropy",
+      "line": 295,
+      "path": "docs/design-decisions/repo-sentinel-external-policy-root-v1.md",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:a4e1da4f5e47>"
+    },
+    {
+      "entropy": 4.0353,
+      "evidence": {
+        "entropy": 4.0353,
+        "line": 305,
+        "token_sha256": "aa3b5b6ccd82e21da8bd6c5c59491f51d9f0a8de079c95f13a0bd684e40c2786"
+      },
+      "file": "docs/design-decisions/repo-sentinel-external-policy-root-v1.md",
+      "fingerprint": "b07f64ba2c5fb383e7e52d750af4d770e5c68821bfc7cf96cb88d5c329653f51",
+      "kind": "high_entropy",
+      "line": 305,
+      "path": "docs/design-decisions/repo-sentinel-external-policy-root-v1.md",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:aa3b5b6ccd82>"
+    },
+    {
+      "entropy": 4.0153,
+      "evidence": {
+        "entropy": 4.0153,
+        "line": 28,
+        "token_sha256": "6dbcab8d4cc8b10135c40b1dafd156f310e7db0f7970ea0e9f33830fc9e805ea"
+      },
+      "file": "scripts/repo_sentinel_authority_controller.py",
+      "fingerprint": "9978230a465a5a7419ac5b8904275cbf4f00e0c596542ed857efbe8d5a192f74",
+      "kind": "high_entropy",
+      "line": 28,
+      "path": "scripts/repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:6dbcab8d4cc8>"
+    },
+    {
+      "entropy": 4.0438,
+      "evidence": {
+        "entropy": 4.0438,
+        "line": 31,
+        "token_sha256": "3dae57c31c65791e449e62c54c1f3dcc524346cd8c19e8a5ef9168b0c412809c"
+      },
+      "file": "scripts/repo_sentinel_authority_controller.py",
+      "fingerprint": "bada2ec85672ee15eee2a7867e208a6e0cef60517572e444a0813c3d2eb6805a",
+      "kind": "high_entropy",
+      "line": 31,
+      "path": "scripts/repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:3dae57c31c65>"
+    },
+    {
+      "entropy": 4.0049,
+      "evidence": {
+        "entropy": 4.0049,
+        "line": 68,
+        "token_sha256": "a63871bc1b338055afcc069521d993fd0525e0a5352263db23ded4b61ec6ac21"
+      },
+      "file": "scripts/repo_sentinel_authority_controller.py",
+      "fingerprint": "c45b3012937894431ba9f08fae981c89b80ad037595af6e7ff52b85c7aa9acc6",
+      "kind": "high_entropy",
+      "line": 68,
+      "path": "scripts/repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:a63871bc1b33>"
+    },
+    {
+      "entropy": 4.0049,
+      "evidence": {
+        "entropy": 4.0049,
+        "line": 87,
+        "token_sha256": "5a8cfc8588cce1e6360ffeca9bfda8e65881bced2e52fec34151d3bd04d2b90f"
+      },
+      "file": "scripts/repo_sentinel_authority_controller.py",
+      "fingerprint": "003abe1eb4805a2e2309f77be76d77990ccb5ae79158e1ba0f60c760634ad965",
+      "kind": "high_entropy",
+      "line": 87,
+      "path": "scripts/repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:5a8cfc8588cc>"
+    },
+    {
+      "entropy": 4.0049,
+      "evidence": {
+        "entropy": 4.0049,
+        "line": 93,
+        "token_sha256": "7f2b15d4664cc7d6cacfe6f35763ac262eb7062de73387bbe7902738113f350f"
+      },
+      "file": "scripts/repo_sentinel_authority_controller.py",
+      "fingerprint": "a07e40efebb354ada2916d1303e71f3981770d389ab278ab5a62c71606f846b0",
+      "kind": "high_entropy",
+      "line": 93,
+      "path": "scripts/repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:7f2b15d4664c>"
+    },
+    {
+      "entropy": 4.1219,
+      "evidence": {
+        "entropy": 4.1219,
+        "line": 99,
+        "token_sha256": "881bd682f6515036d009b199df823dbc52f51dce9f8c5f90148ed9cde1368984"
+      },
+      "file": "scripts/repo_sentinel_authority_controller.py",
+      "fingerprint": "7a4f0045fa3ccbf679f1fad5d7bf8e1307d9dc653989d0dfb67fef0113b89b32",
+      "kind": "high_entropy",
+      "line": 99,
+      "path": "scripts/repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:881bd682f651>"
+    },
+    {
+      "entropy": 4.0235,
+      "evidence": {
+        "entropy": 4.0235,
+        "line": 102,
+        "token_sha256": "a527b6909f40df9cec2777d8377356d6ede4e6d1714034b38c985367a27d2f9a"
+      },
+      "file": "scripts/repo_sentinel_authority_controller.py",
+      "fingerprint": "0cc652d10c2ea9cf8db2f80b049b3a74c8bf65d157bfcfdd5cf92189d73024ad",
+      "kind": "high_entropy",
+      "line": 102,
+      "path": "scripts/repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:a527b6909f40>"
+    },
+    {
+      "entropy": 4.1423,
+      "evidence": {
+        "entropy": 4.1423,
+        "line": 146,
+        "token_sha256": "60b59ea645ff24c792926c33141b739913782f516a7bfc1dd0702d3814dca424"
+      },
+      "file": "scripts/repo_sentinel_authority_controller.py",
+      "fingerprint": "aace39995234baa6d30b3482431043425118c0cb3f2452be41e13c0b5368d71a",
+      "kind": "high_entropy",
+      "line": 146,
+      "path": "scripts/repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:60b59ea645ff>"
+    },
+    {
+      "entropy": 4.1219,
+      "evidence": {
+        "entropy": 4.1219,
+        "line": 159,
+        "token_sha256": "881bd682f6515036d009b199df823dbc52f51dce9f8c5f90148ed9cde1368984"
+      },
+      "file": "scripts/repo_sentinel_authority_controller.py",
+      "fingerprint": "df1e217fe92be524c358f48028ea93479b934500caec01fe44f36f72a936b634",
+      "kind": "high_entropy",
+      "line": 159,
+      "path": "scripts/repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:881bd682f651>"
+    },
+    {
+      "entropy": 4.0049,
+      "evidence": {
+        "entropy": 4.0049,
+        "line": 161,
+        "token_sha256": "874603f472c93da3a200c2536635499bfda0667ca6353cec09758ae379418136"
+      },
+      "file": "scripts/repo_sentinel_authority_controller.py",
+      "fingerprint": "ce111b01106e1489d010ff0ed242277ee8b4a772a96f5187a57091be8a2e55a2",
+      "kind": "high_entropy",
+      "line": 161,
+      "path": "scripts/repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:874603f472c9>"
+    },
+    {
+      "entropy": 4.0049,
+      "evidence": {
+        "entropy": 4.0049,
+        "line": 395,
+        "token_sha256": "5a8cfc8588cce1e6360ffeca9bfda8e65881bced2e52fec34151d3bd04d2b90f"
+      },
+      "file": "scripts/repo_sentinel_authority_controller.py",
+      "fingerprint": "869d6b9755269e2f99db0a47b9aec74b2b7619670e6fca994da536fe4ea6fb17",
+      "kind": "high_entropy",
+      "line": 395,
+      "path": "scripts/repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:5a8cfc8588cc>"
+    },
+    {
+      "entropy": 4.1423,
+      "evidence": {
+        "entropy": 4.1423,
+        "line": 413,
+        "token_sha256": "60b59ea645ff24c792926c33141b739913782f516a7bfc1dd0702d3814dca424"
+      },
+      "file": "scripts/repo_sentinel_authority_controller.py",
+      "fingerprint": "9601027f1550479a2574d799262a7cc16d193929085f87989c05e7037309152f",
+      "kind": "high_entropy",
+      "line": 413,
+      "path": "scripts/repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:60b59ea645ff>"
+    },
+    {
+      "entropy": 4.1423,
+      "evidence": {
+        "entropy": 4.1423,
+        "line": 427,
+        "token_sha256": "60b59ea645ff24c792926c33141b739913782f516a7bfc1dd0702d3814dca424"
+      },
+      "file": "scripts/repo_sentinel_authority_controller.py",
+      "fingerprint": "e1c42ba037cc75f5b27284ef2450d139dcd717984bf19c76858f49ba2ae493ba",
+      "kind": "high_entropy",
+      "line": 427,
+      "path": "scripts/repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:60b59ea645ff>"
+    },
+    {
+      "entropy": 4.1219,
+      "evidence": {
+        "entropy": 4.1219,
+        "line": 534,
+        "token_sha256": "881bd682f6515036d009b199df823dbc52f51dce9f8c5f90148ed9cde1368984"
+      },
+      "file": "scripts/repo_sentinel_authority_controller.py",
+      "fingerprint": "64040476562b748b5eb1c74bf525c2fcbf269817f5b8b5b6b79b4c244cb0945b",
+      "kind": "high_entropy",
+      "line": 534,
+      "path": "scripts/repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:881bd682f651>"
+    },
+    {
+      "entropy": 4.0235,
+      "evidence": {
+        "entropy": 4.0235,
+        "line": 535,
+        "token_sha256": "a527b6909f40df9cec2777d8377356d6ede4e6d1714034b38c985367a27d2f9a"
+      },
+      "file": "scripts/repo_sentinel_authority_controller.py",
+      "fingerprint": "7490fbaf0f6826341cc2f33ff7b3b1745d2468fc78aebab3be70ce2af0402070",
+      "kind": "high_entropy",
+      "line": 535,
+      "path": "scripts/repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:a527b6909f40>"
+    },
+    {
+      "entropy": 4.0049,
+      "evidence": {
+        "entropy": 4.0049,
+        "line": 537,
+        "token_sha256": "7f2b15d4664cc7d6cacfe6f35763ac262eb7062de73387bbe7902738113f350f"
+      },
+      "file": "scripts/repo_sentinel_authority_controller.py",
+      "fingerprint": "68e5fe63a29a48aa9c9d705e7a036588ff652b5ebbfbe3028f1b312eb5a8d3fc",
+      "kind": "high_entropy",
+      "line": 537,
+      "path": "scripts/repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:7f2b15d4664c>"
+    },
+    {
+      "entropy": 4.1423,
+      "evidence": {
+        "entropy": 4.1423,
+        "line": 561,
+        "token_sha256": "60b59ea645ff24c792926c33141b739913782f516a7bfc1dd0702d3814dca424"
+      },
+      "file": "scripts/repo_sentinel_authority_controller.py",
+      "fingerprint": "2cbbac50dd405d3399c67c98729ce9413368a0934376bce15fcc7104a039c339",
+      "kind": "high_entropy",
+      "line": 561,
+      "path": "scripts/repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:60b59ea645ff>"
+    },
+    {
+      "entropy": 4.1219,
+      "evidence": {
+        "entropy": 4.1219,
+        "line": 561,
+        "token_sha256": "881bd682f6515036d009b199df823dbc52f51dce9f8c5f90148ed9cde1368984"
+      },
+      "file": "scripts/repo_sentinel_authority_controller.py",
+      "fingerprint": "9ea9d740e7ca093ebfde37c607faea5203439d4c5737449e6d52fbd67e927b78",
+      "kind": "high_entropy",
+      "line": 561,
+      "path": "scripts/repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:881bd682f651>"
+    },
+    {
+      "entropy": 4.1423,
+      "evidence": {
+        "entropy": 4.1423,
+        "line": 587,
+        "token_sha256": "60b59ea645ff24c792926c33141b739913782f516a7bfc1dd0702d3814dca424"
+      },
+      "file": "scripts/repo_sentinel_authority_controller.py",
+      "fingerprint": "e0e38b21504411b1c4f38c0ac8b96c91a1923c062dc4ae7cdeb3a8b1ef715e24",
+      "kind": "high_entropy",
+      "line": 587,
+      "path": "scripts/repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:60b59ea645ff>"
+    },
+    {
+      "entropy": 4.1423,
+      "evidence": {
+        "entropy": 4.1423,
+        "line": 588,
+        "token_sha256": "60b59ea645ff24c792926c33141b739913782f516a7bfc1dd0702d3814dca424"
+      },
+      "file": "scripts/repo_sentinel_authority_controller.py",
+      "fingerprint": "8f34787d1ff8c3db25581c141120577948effb7a0fff569e3762b1a14ea70161",
+      "kind": "high_entropy",
+      "line": 588,
+      "path": "scripts/repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:60b59ea645ff>"
+    },
+    {
+      "entropy": 4.1423,
+      "evidence": {
+        "entropy": 4.1423,
+        "line": 616,
+        "token_sha256": "60b59ea645ff24c792926c33141b739913782f516a7bfc1dd0702d3814dca424"
+      },
+      "file": "scripts/repo_sentinel_authority_controller.py",
+      "fingerprint": "76f09eb73337ffa61e9c1609522bc3853850e743986905073fd497c32fe57b2d",
+      "kind": "high_entropy",
+      "line": 616,
+      "path": "scripts/repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:60b59ea645ff>"
+    },
+    {
+      "entropy": 4.1423,
+      "evidence": {
+        "entropy": 4.1423,
+        "line": 688,
+        "token_sha256": "60b59ea645ff24c792926c33141b739913782f516a7bfc1dd0702d3814dca424"
+      },
+      "file": "scripts/repo_sentinel_authority_controller.py",
+      "fingerprint": "2e1a71ca295df48bb5ec7e3345daa323028107cce977cae6ba458f41f2c9cad7",
+      "kind": "high_entropy",
+      "line": 688,
+      "path": "scripts/repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:60b59ea645ff>"
+    },
+    {
+      "entropy": 4.1219,
+      "evidence": {
+        "entropy": 4.1219,
+        "line": 729,
+        "token_sha256": "881bd682f6515036d009b199df823dbc52f51dce9f8c5f90148ed9cde1368984"
+      },
+      "file": "scripts/repo_sentinel_authority_controller.py",
+      "fingerprint": "426fc4feb4553ce6d00ee4b0c579657d83b2c1818f4a41ac6d2200f680d8adea",
+      "kind": "high_entropy",
+      "line": 729,
+      "path": "scripts/repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:881bd682f651>"
+    },
+    {
+      "entropy": 4.0049,
+      "evidence": {
+        "entropy": 4.0049,
+        "line": 734,
+        "token_sha256": "874603f472c93da3a200c2536635499bfda0667ca6353cec09758ae379418136"
+      },
+      "file": "scripts/repo_sentinel_authority_controller.py",
+      "fingerprint": "a4b879eb1c37105589ef001af304330b5ca654e9fcf1aeebf2fcf5692f234222",
+      "kind": "high_entropy",
+      "line": 734,
+      "path": "scripts/repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:874603f472c9>"
+    },
+    {
+      "entropy": 4.0353,
+      "evidence": {
+        "entropy": 4.0353,
+        "line": 171,
+        "token_sha256": "aa3b5b6ccd82e21da8bd6c5c59491f51d9f0a8de079c95f13a0bd684e40c2786"
+      },
+      "file": "scripts/repo_sentinel_policy_bundle.py",
+      "fingerprint": "03694c1416bc095d21bd3a833658f90e80e70f656888226f99785f3c6a530823",
+      "kind": "high_entropy",
+      "line": 171,
+      "path": "scripts/repo_sentinel_policy_bundle.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:aa3b5b6ccd82>"
+    },
+    {
+      "entropy": 4.1219,
+      "evidence": {
+        "entropy": 4.1219,
+        "line": 40,
+        "token_sha256": "881bd682f6515036d009b199df823dbc52f51dce9f8c5f90148ed9cde1368984"
+      },
+      "file": "tests/test_repo_sentinel_authority_controller.py",
+      "fingerprint": "69c0e8afb714313eda50db8938818c0826a50a8af1ac788b469dfdf47193c697",
+      "kind": "high_entropy",
+      "line": 40,
+      "path": "tests/test_repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:881bd682f651>"
+    },
+    {
+      "entropy": 4.0049,
+      "evidence": {
+        "entropy": 4.0049,
+        "line": 46,
+        "token_sha256": "7f2b15d4664cc7d6cacfe6f35763ac262eb7062de73387bbe7902738113f350f"
+      },
+      "file": "tests/test_repo_sentinel_authority_controller.py",
+      "fingerprint": "1bb03b6001e4ac8558e679f7038893e1685c59ffd4f6b9668f4a54a1ff972e50",
+      "kind": "high_entropy",
+      "line": 46,
+      "path": "tests/test_repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:7f2b15d4664c>"
+    },
+    {
+      "entropy": 4.1219,
+      "evidence": {
+        "entropy": 4.1219,
+        "line": 52,
+        "token_sha256": "881bd682f6515036d009b199df823dbc52f51dce9f8c5f90148ed9cde1368984"
+      },
+      "file": "tests/test_repo_sentinel_authority_controller.py",
+      "fingerprint": "2323a9d6cdc15f6730829e1248f676ff2f53cac70f313e5989dfb7532f1e5a06",
+      "kind": "high_entropy",
+      "line": 52,
+      "path": "tests/test_repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:881bd682f651>"
+    },
+    {
+      "entropy": 4.0235,
+      "evidence": {
+        "entropy": 4.0235,
+        "line": 55,
+        "token_sha256": "a527b6909f40df9cec2777d8377356d6ede4e6d1714034b38c985367a27d2f9a"
+      },
+      "file": "tests/test_repo_sentinel_authority_controller.py",
+      "fingerprint": "661fa9d5cf32777d58d2a450e2c17874a1aa9c8b5d6e7d65cb8300f38e032705",
+      "kind": "high_entropy",
+      "line": 55,
+      "path": "tests/test_repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:a527b6909f40>"
+    },
+    {
+      "entropy": 4.0049,
+      "evidence": {
+        "entropy": 4.0049,
+        "line": 165,
+        "token_sha256": "874603f472c93da3a200c2536635499bfda0667ca6353cec09758ae379418136"
+      },
+      "file": "tests/test_repo_sentinel_authority_controller.py",
+      "fingerprint": "bbfc4eb5058027f4f454057bee9c7a5648f827505c131653e8384f3eb79b893a",
+      "kind": "high_entropy",
+      "line": 165,
+      "path": "tests/test_repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:874603f472c9>"
+    },
+    {
+      "entropy": 4.0049,
+      "evidence": {
+        "entropy": 4.0049,
+        "line": 186,
+        "token_sha256": "5a8cfc8588cce1e6360ffeca9bfda8e65881bced2e52fec34151d3bd04d2b90f"
+      },
+      "file": "tests/test_repo_sentinel_authority_controller.py",
+      "fingerprint": "82ebea37a5f1e2fbbc10000203fd201243a8d422d782c665a14efaa7fd8c2787",
+      "kind": "high_entropy",
+      "line": 186,
+      "path": "tests/test_repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:5a8cfc8588cc>"
+    },
+    {
+      "entropy": 4.1423,
+      "evidence": {
+        "entropy": 4.1423,
+        "line": 187,
+        "token_sha256": "60b59ea645ff24c792926c33141b739913782f516a7bfc1dd0702d3814dca424"
+      },
+      "file": "tests/test_repo_sentinel_authority_controller.py",
+      "fingerprint": "e8344f815bab0e2d54eac8c90fea5713af3310f0a51552796cbbbba58b4fb59c",
+      "kind": "high_entropy",
+      "line": 187,
+      "path": "tests/test_repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:60b59ea645ff>"
+    },
+    {
+      "entropy": 4.2151,
+      "evidence": {
+        "entropy": 4.2151,
+        "line": 239,
+        "token_sha256": "6c9ee1764695b6d0dcb4fd77d2ca3a0f0caf85bef480001d877ff55cbcabbc1d"
+      },
+      "file": "tests/test_repo_sentinel_authority_controller.py",
+      "fingerprint": "9e2c7a2cf963ce3e20f9a885827eea8ca3bfaa9d17a28dc3c1cc4eaceff222b7",
+      "kind": "high_entropy",
+      "line": 239,
+      "path": "tests/test_repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:6c9ee1764695>"
+    },
+    {
+      "entropy": 4.1423,
+      "evidence": {
+        "entropy": 4.1423,
+        "line": 246,
+        "token_sha256": "60b59ea645ff24c792926c33141b739913782f516a7bfc1dd0702d3814dca424"
+      },
+      "file": "tests/test_repo_sentinel_authority_controller.py",
+      "fingerprint": "b43d53b270b2b47b691bff6f66ccfd85b40ff72d4a135dab3fae01e9dc8759f3",
+      "kind": "high_entropy",
+      "line": 246,
+      "path": "tests/test_repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:60b59ea645ff>"
+    },
+    {
+      "entropy": 4.0505,
+      "evidence": {
+        "entropy": 4.0505,
+        "line": 296,
+        "token_sha256": "788cbad0dbfd24e29cc53273bbf0ccf0f0026ff97655e5309620cca5cff12fd8"
+      },
+      "file": "tests/test_repo_sentinel_authority_controller.py",
+      "fingerprint": "af94d0d0e89da6c7f7a320eb22106494a043bb9e19b81d0f55e8db0b8f48dce2",
+      "kind": "high_entropy",
+      "line": 296,
+      "path": "tests/test_repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:788cbad0dbfd>"
+    },
+    {
+      "entropy": 4.1219,
+      "evidence": {
+        "entropy": 4.1219,
+        "line": 308,
+        "token_sha256": "881bd682f6515036d009b199df823dbc52f51dce9f8c5f90148ed9cde1368984"
+      },
+      "file": "tests/test_repo_sentinel_authority_controller.py",
+      "fingerprint": "835e8577913fc2b520e5b49892c97312ada735d07a1166594e0c2c010169f764",
+      "kind": "high_entropy",
+      "line": 308,
+      "path": "tests/test_repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:881bd682f651>"
+    },
+    {
+      "entropy": 4.1219,
+      "evidence": {
+        "entropy": 4.1219,
+        "line": 309,
+        "token_sha256": "881bd682f6515036d009b199df823dbc52f51dce9f8c5f90148ed9cde1368984"
+      },
+      "file": "tests/test_repo_sentinel_authority_controller.py",
+      "fingerprint": "8326e08bb87eca9d7000344035df5b16da477d1ed6e17d8c736856c187e5a30c",
+      "kind": "high_entropy",
+      "line": 309,
+      "path": "tests/test_repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:881bd682f651>"
+    },
+    {
+      "entropy": 4.2018,
+      "evidence": {
+        "entropy": 4.2018,
+        "line": 315,
+        "token_sha256": "a9f908a414d96dacb1efb3c4e587a483ccef5f0e0e2a2f8c4ab4a64c2508437e"
+      },
+      "file": "tests/test_repo_sentinel_authority_controller.py",
+      "fingerprint": "63fdeed73806fb03f407344fae18eaa294ba0de77d582ca8767272a339413d7d",
+      "kind": "high_entropy",
+      "line": 315,
+      "path": "tests/test_repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:a9f908a414d9>"
+    },
+    {
+      "entropy": 4.1219,
+      "evidence": {
+        "entropy": 4.1219,
+        "line": 329,
+        "token_sha256": "881bd682f6515036d009b199df823dbc52f51dce9f8c5f90148ed9cde1368984"
+      },
+      "file": "tests/test_repo_sentinel_authority_controller.py",
+      "fingerprint": "0d63502611565c5d526bb01d2f29e828c22e43be1f53d5bb9a3648446c7b15a1",
+      "kind": "high_entropy",
+      "line": 329,
+      "path": "tests/test_repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:881bd682f651>"
+    },
+    {
+      "entropy": 4.1423,
+      "evidence": {
+        "entropy": 4.1423,
+        "line": 330,
+        "token_sha256": "60b59ea645ff24c792926c33141b739913782f516a7bfc1dd0702d3814dca424"
+      },
+      "file": "tests/test_repo_sentinel_authority_controller.py",
+      "fingerprint": "daba36972dd17ae9d189826f6d6d8cd2ed58f1aa0cacec64f848a9a8039f1f29",
+      "kind": "high_entropy",
+      "line": 330,
+      "path": "tests/test_repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:60b59ea645ff>"
+    },
+    {
+      "entropy": 4.0438,
+      "evidence": {
+        "entropy": 4.0438,
+        "line": 339,
+        "token_sha256": "3dae57c31c65791e449e62c54c1f3dcc524346cd8c19e8a5ef9168b0c412809c"
+      },
+      "file": "tests/test_repo_sentinel_authority_controller.py",
+      "fingerprint": "24f7aa94c6a98fef2de66e66adebc52abad61bc62c5147f35fafe58f0e662096",
+      "kind": "high_entropy",
+      "line": 339,
+      "path": "tests/test_repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:3dae57c31c65>"
+    },
+    {
+      "entropy": 4.1219,
+      "evidence": {
+        "entropy": 4.1219,
+        "line": 357,
+        "token_sha256": "881bd682f6515036d009b199df823dbc52f51dce9f8c5f90148ed9cde1368984"
+      },
+      "file": "tests/test_repo_sentinel_authority_controller.py",
+      "fingerprint": "5aa76f9067965e1dd23779db30a142a74623faa4c5d429301f9a181fd8646bba",
+      "kind": "high_entropy",
+      "line": 357,
+      "path": "tests/test_repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:881bd682f651>"
+    },
+    {
+      "entropy": 4.0251,
+      "evidence": {
+        "entropy": 4.0251,
+        "line": 392,
+        "token_sha256": "e9780fdca5c88c86e9ee5cd2a7020c0c554b934811940734f1341713dd74d726"
+      },
+      "file": "tests/test_repo_sentinel_authority_controller.py",
+      "fingerprint": "6c1ae8f5c1aa714e0c3ce8b6f89c8f835ee51af781852bcd661bda39973766c4",
+      "kind": "high_entropy",
+      "line": 392,
+      "path": "tests/test_repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:e9780fdca5c8>"
+    },
+    {
+      "entropy": 4.0273,
+      "evidence": {
+        "entropy": 4.0273,
+        "line": 562,
+        "token_sha256": "c7fa791b64d78ad531d2f624044b425d020c5954826bf4a5ad7f57de7fe4e1a2"
+      },
+      "file": "tests/test_repo_sentinel_authority_controller.py",
+      "fingerprint": "e94bf61f47f8263e05d4e82ee11c453fa3164b8400d1b918ad3458e946675b8b",
+      "kind": "high_entropy",
+      "line": 562,
+      "path": "tests/test_repo_sentinel_authority_controller.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:c7fa791b64d7>"
+    },
+    {
+      "entropy": 4.0323,
+      "evidence": {
+        "entropy": 4.0323,
+        "line": 567,
+        "token_sha256": "614b07cf3f6078e0a6ca69e42e4ab35a14354f257cbb58bad1ab0a2255bf071a"
+      },
+      "file": "tests/test_repo_sentinel_commit_authoritative.py",
+      "fingerprint": "cf2576403a797045e6725e0c4495bcc796308304f7b4b18f1fa714566d06ef90",
+      "kind": "high_entropy",
+      "line": 567,
+      "path": "tests/test_repo_sentinel_commit_authoritative.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:614b07cf3f60>"
+    },
+    {
+      "entropy": 4.0049,
+      "evidence": {
+        "entropy": 4.0049,
+        "line": 181,
+        "token_sha256": "a63871bc1b338055afcc069521d993fd0525e0a5352263db23ded4b61ec6ac21"
+      },
+      "file": "tests/test_repo_sentinel_policy_contracts.py",
+      "fingerprint": "229c8ec5d02ee45cbe7b13c07c0545df2b0d4f53a9a27e24e28a644ae6b0767d",
+      "kind": "high_entropy",
+      "line": 181,
+      "path": "tests/test_repo_sentinel_policy_contracts.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:a63871bc1b33>"
+    },
+    {
+      "entropy": 4.0049,
+      "evidence": {
+        "entropy": 4.0049,
+        "line": 187,
+        "token_sha256": "a63871bc1b338055afcc069521d993fd0525e0a5352263db23ded4b61ec6ac21"
+      },
+      "file": "tests/test_repo_sentinel_policy_contracts.py",
+      "fingerprint": "56822c7515f1b6dab7c2c49f455e28e899f398f66248760ffb1c3fe4a558397b",
+      "kind": "high_entropy",
+      "line": 187,
+      "path": "tests/test_repo_sentinel_policy_contracts.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:a63871bc1b33>"
+    },
+    {
+      "entropy": 4.0438,
+      "evidence": {
+        "entropy": 4.0438,
+        "line": 263,
+        "token_sha256": "3dae57c31c65791e449e62c54c1f3dcc524346cd8c19e8a5ef9168b0c412809c"
+      },
+      "file": "tests/test_repo_sentinel_policy_contracts.py",
+      "fingerprint": "d1428531abab7714fb226f86b2d45e22a51ef54809961b83380593f72da661b5",
+      "kind": "high_entropy",
+      "line": 263,
+      "path": "tests/test_repo_sentinel_policy_contracts.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:3dae57c31c65>"
+    },
+    {
+      "entropy": 4.0685,
+      "evidence": {
+        "entropy": 4.0685,
+        "line": 265,
+        "token_sha256": "1a4dc4210ed198222315b422f420f49d662796027eedb643942557a0c3b1e699"
+      },
+      "file": "tests/test_repo_sentinel_policy_contracts.py",
+      "fingerprint": "1d9dd522adc035f06abf2edc3d052222920da1796a4f5a950f140e3aea921dbd",
+      "kind": "high_entropy",
+      "line": 265,
+      "path": "tests/test_repo_sentinel_policy_contracts.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:1a4dc4210ed1>"
+    },
+    {
+      "entropy": 4.1219,
+      "evidence": {
+        "entropy": 4.1219,
+        "line": 269,
+        "token_sha256": "127c59b80ce68fe3f1893abb25940b66c3460324edeaa40643f87efb0181c28d"
+      },
+      "file": "tests/test_repo_sentinel_policy_contracts.py",
+      "fingerprint": "0f644a3b3b1fd872012f2412ff8b312330e7288bd31c2076caf1cd35be760319",
+      "kind": "high_entropy",
+      "line": 269,
+      "path": "tests/test_repo_sentinel_policy_contracts.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:127c59b80ce6>"
+    },
+    {
+      "entropy": 4.1423,
+      "evidence": {
+        "entropy": 4.1423,
+        "line": 270,
+        "token_sha256": "01a64cd0117a8e03ed044bacc9cdee12d1e20433e2d9a3bf2563800717e21ea5"
+      },
+      "file": "tests/test_repo_sentinel_policy_contracts.py",
+      "fingerprint": "bd3a55fe1d89dc5f29bd2641adff12a629e5a539838611f12c54cd33ae5d295e",
+      "kind": "high_entropy",
+      "line": 270,
+      "path": "tests/test_repo_sentinel_policy_contracts.py",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:01a64cd0117a>"
+    },
+    {
+      "evidence": {
+        "line": 193,
+        "pattern": "assignment to password",
+        "token_sha256": "ee59b1ea6703655277ccc3f02187edae47bdfb2e2583c8310867c26f0482c596"
+      },
+      "file": "notes/00-foundations/hydra.md",
+      "fingerprint": "460da1fa00978cc74d97a531bcadaff941548f619b3d2eada1efa6ca5aef2a86",
+      "kind": "assignment_context",
+      "line": 193,
+      "path": "notes/00-foundations/hydra.md",
+      "remediation_hint": "Confirm whether the value is synthetic. Prefer placeholders, environment variables, or an allowlist entry for reviewed fixtures.",
+      "rule_id": "secret.assignment_context",
+      "rule_version": "1",
+      "severity": "warning",
+      "token": "<redacted:sha256:ee59b1ea6703>"
+    },
+    {
+      "evidence": {
+        "line": 404,
+        "pattern": "assignment to password",
+        "token_sha256": "ee59b1ea6703655277ccc3f02187edae47bdfb2e2583c8310867c26f0482c596"
+      },
+      "file": "notes/00-foundations/hydra.md",
+      "fingerprint": "d8a2d585f3d4884ec9dbf1365501517c37cbbbae9bd3683061786af3baf99599",
+      "kind": "assignment_context",
+      "line": 404,
+      "path": "notes/00-foundations/hydra.md",
+      "remediation_hint": "Confirm whether the value is synthetic. Prefer placeholders, environment variables, or an allowlist entry for reviewed fixtures.",
+      "rule_id": "secret.assignment_context",
+      "rule_version": "1",
+      "severity": "warning",
+      "token": "<redacted:sha256:ee59b1ea6703>"
+    },
+    {
+      "evidence": {
+        "line": 410,
+        "pattern": "assignment to password",
+        "token_sha256": "ee59b1ea6703655277ccc3f02187edae47bdfb2e2583c8310867c26f0482c596"
+      },
+      "file": "notes/00-foundations/hydra.md",
+      "fingerprint": "9634eacb4684219b56d82653f4c897739ff34c9ab9947c702bf355b452f814ec",
+      "kind": "assignment_context",
+      "line": 410,
+      "path": "notes/00-foundations/hydra.md",
+      "remediation_hint": "Confirm whether the value is synthetic. Prefer placeholders, environment variables, or an allowlist entry for reviewed fixtures.",
+      "rule_id": "secret.assignment_context",
+      "rule_version": "1",
+      "severity": "warning",
+      "token": "<redacted:sha256:ee59b1ea6703>"
+    },
+    {
+      "evidence": {
+        "line": 106,
+        "pattern": "assignment to password",
+        "token_sha256": "fea7192489168e1eb63a4fec60186a31cbb5470fe06cfe5d634fcfe7f99869c3"
+      },
+      "file": "notes/10-web/20-authentication/authentication-bypass.md",
+      "fingerprint": "e6dd6b961044a1142f2e5b10c0cf71e88fbb023e500c42a8ade888b90b0719ff",
+      "kind": "assignment_context",
+      "line": 106,
+      "path": "notes/10-web/20-authentication/authentication-bypass.md",
+      "remediation_hint": "Confirm whether the value is synthetic. Prefer placeholders, environment variables, or an allowlist entry for reviewed fixtures.",
+      "rule_id": "secret.assignment_context",
+      "rule_version": "1",
+      "severity": "warning",
+      "token": "<redacted:sha256:fea719248916>"
+    },
+    {
+      "evidence": {
+        "line": 336,
+        "pattern": "assignment to password",
+        "token_sha256": "fea7192489168e1eb63a4fec60186a31cbb5470fe06cfe5d634fcfe7f99869c3"
+      },
+      "file": "notes/10-web/20-authentication/authentication-bypass.md",
+      "fingerprint": "413eae5b45273fb95ac65c2100265e543146fb5c449280e7dcd4438c9c74b080",
+      "kind": "assignment_context",
+      "line": 336,
+      "path": "notes/10-web/20-authentication/authentication-bypass.md",
+      "remediation_hint": "Confirm whether the value is synthetic. Prefer placeholders, environment variables, or an allowlist entry for reviewed fixtures.",
+      "rule_id": "secret.assignment_context",
+      "rule_version": "1",
+      "severity": "warning",
+      "token": "<redacted:sha256:fea719248916>"
+    },
+    {
+      "evidence": {
+        "line": 279,
+        "pattern": "assignment to password",
+        "token_sha256": "4bd89417201d6926b7722102d103637a9963e6e0715a958ff0afd939d218dcbd"
+      },
+      "file": "notes/10-web/intro-to-iot-pentesting.md",
+      "fingerprint": "8eaaa2a4b861c31850ccce02b9c12c605b682fa416146d91ba298553a1a034c2",
+      "kind": "assignment_context",
+      "line": 279,
+      "path": "notes/10-web/intro-to-iot-pentesting.md",
+      "remediation_hint": "Confirm whether the value is synthetic. Prefer placeholders, environment variables, or an allowlist entry for reviewed fixtures.",
+      "rule_id": "secret.assignment_context",
+      "rule_version": "1",
+      "severity": "warning",
+      "token": "<redacted:sha256:4bd89417201d>"
+    },
+    {
+      "evidence": {
+        "line": 77,
+        "pattern": "assignment to password",
+        "token_sha256": "4834e5b26a861e39f4fc2b01f7c2c913bbb5ab1ae01c3a48f3c6011cce5975f4"
+      },
+      "file": "notes/10-web/sqlmap-the-basics.md",
+      "fingerprint": "ea9f621a91032cc44f93e498dae9aedbec59136fe6fc53bad3037d7d3dd42c5c",
+      "kind": "assignment_context",
+      "line": 77,
+      "path": "notes/10-web/sqlmap-the-basics.md",
+      "remediation_hint": "Confirm whether the value is synthetic. Prefer placeholders, environment variables, or an allowlist entry for reviewed fixtures.",
+      "rule_id": "secret.assignment_context",
+      "rule_version": "1",
+      "severity": "warning",
+      "token": "<redacted:sha256:4834e5b26a86>"
+    },
+    {
+      "evidence": {
+        "line": 149,
+        "pattern": "assignment to password",
+        "token_sha256": "bf1f521268a702e8878df0164d0739fb3c56104c6d7075952e2ea74063333e76"
+      },
+      "file": "TryHackMe/00-foundations/learning-meta/become-a-hacker.md",
+      "fingerprint": "43569acc61337300812fa0b257191354a69cbf2c4076260e70739a1d350135fe",
+      "kind": "assignment_context",
+      "line": 149,
+      "path": "TryHackMe/00-foundations/learning-meta/become-a-hacker.md",
+      "remediation_hint": "Confirm whether the value is synthetic. Prefer placeholders, environment variables, or an allowlist entry for reviewed fixtures.",
+      "rule_id": "secret.assignment_context",
+      "rule_version": "1",
+      "severity": "warning",
+      "token": "<redacted:sha256:bf1f521268a7>"
+    },
+    {
+      "evidence": {
+        "line": 159,
+        "pattern": "assignment to password",
+        "token_sha256": "bf1f521268a702e8878df0164d0739fb3c56104c6d7075952e2ea74063333e76"
+      },
+      "file": "TryHackMe/00-foundations/learning-meta/become-a-hacker.md",
+      "fingerprint": "b7c0e34920b6ff8b3c61fd17a1ff8e80bfa5d5541b726cc563bf4757677a9485",
+      "kind": "assignment_context",
+      "line": 159,
+      "path": "TryHackMe/00-foundations/learning-meta/become-a-hacker.md",
+      "remediation_hint": "Confirm whether the value is synthetic. Prefer placeholders, environment variables, or an allowlist entry for reviewed fixtures.",
+      "rule_id": "secret.assignment_context",
+      "rule_version": "1",
+      "severity": "warning",
+      "token": "<redacted:sha256:bf1f521268a7>"
+    },
+    {
+      "evidence": {
+        "line": 550,
+        "pattern": "assignment to Password",
+        "token_sha256": "4bd89417201d6926b7722102d103637a9963e6e0715a958ff0afd939d218dcbd"
+      },
+      "file": "TryHackMe/00-foundations/writing-pentest-reports.md",
+      "fingerprint": "dc42efa6d9a9d6182f9e593c8f0718012ce5062ac8c85bc53263c1ad51eb7216",
+      "kind": "assignment_context",
+      "line": 550,
+      "path": "TryHackMe/00-foundations/writing-pentest-reports.md",
+      "remediation_hint": "Confirm whether the value is synthetic. Prefer placeholders, environment variables, or an allowlist entry for reviewed fixtures.",
+      "rule_id": "secret.assignment_context",
+      "rule_version": "1",
+      "severity": "warning",
+      "token": "<redacted:sha256:4bd89417201d>"
+    },
+    {
+      "evidence": {
+        "line": 386,
+        "pattern": "assignment to password",
+        "token_sha256": "c44566f0c976231fcdea01d86c4711d668f67872de4094c2c65745768f11b91b"
+      },
+      "file": "TryHackMe/10-web/how-the-web-works/02-HTTP-in-detailed.md",
+      "fingerprint": "03b9b4345c510ebf0976096ead6f73a874511cbbacc44c95a7670722c5ef8441",
+      "kind": "assignment_context",
+      "line": 386,
+      "path": "TryHackMe/10-web/how-the-web-works/02-HTTP-in-detailed.md",
+      "remediation_hint": "Confirm whether the value is synthetic. Prefer placeholders, environment variables, or an allowlist entry for reviewed fixtures.",
+      "rule_id": "secret.assignment_context",
+      "rule_version": "1",
+      "severity": "warning",
+      "token": "<redacted:sha256:c44566f0c976>"
+    },
+    {
+      "evidence": {
+        "line": 66,
+        "pattern": "assignment to password",
+        "token_sha256": "5f2353e51b0d82ceeeb7bbaa57dc6d09a5ddc09c0f9889aae107bdcda92292ef"
+      },
+      "file": "TryHackMe/20-linux/linux-fundamentals/partIII.md",
+      "fingerprint": "189a8502bacb62ac3c23909f6804cb5d7c0994ffc757f42c8957abc696d2ec61",
+      "kind": "assignment_context",
+      "line": 66,
+      "path": "TryHackMe/20-linux/linux-fundamentals/partIII.md",
+      "remediation_hint": "Confirm whether the value is synthetic. Prefer placeholders, environment variables, or an allowlist entry for reviewed fixtures.",
+      "rule_id": "secret.assignment_context",
+      "rule_version": "1",
+      "severity": "warning",
+      "token": "<redacted:sha256:5f2353e51b0d>"
+    },
+    {
+      "evidence": {
+        "line": 59,
+        "pattern": "assignment to token",
+        "token_sha256": "1931abb1cda2dfc0e7a52acc40495a8bee8a6d15ec7dd404a103d02c098c01d0"
+      },
+      "file": "TryHackMe/90-events/love-at-first-breach-2026/hidden-deep-into-my-heart.md",
+      "fingerprint": "12f5e1841bf9dbbda3e6ebdff34960bc276009102e57ba0833c3b527ad3f82a0",
+      "kind": "assignment_context",
+      "line": 59,
+      "path": "TryHackMe/90-events/love-at-first-breach-2026/hidden-deep-into-my-heart.md",
+      "remediation_hint": "Confirm whether the value is synthetic. Prefer placeholders, environment variables, or an allowlist entry for reviewed fixtures.",
+      "rule_id": "secret.assignment_context",
+      "rule_version": "1",
+      "severity": "warning",
+      "token": "<redacted:sha256:1931abb1cda2>"
+    },
+    {
+      "evidence": {
+        "line": 89,
+        "pattern": "assignment to password",
+        "token_sha256": "d1213a984e33f6e2983e7bd9cc389d71719d5452fc37eb54d973dc6b0ab29c02"
+      },
+      "file": "TryHackMe/90-events/love-at-first-breach-2026/hidden-deep-into-my-heart.md",
+      "fingerprint": "f1630b8293d0807308a14e79f48aa39719ddcce53e35ae1b5698a4ba906f78c2",
+      "kind": "assignment_context",
+      "line": 89,
+      "path": "TryHackMe/90-events/love-at-first-breach-2026/hidden-deep-into-my-heart.md",
+      "remediation_hint": "Confirm whether the value is synthetic. Prefer placeholders, environment variables, or an allowlist entry for reviewed fixtures.",
+      "rule_id": "secret.assignment_context",
+      "rule_version": "1",
+      "severity": "warning",
+      "token": "<redacted:sha256:d1213a984e33>"
+    },
+    {
+      "evidence": {
+        "line": 120,
+        "pattern": "assignment to Token",
+        "token_sha256": "66d4f7b7ebfeaf9c59da3cdff30e41637c76a7e4fcbccd2e254eac2e1238d592"
+      },
+      "file": "TryHackMe/90-events/love-at-first-breach-2026/valenfind.md",
+      "fingerprint": "b62fde08d3dd24674165ba76c9ada03f753337f819d5469c75db9e5d3420f4b1",
+      "kind": "assignment_context",
+      "line": 120,
+      "path": "TryHackMe/90-events/love-at-first-breach-2026/valenfind.md",
+      "remediation_hint": "Confirm whether the value is synthetic. Prefer placeholders, environment variables, or an allowlist entry for reviewed fixtures.",
+      "rule_id": "secret.assignment_context",
+      "rule_version": "1",
+      "severity": "warning",
+      "token": "<redacted:sha256:66d4f7b7ebfe>"
+    },
+    {
+      "evidence": {
+        "line": 135,
+        "pattern": "assignment to Token",
+        "token_sha256": "ed3ee06cd1f9ae42a18e9f35a8e4e6269fc70b7abe1d38b59823d17047c28245"
+      },
+      "file": "TryHackMe/90-events/love-at-first-breach-2026/valenfind.md",
+      "fingerprint": "7f1b2322d86206524b29bdb70dd003feb3ca16750910d7599863889874fa19ea",
+      "kind": "assignment_context",
+      "line": 135,
+      "path": "TryHackMe/90-events/love-at-first-breach-2026/valenfind.md",
+      "remediation_hint": "Confirm whether the value is synthetic. Prefer placeholders, environment variables, or an allowlist entry for reviewed fixtures.",
+      "rule_id": "secret.assignment_context",
+      "rule_version": "1",
+      "severity": "warning",
+      "token": "<redacted:sha256:ed3ee06cd1f9>"
+    },
+    {
+      "evidence": {
+        "line": 203,
+        "pattern": "assignment to token",
+        "token_sha256": "3cc7a7c0f77b00f022dfb2a7f48cfacfa0e3dd4518f3a6fa4e4e2a9690ee9647"
+      },
+      "file": "TryHackMe/90-events/love-at-first-breach-2026/valenfind.md",
+      "fingerprint": "d0e151d367891cf20d2bcde2992f06774ea7ef3af98689de0efd7bedbb194094",
+      "kind": "assignment_context",
+      "line": 203,
+      "path": "TryHackMe/90-events/love-at-first-breach-2026/valenfind.md",
+      "remediation_hint": "Confirm whether the value is synthetic. Prefer placeholders, environment variables, or an allowlist entry for reviewed fixtures.",
+      "rule_id": "secret.assignment_context",
+      "rule_version": "1",
+      "severity": "warning",
+      "token": "<redacted:sha256:3cc7a7c0f77b>"
+    },
+    {
+      "evidence": {
+        "line": 211,
+        "pattern": "assignment to secret",
+        "token_sha256": "40e62b329ef3c48a337b896ffde89601926e2748fe105b192c65dce447cf2476"
+      },
+      "file": "TryHackMe/90-events/love-at-first-breach-2026/valenfind.md",
+      "fingerprint": "8c1691190a1a0ffb27aaaae1310695a047c38f918b2cec999fdfb57f0fa405a9",
+      "kind": "assignment_context",
+      "line": 211,
+      "path": "TryHackMe/90-events/love-at-first-breach-2026/valenfind.md",
+      "remediation_hint": "Confirm whether the value is synthetic. Prefer placeholders, environment variables, or an allowlist entry for reviewed fixtures.",
+      "rule_id": "secret.assignment_context",
+      "rule_version": "1",
+      "severity": "warning",
+      "token": "<redacted:sha256:40e62b329ef3>"
+    },
+    {
+      "evidence": {
+        "line": 113,
+        "pattern": "assignment to Password",
+        "token_sha256": "96d62e2abd3e42de5f50330fb8efc4c5599835278077b21e9aa0b33c1df07a1c"
+      },
+      "file": "TryHackMe/90-events/thm-aoc-2025/Day 17 - CyberChef - Hoperation Save McSkidy.md",
+      "fingerprint": "834441ee69b33d317caa28d8325caac7d794dead7098aa37a825e3b42f9d0cc6",
+      "kind": "assignment_context",
+      "line": 113,
+      "path": "TryHackMe/90-events/thm-aoc-2025/Day 17 - CyberChef - Hoperation Save McSkidy.md",
+      "remediation_hint": "Confirm whether the value is synthetic. Prefer placeholders, environment variables, or an allowlist entry for reviewed fixtures.",
+      "rule_id": "secret.assignment_context",
+      "rule_version": "1",
+      "severity": "warning",
+      "token": "<redacted:sha256:96d62e2abd3e>"
     }
   ],
   "generated_at": "2026-09-15T03:40:36Z",
