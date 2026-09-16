@@ -1,0 +1,91 @@
+{
+  "approved_exclusions": [
+    {
+      "mode": "100644",
+      "path": ".reposentinel-baseline.json",
+      "reason": "config_ignore",
+      "sha256": "c4fa30ac085b2422590102dc16e4e4fb39aea7f8c15f9bd10b702a7a376133f7"
+    },
+    {
+      "mode": "100644",
+      "path": "policy/repo-sentinel-authority/v1/baseline.json",
+      "reason": "config_ignore",
+      "sha256": "0b6e8641d58a8a4c927d6dd610562d6f6e40bddb7cb1dd0f7c42c103ae3193b5"
+    },
+    {
+      "mode": "100644",
+      "path": "policy/repo-sentinel-authority/v1/coverage-policy.json",
+      "reason": "config_ignore",
+      "sha256": "36b544546949b64e83bde547ca861f03446e7ef1f3321439795a90ffc8a6b0de"
+    },
+    {
+      "mode": "100644",
+      "path": "policy/repo-sentinel-authority/v1/dependencies.json",
+      "reason": "config_ignore",
+      "sha256": "a8acbdf5ba63d28ac2e8d6940d7618eb2bde1851696cbdd31ae07a7666037074"
+    },
+    {
+      "mode": "100644",
+      "path": "policy/repo-sentinel-authority/v1/epoch.json",
+      "reason": "config_ignore",
+      "sha256": "25e08c1051ad0e8d3137728435dc1dec57b52bf3d7497cb82c51d1739a1ba82e"
+    },
+    {
+      "mode": "100644",
+      "path": "policy/repo-sentinel-authority/v1/protected-manifest.json",
+      "reason": "config_ignore",
+      "sha256": "307fc1e7c57879bc82ba9aab658d1ac318214addd16dd125057c5996a79bf466"
+    },
+    {
+      "mode": "100644",
+      "path": "policy/repo-sentinel-authority/v1/scanner-config.toml",
+      "reason": "config_ignore",
+      "sha256": "69d0c0d8748e8c113aa31f63c82992633b666a61c0eb60a4298138ee885dea33"
+    },
+    {
+      "mode": "100644",
+      "path": "policy/repo-sentinel-authority/v1/suppression-manifest.json",
+      "reason": "config_ignore",
+      "sha256": "98265ad3389adbf19f55f1141b58151a7e35ad0dcf6a43dfc2b94848db0aec1d"
+    },
+    {
+      "mode": "100644",
+      "path": "reports/markdownlint-debt.txt",
+      "reason": "config_ignore",
+      "sha256": "85c81f3abf8dce8b1e08e95ceca33243adbd6829f2c4db586d1f23a152cb6197"
+    },
+    {
+      "mode": "100644",
+      "path": "reports/placeholder-audit.txt",
+      "reason": "config_ignore",
+      "sha256": "53228461cdc4e9db92612944d30152efff3ce50a80e850bdb6cdc82641e77a13"
+    }
+  ],
+  "effective_ignore_globs": [
+    ".reposentinel-baseline.json",
+    "%TEMP%",
+    "*.egg-info",
+    ".coverage",
+    ".mypy_cache",
+    ".nox",
+    ".pytest_cache",
+    ".ruff_cache",
+    ".tox",
+    ".venv",
+    ".venv-*",
+    "__pycache__",
+    "build",
+    "coverage",
+    "dist",
+    "dist-*",
+    "htmlcov",
+    "node_modules",
+    "venv",
+    "reports/markdownlint-debt.txt",
+    "reports/placeholder-audit.txt",
+    "policy/repo-sentinel-authority/v1/**",
+    "policy/repo-sentinel-authority/v2/**"
+  ],
+  "max_text_file_size": 1048576,
+  "schema_version": 1
+}
