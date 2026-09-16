@@ -152,6 +152,13 @@ class HarnessTestCase(unittest.TestCase):
         self.addCleanup(harness.close)
         return harness
 
+    def assert_worker_semantic_digest(
+        self,
+        result: controller.ControllerResult,
+        expected: str | None,
+    ) -> None:
+        self.assertEqual(result.worker_semantic_sha256, expected)
+
 
 class RequestContractTests(HarnessTestCase):
     def argv(self, harness: Harness) -> list[str]:
@@ -268,8 +275,8 @@ class OrchestrationTests(HarnessTestCase):
         self.assertEqual(result.controller_outcome.value, "AUTHORITY_RESULT")
         self.assertIsNone(result.fixed_refusal_code)
         self.assertEqual(result.worker_result, harness.worker)
-        self.assertEqual(
-            result.worker_semantic_sha256,
+        self.assert_worker_semantic_digest(
+            result,
             harness.worker["semantic_sha256"],
         )
         self.assertEqual(harness.git_calls, 1)
@@ -357,7 +364,7 @@ class OrchestrationTests(HarnessTestCase):
                 )
                 self.assertEqual(result.fixed_refusal_code, "worker_result_invalid")
                 self.assertIsNone(result.worker_result)
-                self.assertIsNone(result.worker_semantic_sha256)
+                self.assert_worker_semantic_digest(result, None)
 
         harness = self.harness()
         harness.worker = worker_payload(
@@ -368,7 +375,7 @@ class OrchestrationTests(HarnessTestCase):
         self.assertEqual(result.controller_outcome.value, "INFRASTRUCTURE_REFUSAL")
         self.assertEqual(result.fixed_refusal_code, "worker_result_invalid")
         self.assertIsNone(result.worker_result)
-        self.assertIsNone(result.worker_semantic_sha256)
+        self.assert_worker_semantic_digest(result, None)
 
     def test_worker_semantic_digest_is_recomputed(self) -> None:
         harness = self.harness()
