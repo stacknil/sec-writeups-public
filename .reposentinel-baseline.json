@@ -8139,6 +8139,24 @@
       "entropy": 4.0353,
       "evidence": {
         "entropy": 4.0353,
+        "line": 6,
+        "token_sha256": "aa3b5b6ccd82e21da8bd6c5c59491f51d9f0a8de079c95f13a0bd684e40c2786"
+      },
+      "file": ".gitattributes",
+      "fingerprint": "f112a4d0fe6f986695ee56d1317ac6f6bd76c0413ba374ac657db34ce34b0d5a",
+      "kind": "high_entropy",
+      "line": 6,
+      "path": ".gitattributes",
+      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
+      "rule_id": "secret.high_entropy",
+      "rule_version": "1",
+      "severity": "error",
+      "token": "<redacted:sha256:aa3b5b6ccd82>"
+    },
+    {
+      "entropy": 4.0353,
+      "evidence": {
+        "entropy": 4.0353,
         "line": 5,
         "token_sha256": "a4e1da4f5e47eaadb2f6b28a80be58e97b4b6088ff55226d90c322e8cb7b577f"
       },
@@ -9180,34 +9198,16 @@
       "token": "<redacted:sha256:a63871bc1b33>"
     },
     {
-      "entropy": 4.0438,
-      "evidence": {
-        "entropy": 4.0438,
-        "line": 263,
-        "token_sha256": "3dae57c31c65791e449e62c54c1f3dcc524346cd8c19e8a5ef9168b0c412809c"
-      },
-      "file": "tests/test_repo_sentinel_policy_contracts.py",
-      "fingerprint": "d1428531abab7714fb226f86b2d45e22a51ef54809961b83380593f72da661b5",
-      "kind": "high_entropy",
-      "line": 263,
-      "path": "tests/test_repo_sentinel_policy_contracts.py",
-      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
-      "rule_id": "secret.high_entropy",
-      "rule_version": "1",
-      "severity": "error",
-      "token": "<redacted:sha256:3dae57c31c65>"
-    },
-    {
       "entropy": 4.0685,
       "evidence": {
         "entropy": 4.0685,
-        "line": 265,
+        "line": 267,
         "token_sha256": "1a4dc4210ed198222315b422f420f49d662796027eedb643942557a0c3b1e699"
       },
       "file": "tests/test_repo_sentinel_policy_contracts.py",
-      "fingerprint": "1d9dd522adc035f06abf2edc3d052222920da1796a4f5a950f140e3aea921dbd",
+      "fingerprint": "72376b7fd1a226cdd8ef59d96716504ad1f84cd77b56893fdac930ace33c3681",
       "kind": "high_entropy",
-      "line": 265,
+      "line": 267,
       "path": "tests/test_repo_sentinel_policy_contracts.py",
       "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
       "rule_id": "secret.high_entropy",
@@ -9219,13 +9219,13 @@
       "entropy": 4.1219,
       "evidence": {
         "entropy": 4.1219,
-        "line": 269,
+        "line": 271,
         "token_sha256": "127c59b80ce68fe3f1893abb25940b66c3460324edeaa40643f87efb0181c28d"
       },
       "file": "tests/test_repo_sentinel_policy_contracts.py",
-      "fingerprint": "0f644a3b3b1fd872012f2412ff8b312330e7288bd31c2076caf1cd35be760319",
+      "fingerprint": "08baf8c677d0072c7625c35c383823fb5caa8d341114fa65025179f9b6dc9951",
       "kind": "high_entropy",
-      "line": 269,
+      "line": 271,
       "path": "tests/test_repo_sentinel_policy_contracts.py",
       "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
       "rule_id": "secret.high_entropy",
@@ -9237,13 +9237,13 @@
       "entropy": 4.1423,
       "evidence": {
         "entropy": 4.1423,
-        "line": 270,
+        "line": 272,
         "token_sha256": "01a64cd0117a8e03ed044bacc9cdee12d1e20433e2d9a3bf2563800717e21ea5"
       },
       "file": "tests/test_repo_sentinel_policy_contracts.py",
-      "fingerprint": "bd3a55fe1d89dc5f29bd2641adff12a629e5a539838611f12c54cd33ae5d295e",
+      "fingerprint": "0c4193e8048fe9168a47764ded9210ef790eb8edbc2116fda2cc14f18924ccd5",
       "kind": "high_entropy",
-      "line": 270,
+      "line": 272,
       "path": "tests/test_repo_sentinel_policy_contracts.py",
       "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
       "rule_id": "secret.high_entropy",
@@ -9573,24 +9573,6 @@
       "rule_version": "1",
       "severity": "warning",
       "token": "<redacted:sha256:96d62e2abd3e>"
-    },
-    {
-      "entropy": 4.0353,
-      "evidence": {
-        "entropy": 4.0353,
-        "line": 6,
-        "token_sha256": "aa3b5b6ccd82e21da8bd6c5c59491f51d9f0a8de079c95f13a0bd684e40c2786"
-      },
-      "file": ".gitattributes",
-      "fingerprint": "f112a4d0fe6f986695ee56d1317ac6f6bd76c0413ba374ac657db34ce34b0d5a",
-      "kind": "high_entropy",
-      "line": 6,
-      "path": ".gitattributes",
-      "remediation_hint": "Review the token. If it is real, rotate and remove it; if it is a fixture, baseline or allowlist it with a narrow exception.",
-      "rule_id": "secret.high_entropy",
-      "rule_version": "1",
-      "severity": "error",
-      "token": "<redacted:sha256:aa3b5b6ccd82>"
     }
   ],
   "generated_at": "2026-09-15T03:40:36Z",
