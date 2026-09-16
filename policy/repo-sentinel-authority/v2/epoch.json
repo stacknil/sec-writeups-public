@@ -1,9 +1,9 @@
 {
   "component_sha256": {
-    "baseline.json": "c4fa30ac085b2422590102dc16e4e4fb39aea7f8c15f9bd10b702a7a376133f7",
-    "coverage-policy.json": "93edf012d405502bca7bf9eba9430e647dfc710c1fcf5a3e4b17b8b8b885d6eb",
+    "baseline.json": "8eff61c98f62d54b7280517967e6f9f8e66ffb2d18f5d4acbb9de63565a01669",
+    "coverage-policy.json": "679da3c4f5188367842ad55f25e9f00c0af34dff97fa8c9b528f1d51b243a7cb",
     "dependencies.json": "a8acbdf5ba63d28ac2e8d6940d7618eb2bde1851696cbdd31ae07a7666037074",
-    "protected-manifest.json": "0c9b7a5185a5d5023ad85a1266e3481f20c146e3a2fb222643d4361f9463308d",
+    "protected-manifest.json": "787da55b0104d81d6b4404a93baf562b64c2a337c9ce94f7dff88fe4a59bcb79",
     "scanner-config.toml": "296b51421202609a4b770d868cd1026a2aa26e884e66dff759516679e63b73e4",
     "suppression-manifest.json": "6e8dbc24956284b763d74fe25fda579f49838a8e1e18d6665739e70697345506"
   },
