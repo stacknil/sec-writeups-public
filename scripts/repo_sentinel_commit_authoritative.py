@@ -28,8 +28,6 @@ from repo_sentinel_materialize import (
 )
 from repo_sentinel_policy_bundle import (
     BUNDLE_FILENAMES,
-    MANDATORY_PROTECTED_PATHS,
-    POLICY_BUNDLE_MIRROR_ROOT,
     PolicyBundleRefused,
     PolicyEntry,
     RuntimeContract,
@@ -194,6 +192,7 @@ class CommitAuthoritativeRequest:
     repository: Path = field(repr=False, compare=False)
     policy_bundle_root: Path = field(repr=False, compare=False)
     expected_policy_bundle_sha256: str = field(repr=False)
+    policy_selector: str
     scanner_artifact: Path = field(repr=False, compare=False)
     scratch_root: Path = field(repr=False, compare=False)
 
@@ -326,6 +325,7 @@ def _valid_request(request: CommitAuthoritativeRequest) -> bool:
         and _OID.fullmatch(request.head_oid) is not None
         and type(request.expected_policy_bundle_sha256) is str
         and _DIGEST.fullmatch(request.expected_policy_bundle_sha256) is not None
+        and type(request.policy_selector) is str
     )
 
 
@@ -388,7 +388,9 @@ def _admit_protected(
 ) -> None:
     approved = {entry.path: entry for entry in bundle.protected_entries}
     aliases = {portable_v1_alias(path): path for path in approved}
-    mandatory_aliases = {portable_v1_alias(path) for path in MANDATORY_PROTECTED_PATHS}
+    mandatory_aliases = {
+        portable_v1_alias(path) for path in bundle.contract.mandatory_protected_paths
+    }
     namespace_aliases = tuple(
         portable_v1_alias(path) for path in bundle.protected_namespaces
     )
@@ -408,10 +410,11 @@ def _admit_policy_bundle_mirror(
     files: dict[str, SnapshotFile], bundle: VerifiedPolicyBundle
 ) -> None:
     expected = {
-        f"{POLICY_BUNDLE_MIRROR_ROOT}{name}": data for name, data in bundle.bundle_files
+        f"{bundle.contract.mirror_root}{name}": data
+        for name, data in bundle.bundle_files
     }
     expected_aliases = {portable_v1_alias(path): path for path in expected}
-    mirror_alias_root = portable_v1_alias(POLICY_BUNDLE_MIRROR_ROOT)
+    mirror_alias_root = portable_v1_alias(bundle.contract.mirror_root)
     observed = {
         path: item
         for path, item in files.items()
@@ -451,7 +454,7 @@ def _coverage_inventory(
     scanned: list[str] = []
     ignored: list[str] = []
     skipped: list[tuple[str, str]] = []
-    mirror_paths = {f"{POLICY_BUNDLE_MIRROR_ROOT}{name}" for name in BUNDLE_FILENAMES}
+    mirror_paths = {f"{bundle.contract.mirror_root}{name}" for name in BUNDLE_FILENAMES}
     for path, item in sorted(files.items()):
         if path in mirror_paths:
             ignored.append(path)
@@ -1023,7 +1026,11 @@ def _execute(
 ) -> CommitAuthoritativeResult:
     repository, policy_root, scratch_root = _validate_request(request)
     try:
-        bundle = load_policy_bundle(policy_root, request.expected_policy_bundle_sha256)
+        bundle = load_policy_bundle(
+            policy_root,
+            request.expected_policy_bundle_sha256,
+            policy_selector=request.policy_selector,
+        )
     except PolicyBundleRefused as error:
         raise WorkerRefused(str(error)) from None
     if not _runtime_matches(runtime_facts_provider(), bundle.runtime):
@@ -1174,6 +1181,7 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--repository", type=Path, required=True)
     parser.add_argument("--policy-bundle", type=Path, required=True)
     parser.add_argument("--policy-bundle-sha256", required=True)
+    parser.add_argument("--policy-selector", required=True)
     parser.add_argument("--scanner-artifact", type=Path, required=True)
     parser.add_argument("--scratch-root", type=Path, required=True)
     return parser
@@ -1188,6 +1196,7 @@ def main(argv: list[str] | None = None) -> int:
             args.repository,
             args.policy_bundle,
             args.policy_bundle_sha256,
+            args.policy_selector,
             args.scanner_artifact,
             args.scratch_root,
         )

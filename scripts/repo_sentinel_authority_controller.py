@@ -21,15 +21,14 @@ from pathlib import Path
 from types import ModuleType
 
 CONTROLLER_SCHEMA_VERSION = 1
+CONTROLLER_PROTOCOL = "external-policy-root-v1"
 REPOSITORY_ID = 1_130_304_545
 OWNER_ID = 219_124_580
 REPOSITORY = "stacknil/sec-writeups-public"
 REMOTE_URL = "https://github.com/stacknil/sec-writeups-public.git"
-POLICY_EPOCH = "v1"
-WORKER_POLICY_EPOCH = "repo-sentinel-authority-v1"
-POLICY_BUNDLE_SHA256 = (
-    "6f25ebb773ce1453e8de623bca5aaecc936f1f188288f8df20aedeadb3bf4612"
-)
+POLICY_SELECTOR = "v2"
+EXPECTED_POLICY_EPOCH = "repo-sentinel-authority-v2"
+POLICY_BUNDLE_ROOT = "policy/repo-sentinel-authority/v2"
 SCANNER_ARTIFACT_SHA256 = (
     "0a949a4d00c6e6ae37eba60a6cb74e4e15bc3ec5fce2f1d4c99aa0ef309b36e3"
 )
@@ -84,7 +83,7 @@ _REQUEST_OPTIONS = (
     "--remote-url",
     "--pull-number",
     "--head-oid",
-    "--policy-epoch",
+    "--policy-selector",
     "--policy-bundle-sha256",
     "--scratch-root",
     "--scanner-artifact",
@@ -123,6 +122,8 @@ _TRUSTED_MODULE_PATHS = {
 
 
 class ControllerOutcome(str, Enum):
+    """AUTHORITY_RESULT is evaluation evidence, not publication authorization."""
+
     AUTHORITY_RESULT = "AUTHORITY_RESULT"
     INFRASTRUCTURE_REFUSAL = "INFRASTRUCTURE_REFUSAL"
 
@@ -141,7 +142,7 @@ class ControllerRequest:
     remote_url: str = field(repr=False)
     pull_number: int
     head_oid: str
-    policy_epoch: str
+    policy_selector: str
     expected_policy_bundle_sha256: str = field(repr=False)
     scratch_root: Path = field(repr=False)
     scanner_artifact: Path = field(repr=False)
@@ -149,11 +150,13 @@ class ControllerRequest:
 
 @dataclass(frozen=True, slots=True)
 class ControllerResult:
+    controller_protocol: str
     controller_schema_version: int
     repository_id: int
     head_oid: str | None
+    policy_selector: str | None
     policy_epoch: str | None
-    policy_bundle_sha256: str
+    policy_bundle_sha256: str | None
     worker_result: dict[str, object] | None
     worker_semantic_sha256: str | None
     controller_outcome: ControllerOutcome
@@ -388,7 +391,7 @@ def parse_request(argv: list[str]) -> ControllerRequest:
         remote_url=values["--remote-url"],
         pull_number=_parse_decimal(values["--pull-number"]),
         head_oid=values["--head-oid"],
-        policy_epoch=values["--policy-epoch"],
+        policy_selector=values["--policy-selector"],
         expected_policy_bundle_sha256=values["--policy-bundle-sha256"],
         scratch_root=Path(values["--scratch-root"]),
         scanner_artifact=Path(values["--scanner-artifact"]),
@@ -406,7 +409,7 @@ def _validate_request(
         or type(request.repository) is not str
         or type(request.remote_url) is not str
         or type(request.head_oid) is not str
-        or type(request.policy_epoch) is not str
+        or type(request.policy_selector) is not str
         or type(request.expected_policy_bundle_sha256) is not str
         or not isinstance(request.scratch_root, Path)
         or not isinstance(request.scanner_artifact, Path)
@@ -419,10 +422,10 @@ def _validate_request(
         or request.remote_url != REMOTE_URL
     ):
         raise ControllerRefused("repository_identity_mismatch")
-    if request.policy_epoch != POLICY_EPOCH:
+    if request.policy_selector != POLICY_SELECTOR:
         raise ControllerRefused("unknown_policy_epoch")
-    if request.expected_policy_bundle_sha256 != POLICY_BUNDLE_SHA256:
-        raise ControllerRefused("policy_bundle_mismatch")
+    if _DIGEST.fullmatch(request.expected_policy_bundle_sha256) is None:
+        raise ControllerRefused("invalid_request")
     if _OID.fullmatch(request.head_oid) is None:
         raise ControllerRefused("invalid_head_oid")
     for path in (request.scratch_root, request.scanner_artifact):
@@ -554,8 +557,8 @@ def _validate_worker_result(
         raise ControllerRefused("worker_result_invalid")
     if (
         payload["policy_schema_version"] != 1
-        or payload["policy_epoch"] != WORKER_POLICY_EPOCH
-        or payload["policy_bundle_sha256"] != POLICY_BUNDLE_SHA256
+        or payload["policy_epoch"] != EXPECTED_POLICY_EPOCH
+        or payload["policy_bundle_sha256"] != request.expected_policy_bundle_sha256
         or payload["repository_id"] != REPOSITORY_ID
         or payload["head_oid"] != request.head_oid
         or payload["scanner_distribution"] != "repo-sentinel-lite"
@@ -575,21 +578,28 @@ def _refusal(request: ControllerRequest | None, code: str) -> ControllerResult:
         if request is not None and _OID.fullmatch(request.head_oid) is not None
         else None
     )
-    safe_epoch = (
-        request.policy_epoch
-        if request is not None and request.policy_epoch == POLICY_EPOCH
+    safe_selector = (
+        request.policy_selector
+        if request is not None and request.policy_selector == POLICY_SELECTOR
+        else None
+    )
+    safe_digest = (
+        request.expected_policy_bundle_sha256
+        if request is not None and _valid_digest(request.expected_policy_bundle_sha256)
         else None
     )
     return ControllerResult(
-        CONTROLLER_SCHEMA_VERSION,
-        REPOSITORY_ID,
-        safe_head,
-        safe_epoch,
-        POLICY_BUNDLE_SHA256,
-        None,
-        None,
-        ControllerOutcome.INFRASTRUCTURE_REFUSAL,
-        code if code in _REFUSAL_CODES else "unexpected_failure",
+        controller_protocol=CONTROLLER_PROTOCOL,
+        controller_schema_version=CONTROLLER_SCHEMA_VERSION,
+        repository_id=REPOSITORY_ID,
+        head_oid=safe_head,
+        policy_selector=safe_selector,
+        policy_epoch=EXPECTED_POLICY_EPOCH if safe_selector is not None else None,
+        policy_bundle_sha256=safe_digest,
+        worker_result=None,
+        worker_semantic_sha256=None,
+        controller_outcome=ControllerOutcome.INFRASTRUCTURE_REFUSAL,
+        fixed_refusal_code=(code if code in _REFUSAL_CODES else "unexpected_failure"),
     )
 
 
@@ -597,15 +607,17 @@ def _authority_result(
     request: ControllerRequest, worker: dict[str, object]
 ) -> ControllerResult:
     return ControllerResult(
-        CONTROLLER_SCHEMA_VERSION,
-        REPOSITORY_ID,
-        request.head_oid,
-        POLICY_EPOCH,
-        POLICY_BUNDLE_SHA256,
-        worker,
-        str(worker["semantic_sha256"]),
-        ControllerOutcome.AUTHORITY_RESULT,
-        None,
+        controller_protocol=CONTROLLER_PROTOCOL,
+        controller_schema_version=CONTROLLER_SCHEMA_VERSION,
+        repository_id=REPOSITORY_ID,
+        head_oid=request.head_oid,
+        policy_selector=POLICY_SELECTOR,
+        policy_epoch=EXPECTED_POLICY_EPOCH,
+        policy_bundle_sha256=request.expected_policy_bundle_sha256,
+        worker_result=worker,
+        worker_semantic_sha256=str(worker["semantic_sha256"]),
+        controller_outcome=ControllerOutcome.AUTHORITY_RESULT,
+        fixed_refusal_code=None,
     )
 
 
@@ -632,7 +644,7 @@ def run_controller(
         control = _without_aliases(control_root, directory=True)
         scratch, artifact = _validate_request(request, control)
         policy = _without_aliases(
-            control / "policy" / "repo-sentinel-authority" / "v1",
+            control.joinpath(*POLICY_BUNDLE_ROOT.split("/")),
             directory=True,
         )
         git_probe(control)
@@ -673,7 +685,8 @@ def run_controller(
                         request.head_oid,
                         acquired_root,
                         policy,
-                        POLICY_BUNDLE_SHA256,
+                        request.expected_policy_bundle_sha256,
+                        POLICY_SELECTOR,
                         artifact,
                         worker_root,
                     )
@@ -709,11 +722,13 @@ def run_controller(
 def result_dict(result: ControllerResult) -> dict[str, object]:
     return {
         "controller_outcome": result.controller_outcome.value,
+        "controller_protocol": result.controller_protocol,
         "controller_schema_version": result.controller_schema_version,
         "fixed_refusal_code": result.fixed_refusal_code,
         "head_oid": result.head_oid,
         "policy_bundle_sha256": result.policy_bundle_sha256,
         "policy_epoch": result.policy_epoch,
+        "policy_selector": result.policy_selector,
         "repository_id": result.repository_id,
         "worker_result": result.worker_result,
         "worker_semantic_sha256": result.worker_semantic_sha256,
