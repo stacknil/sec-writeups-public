@@ -14,12 +14,12 @@ import sys
 import tomllib
 from dataclasses import dataclass, field
 from pathlib import Path, PurePosixPath
+from types import MappingProxyType
 from typing import Any
 
 from repo_sentinel_reader import SnapshotFile
 
 POLICY_SCHEMA_VERSION = 1
-POLICY_EPOCH = "repo-sentinel-authority-v1"
 WORKER_POLICY_VERSION = "commit-authoritative-v1"
 PORTABLE_PATH_POLICY_VERSION = "portable-v1"
 SCANNER_DISTRIBUTION = "repo-sentinel-lite"
@@ -39,7 +39,6 @@ BUNDLE_FILENAMES = frozenset(
         "suppression-manifest.json",
     }
 )
-POLICY_BUNDLE_MIRROR_ROOT = "policy/repo-sentinel-authority/v1/"
 _COMPONENT_FILENAMES = BUNDLE_FILENAMES - {"epoch.json"}
 _BUNDLE_DOMAIN = b"repo-sentinel-authority-policy-bundle-v1\0"
 _MAX_BUNDLE_FILE_BYTES = 2 * 1024 * 1024
@@ -87,8 +86,8 @@ DEFAULT_IGNORE_GLOBS = (
 )
 DEFAULT_MAX_TEXT_FILE_SIZE = 1_048_576
 DEFAULT_REQUIRED_FILES = ("README.md", "LICENSE", ".gitignore")
-PROTECTED_NAMESPACES = (".github/actions/", ".github/workflows/")
-MANDATORY_PROTECTED_PATHS = frozenset(
+_PROTECTED_NAMESPACES = (".github/actions/", ".github/workflows/")
+_V1_MANDATORY_PROTECTED_PATHS = frozenset(
     {
         ".gitattributes",
         ".reposentinel.toml",
@@ -101,6 +100,13 @@ MANDATORY_PROTECTED_PATHS = frozenset(
         "scripts/repo_sentinel_commit_authoritative.py",
         "scripts/repo_sentinel_policy_bundle.py",
         "scripts/test_repo_sentinel_integration.py",
+    }
+)
+_V2_MANDATORY_PROTECTED_PATHS = frozenset(
+    {
+        *_V1_MANDATORY_PROTECTED_PATHS,
+        "scripts/repo_sentinel_authority_bootstrap.sh",
+        "scripts/repo_sentinel_authority_controller.py",
     }
 )
 EXCLUSION_REASONS = frozenset(
@@ -129,6 +135,72 @@ class RuntimeContract:
 
 
 @dataclass(frozen=True, slots=True)
+class PolicyBundleContract:
+    selector: str
+    schema_version: int
+    policy_epoch: str
+    worker_policy_version: str
+    portable_path_policy_version: str
+    mirror_root: str
+    mandatory_protected_paths: frozenset[str]
+    protected_namespaces: tuple[str, ...]
+    scanner_distribution: str
+    scanner_version: str
+    scanner_artifact_sha256: str
+
+
+V1_POLICY_CONTRACT = PolicyBundleContract(
+    selector="v1",
+    schema_version=POLICY_SCHEMA_VERSION,
+    policy_epoch="repo-sentinel-authority-v1",
+    worker_policy_version=WORKER_POLICY_VERSION,
+    portable_path_policy_version=PORTABLE_PATH_POLICY_VERSION,
+    mirror_root="policy/repo-sentinel-authority/v1/",
+    mandatory_protected_paths=_V1_MANDATORY_PROTECTED_PATHS,
+    protected_namespaces=_PROTECTED_NAMESPACES,
+    scanner_distribution=SCANNER_DISTRIBUTION,
+    scanner_version=SCANNER_VERSION,
+    scanner_artifact_sha256=SCANNER_WHEEL_SHA256,
+)
+V2_POLICY_CONTRACT = PolicyBundleContract(
+    selector="v2",
+    schema_version=POLICY_SCHEMA_VERSION,
+    policy_epoch="repo-sentinel-authority-v2",
+    worker_policy_version=WORKER_POLICY_VERSION,
+    portable_path_policy_version=PORTABLE_PATH_POLICY_VERSION,
+    mirror_root="policy/repo-sentinel-authority/v2/",
+    mandatory_protected_paths=_V2_MANDATORY_PROTECTED_PATHS,
+    protected_namespaces=_PROTECTED_NAMESPACES,
+    scanner_distribution=SCANNER_DISTRIBUTION,
+    scanner_version=SCANNER_VERSION,
+    scanner_artifact_sha256=SCANNER_WHEEL_SHA256,
+)
+_TRUSTED_POLICY_CONTRACTS = MappingProxyType(
+    {
+        V1_POLICY_CONTRACT.selector: V1_POLICY_CONTRACT,
+        V2_POLICY_CONTRACT.selector: V2_POLICY_CONTRACT,
+    }
+)
+
+# Historical v1 names remain public compatibility aliases.
+POLICY_EPOCH = V1_POLICY_CONTRACT.policy_epoch
+POLICY_BUNDLE_MIRROR_ROOT = V1_POLICY_CONTRACT.mirror_root
+MANDATORY_PROTECTED_PATHS = V1_POLICY_CONTRACT.mandatory_protected_paths
+PROTECTED_NAMESPACES = V1_POLICY_CONTRACT.protected_namespaces
+
+
+def trusted_policy_contract(selector: str) -> PolicyBundleContract:
+    """Return one reviewed policy contract without accepting caller composites."""
+
+    if type(selector) is not str:
+        raise PolicyBundleRefused("policy_schema_unsupported")
+    try:
+        return _TRUSTED_POLICY_CONTRACTS[selector]
+    except KeyError:
+        raise PolicyBundleRefused("policy_schema_unsupported") from None
+
+
+@dataclass(frozen=True, slots=True)
 class VerifiedPolicyBundle:
     schema_version: int
     policy_epoch: str
@@ -139,6 +211,7 @@ class VerifiedPolicyBundle:
     scanner_version: str
     scanner_artifact_sha256: str
     runtime: RuntimeContract
+    contract: PolicyBundleContract = field(repr=False)
     scanner_config: bytes = field(repr=False)
     baseline: bytes = field(repr=False)
     bundle_files: tuple[tuple[str, bytes], ...] = field(repr=False)
@@ -357,8 +430,14 @@ def _config_contract(data: bytes) -> tuple[tuple[str, ...], int, tuple[str, ...]
     return effective, max_size, tuple(required)
 
 
-def load_policy_bundle(root: Path, expected_sha256: str) -> VerifiedPolicyBundle:
-    if _DIGEST.fullmatch(expected_sha256) is None:
+def load_policy_bundle(
+    root: Path,
+    expected_sha256: str,
+    *,
+    policy_selector: str = "v1",
+) -> VerifiedPolicyBundle:
+    contract = trusted_policy_contract(policy_selector)
+    if type(expected_sha256) is not str or _DIGEST.fullmatch(expected_sha256) is None:
         raise PolicyBundleRefused("policy_bundle_invalid")
     files = _read_bundle(root)
     actual_bundle_sha256 = compute_bundle_sha256(files)
@@ -378,7 +457,7 @@ def load_policy_bundle(root: Path, expected_sha256: str) -> VerifiedPolicyBundle
             "component_sha256",
         },
     )
-    if epoch["schema_version"] != POLICY_SCHEMA_VERSION:
+    if epoch["schema_version"] != contract.schema_version:
         raise PolicyBundleRefused("policy_schema_unsupported")
     scanner = epoch["scanner"]
     runtime = epoch["runtime"]
@@ -401,7 +480,7 @@ def load_policy_bundle(root: Path, expected_sha256: str) -> VerifiedPolicyBundle
     dependencies = _json_object(files["dependencies.json"])
     _exact_keys(dependencies, {"schema_version", "scanner", "runtime_dependencies"})
     dependency_scanner = dependencies["scanner"]
-    if dependencies["schema_version"] != POLICY_SCHEMA_VERSION or not isinstance(
+    if dependencies["schema_version"] != contract.schema_version or not isinstance(
         dependency_scanner, dict
     ):
         raise PolicyBundleRefused("policy_bundle_invalid")
@@ -418,21 +497,21 @@ def load_policy_bundle(root: Path, expected_sha256: str) -> VerifiedPolicyBundle
     protected = _json_object(files["protected-manifest.json"])
     _exact_keys(protected, {"schema_version", "namespaces", "entries"})
     namespaces = _string_tuple(protected["namespaces"])
-    if protected["schema_version"] != POLICY_SCHEMA_VERSION or namespaces != tuple(
-        sorted(PROTECTED_NAMESPACES)
+    if protected["schema_version"] != contract.schema_version or namespaces != tuple(
+        sorted(contract.protected_namespaces)
     ):
         raise PolicyBundleRefused("policy_bundle_invalid")
     for namespace in namespaces:
         _logical_path(namespace, directory=True)
     protected_entries = _policy_entries(protected["entries"], reasons=False)
-    if not MANDATORY_PROTECTED_PATHS.issubset(
+    if not contract.mandatory_protected_paths.issubset(
         {entry.path for entry in protected_entries}
     ):
         raise PolicyBundleRefused("policy_bundle_invalid")
 
     suppressions = _json_object(files["suppression-manifest.json"])
     _exact_keys(suppressions, {"schema_version", "entries"})
-    if suppressions["schema_version"] != POLICY_SCHEMA_VERSION:
+    if suppressions["schema_version"] != contract.schema_version:
         raise PolicyBundleRefused("policy_bundle_invalid")
     suppression_entries = _policy_entries(suppressions["entries"], reasons=False)
 
@@ -446,7 +525,7 @@ def load_policy_bundle(root: Path, expected_sha256: str) -> VerifiedPolicyBundle
             "approved_exclusions",
         },
     )
-    if coverage["schema_version"] != POLICY_SCHEMA_VERSION:
+    if coverage["schema_version"] != contract.schema_version:
         raise PolicyBundleRefused("policy_bundle_invalid")
     effective, max_size, required = _config_contract(files["scanner-config.toml"])
     if (
@@ -475,27 +554,29 @@ def load_policy_bundle(root: Path, expected_sha256: str) -> VerifiedPolicyBundle
     ):
         raise PolicyBundleRefused("policy_bundle_invalid")
     if (
-        epoch["policy_epoch"] != POLICY_EPOCH
-        or epoch["semantic_worker_policy_version"] != WORKER_POLICY_VERSION
-        or epoch["portable_path_policy_version"] != PORTABLE_PATH_POLICY_VERSION
-        or scanner["distribution"] != SCANNER_DISTRIBUTION
-        or scanner["version"] != SCANNER_VERSION
-        or scanner["artifact_sha256"] != SCANNER_WHEEL_SHA256
+        epoch["policy_epoch"] != contract.policy_epoch
+        or epoch["semantic_worker_policy_version"] != contract.worker_policy_version
+        or epoch["portable_path_policy_version"]
+        != contract.portable_path_policy_version
+        or scanner["distribution"] != contract.scanner_distribution
+        or scanner["version"] != contract.scanner_version
+        or scanner["artifact_sha256"] != contract.scanner_artifact_sha256
     ):
         raise PolicyBundleRefused("policy_schema_unsupported")
 
     _json_object(files["baseline.json"])
 
     return VerifiedPolicyBundle(
-        schema_version=POLICY_SCHEMA_VERSION,
-        policy_epoch=POLICY_EPOCH,
+        schema_version=contract.schema_version,
+        policy_epoch=contract.policy_epoch,
         bundle_sha256=actual_bundle_sha256,
-        worker_policy_version=WORKER_POLICY_VERSION,
-        portable_path_policy_version=PORTABLE_PATH_POLICY_VERSION,
+        worker_policy_version=contract.worker_policy_version,
+        portable_path_policy_version=contract.portable_path_policy_version,
         scanner_distribution=str(scanner["distribution"]),
         scanner_version=str(scanner["version"]),
         scanner_artifact_sha256=_digest(scanner["artifact_sha256"]),
         runtime=runtime_contract,
+        contract=contract,
         scanner_config=files["scanner-config.toml"],
         baseline=files["baseline.json"],
         bundle_files=tuple(sorted(files.items())),
@@ -602,12 +683,21 @@ def build_policy_bundle(
     root: Path,
     runtime: RuntimeContract,
     *,
-    scanner_artifact_sha256: str = SCANNER_WHEEL_SHA256,
+    policy_selector: str = "v1",
+    scanner_artifact_sha256: str | None = None,
 ) -> str:
     """Generate a candidate bundle from an explicitly staged repository state."""
 
-    mirror_paths = {f"{POLICY_BUNDLE_MIRROR_ROOT}{name}" for name in BUNDLE_FILENAMES}
-    mirror_alias_root = portable_v1_alias(POLICY_BUNDLE_MIRROR_ROOT)
+    contract = trusted_policy_contract(policy_selector)
+    artifact_sha256 = (
+        contract.scanner_artifact_sha256
+        if scanner_artifact_sha256 is None
+        else scanner_artifact_sha256
+    )
+    if artifact_sha256 != contract.scanner_artifact_sha256:
+        raise PolicyBundleRefused("policy_source_invalid")
+    mirror_paths = {f"{contract.mirror_root}{name}" for name in BUNDLE_FILENAMES}
+    mirror_alias_root = portable_v1_alias(contract.mirror_root)
     if any(
         portable_v1_alias(item.path).startswith(mirror_alias_root)
         and item.path not in mirror_paths
@@ -616,17 +706,17 @@ def build_policy_bundle(
         raise PolicyBundleRefused("policy_source_invalid")
     source_files = tuple(item for item in files if item.path not in mirror_paths)
     by_path = {item.path: item for item in source_files}
-    if len(by_path) != len(source_files) or not MANDATORY_PROTECTED_PATHS.issubset(
-        by_path
-    ):
+    if len(by_path) != len(
+        source_files
+    ) or not contract.mandatory_protected_paths.issubset(by_path):
         raise PolicyBundleRefused("policy_source_invalid")
     scanner_config = by_path[".reposentinel.toml"].data
     baseline = by_path[".reposentinel-baseline.json"].data
     effective, max_size, _required = _config_contract(scanner_config)
 
     protected_paths = sorted(
-        MANDATORY_PROTECTED_PATHS
-        | {path for path in by_path if path.startswith(PROTECTED_NAMESPACES)}
+        contract.mandatory_protected_paths
+        | {path for path in by_path if path.startswith(contract.protected_namespaces)}
     )
     protected_entries = [_entry(by_path[path]) for path in protected_paths]
     suppression_entries = [
@@ -649,20 +739,20 @@ def build_policy_bundle(
         "baseline.json": baseline,
         "protected-manifest.json": _render(
             {
-                "schema_version": POLICY_SCHEMA_VERSION,
-                "namespaces": sorted(PROTECTED_NAMESPACES),
+                "schema_version": contract.schema_version,
+                "namespaces": sorted(contract.protected_namespaces),
                 "entries": [_entry_dict(entry) for entry in protected_entries],
             }
         ),
         "suppression-manifest.json": _render(
             {
-                "schema_version": POLICY_SCHEMA_VERSION,
+                "schema_version": contract.schema_version,
                 "entries": [_entry_dict(entry) for entry in suppression_entries],
             }
         ),
         "coverage-policy.json": _render(
             {
-                "schema_version": POLICY_SCHEMA_VERSION,
+                "schema_version": contract.schema_version,
                 "effective_ignore_globs": list(effective),
                 "max_text_file_size": max_size,
                 "approved_exclusions": [
@@ -672,25 +762,25 @@ def build_policy_bundle(
         ),
         "dependencies.json": _render(
             {
-                "schema_version": POLICY_SCHEMA_VERSION,
+                "schema_version": contract.schema_version,
                 "scanner": {
-                    "distribution": SCANNER_DISTRIBUTION,
-                    "version": SCANNER_VERSION,
-                    "wheel_sha256": scanner_artifact_sha256,
+                    "distribution": contract.scanner_distribution,
+                    "version": contract.scanner_version,
+                    "wheel_sha256": artifact_sha256,
                 },
                 "runtime_dependencies": [],
             }
         ),
     }
     epoch = {
-        "schema_version": POLICY_SCHEMA_VERSION,
-        "policy_epoch": POLICY_EPOCH,
-        "semantic_worker_policy_version": WORKER_POLICY_VERSION,
-        "portable_path_policy_version": PORTABLE_PATH_POLICY_VERSION,
+        "schema_version": contract.schema_version,
+        "policy_epoch": contract.policy_epoch,
+        "semantic_worker_policy_version": contract.worker_policy_version,
+        "portable_path_policy_version": contract.portable_path_policy_version,
         "scanner": {
-            "distribution": SCANNER_DISTRIBUTION,
-            "version": SCANNER_VERSION,
-            "artifact_sha256": scanner_artifact_sha256,
+            "distribution": contract.scanner_distribution,
+            "version": contract.scanner_version,
+            "artifact_sha256": artifact_sha256,
         },
         "runtime": {
             "implementation": runtime.implementation,
@@ -764,9 +854,11 @@ def _parser() -> argparse.ArgumentParser:
     build.add_argument("--python-version", required=True)
     build.add_argument("--os-family", required=True)
     build.add_argument("--architecture", required=True)
+    build.add_argument("--policy-selector", default="v1")
     verify = subparsers.add_parser("verify")
     verify.add_argument("--bundle", type=Path, required=True)
     verify.add_argument("--expected-sha256")
+    verify.add_argument("--policy-selector", default="v1")
     return parser
 
 
@@ -784,11 +876,16 @@ def main(argv: list[str] | None = None) -> int:
                 _staged_files(args.repository.resolve()),
                 args.bundle.resolve(),
                 runtime,
+                policy_selector=args.policy_selector,
             )
         else:
             digest = bundle_sha256(args.bundle.resolve())
             expected = args.expected_sha256 or digest
-            load_policy_bundle(args.bundle.resolve(), expected)
+            load_policy_bundle(
+                args.bundle.resolve(),
+                expected,
+                policy_selector=args.policy_selector,
+            )
     except PolicyBundleRefused as error:
         print(str(error), file=sys.stderr)
         return 2
@@ -807,12 +904,15 @@ __all__ = [
     "POLICY_EPOCH",
     "POLICY_SCHEMA_VERSION",
     "PolicyBundleRefused",
+    "PolicyBundleContract",
     "PolicyEntry",
     "RuntimeContract",
     "SCANNER_DISTRIBUTION",
     "SCANNER_VERSION",
     "SCANNER_WHEEL_SHA256",
     "VerifiedPolicyBundle",
+    "V1_POLICY_CONTRACT",
+    "V2_POLICY_CONTRACT",
     "build_policy_bundle",
     "bundle_sha256",
     "contains_inline_suppression",
@@ -821,4 +921,5 @@ __all__ = [
     "portable_v1_alias",
     "scanner_exclusion_reason",
     "sha256_bytes",
+    "trusted_policy_contract",
 ]
