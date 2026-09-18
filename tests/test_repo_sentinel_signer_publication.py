@@ -16,6 +16,7 @@ from tests.signer_test_support import (
     digest,
     oid,
     registry_record,
+    verified_claims,
 )
 
 from repo_sentinel_signer import (  # noqa: E402
@@ -30,6 +31,7 @@ from repo_sentinel_signer import (  # noqa: E402
     PublishOutcome,
     PullRequestSnapshot,
     SignerRefused,
+    TicketRequest,
 )
 
 
@@ -483,6 +485,54 @@ class OrderingAndSharingTests(unittest.TestCase):
 
 
 class PublicationAuthorityTests(unittest.TestCase):
+    def test_service_rejects_legacy_source_change_before_shortcut(self) -> None:
+        first = registry_record(publisher_identity="publisher-a")
+        harness = Harness(record=first)
+        first_ticket = harness.issue(jti="admission-a")
+        harness.service.finalize_evaluation(
+            harness.final_claims("final-a"),
+            first_ticket.evaluation_id,
+            controller_result(first_ticket, first),
+        )
+
+        second = replace(
+            first,
+            record_id="legacy-second-record",
+            publisher_identity="publisher-b",
+        )
+        # Simulate a frozen legacy record created before epoch authority checks.
+        harness.registry._records[second.key] = second  # noqa: SLF001
+        harness.registry.activate(REPOSITORY_ID, "authoritative", second.key)
+        second_ticket = harness.service.issue_evaluation(
+            verified_claims(
+                second,
+                jti="admission-b",
+                run_id=7002,
+                now=harness.clock.now,
+            ),
+            TicketRequest(PULL_NUMBER),
+        )
+        publisher_b = MockPublisher(second.publisher_identity)
+        harness.service._publisher = publisher_b  # noqa: SLF001
+
+        with self.assertRaisesRegex(SignerRefused, "publication_source_conflict"):
+            harness.service.finalize_evaluation(
+                verified_claims(
+                    second,
+                    jti="final-b",
+                    run_id=7002,
+                    now=harness.clock.now,
+                ),
+                second_ticket.evaluation_id,
+                controller_result(second_ticket, second),
+            )
+
+        self.assertEqual(publisher_b.calls, ())
+        self.assertEqual(
+            harness.store.get(second_ticket.evaluation_id).finalization_state,
+            EvaluationState.ISSUED,
+        )
+
     def test_published_slot_rejects_second_publisher_before_shortcut(self) -> None:
         store = InMemoryEvaluationStore()
         payload = publication_payload()
