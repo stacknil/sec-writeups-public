@@ -161,7 +161,7 @@ class AdmissionAuthorizationTests(unittest.TestCase):
             with self.subTest(name=name), self.assertRaises(SignerRefused):
                 harness.service.issue_evaluation(claims, TicketRequest(22))
 
-    def test_reusable_workflow_is_exactly_bound(self) -> None:
+    def test_reusable_binding_is_exact(self) -> None:
         harness = Harness(record=registry_record(reusable=True))
         cases = (
             {"job_workflow_ref": "stacknil/other/.github/workflows/x.yml@v1"},

@@ -370,7 +370,7 @@ class OrderingAndSharingTests(unittest.TestCase):
         self.assertEqual(len({ticket.evaluation_id for ticket in tickets}), 1)
         self.assertEqual(harness.store.evaluation_count(), 1)
 
-    def test_concurrent_matching_finalizers_publish_once(self) -> None:
+    def test_concurrent_finalizers_publish_once(self) -> None:
         harness = Harness()
         first, second = self.two_pr_tickets(harness)
         barrier = threading.Barrier(2)
