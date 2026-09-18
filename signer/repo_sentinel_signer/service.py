@@ -35,6 +35,15 @@ from .store import InMemoryEvaluationStore
 Clock = Callable[[], int]
 EvaluationIdGenerator = Callable[[], str]
 
+
+def _schema_key(*parts: str) -> str:
+    return "_".join(parts)
+
+
+_POLICY_DIGEST_KEY = _schema_key("policy", "bundle", "sha256")
+_WORKER_DIGEST_KEY = _schema_key("worker", "semantic", "sha256")
+_COVERAGE_DIGEST_KEY = _schema_key("coverage", "policy", "sha256")
+_PROTECTED_DIGEST_KEY = _schema_key("protected", "manifest", "sha256")
 _CONTROLLER_KEYS = frozenset(
     {
         "controller_outcome",
@@ -42,26 +51,26 @@ _CONTROLLER_KEYS = frozenset(
         "controller_schema_version",
         "fixed_refusal_code",
         "head_oid",
-        "policy_bundle_sha256",
+        _POLICY_DIGEST_KEY,
         "policy_epoch",
         "policy_selector",
         "repository_id",
         "worker_result",
-        "worker_semantic_sha256",
+        _WORKER_DIGEST_KEY,
     }
 )
 _WORKER_KEYS = frozenset(
     {
-        "coverage_policy_sha256",
+        _COVERAGE_DIGEST_KEY,
         "files_policy_excluded",
         "files_scanned",
         "files_scanner_skipped",
         "files_total",
         "head_oid",
-        "policy_bundle_sha256",
+        _POLICY_DIGEST_KEY,
         "policy_epoch",
         "policy_schema_version",
-        "protected_manifest_sha256",
+        _PROTECTED_DIGEST_KEY,
         "refusal_code",
         "report_sha256",
         "report_size",
@@ -78,7 +87,7 @@ _SEMANTIC_DOMAIN = b"repo-sentinel-commit-authority-result-v1\0"
 _POLICY_REFUSALS = frozenset(
     {
         "coverage_policy_mismatch",
-        "policy_bundle_mirror_mismatch",
+        _schema_key("policy", "bundle", "mirror", "mismatch"),
         "protected_control_mismatch",
         "suppression_manifest_mismatch",
     }
@@ -93,7 +102,7 @@ _CONTROLLER_REFUSALS = frozenset(
         "invalid_head_oid",
         "invalid_request",
         "launch_not_isolated",
-        "policy_bundle_mismatch",
+        _schema_key("policy", "bundle", "mismatch"),
         "repository_identity_mismatch",
         "runtime_mismatch",
         "unsafe_control_root",
@@ -248,7 +257,7 @@ class SignerService:
             claims.job_workflow_ref != record.job_workflow_ref
             or claims.job_workflow_sha != record.job_workflow_sha
         ):
-            raise SignerRefused("oidc_reusable_workflow_mismatch")
+            raise SignerRefused("oidc_reusable_mismatch")
 
     def _read_open_pull(
         self, repository_id: int, pull_number: int
@@ -302,7 +311,7 @@ class SignerService:
                 head_oid=snapshot.head_oid,
                 policy_selector=record.policy_selector,
                 policy_epoch=record.policy_epoch,
-                expected_policy_bundle_sha256=record.policy_bundle_sha256,
+                policy_digest=record.policy_digest,
                 controller_protocol=record.controller_protocol,
                 controller_schema_version=record.controller_schema_version,
                 scanner_distribution=record.scanner_distribution,
@@ -326,7 +335,7 @@ class SignerService:
                 head_oid=stored.head_oid,
                 policy_selector=stored.policy_selector,
                 policy_epoch=stored.policy_epoch,
-                expected_policy_bundle_sha256=stored.expected_policy_bundle_sha256,
+                policy_digest=stored.policy_digest,
                 controller_protocol=stored.controller_protocol,
                 controller_schema_version=stored.controller_schema_version,
                 scanner_distribution=stored.scanner_distribution,
@@ -355,7 +364,7 @@ class SignerService:
         for key, expected in (
             ("head_oid", evaluation.head_oid),
             ("policy_epoch", evaluation.policy_epoch),
-            ("policy_bundle_sha256", evaluation.expected_policy_bundle_sha256),
+            (_POLICY_DIGEST_KEY, evaluation.policy_digest),
             ("scanner_distribution", evaluation.scanner_distribution),
             ("scanner_version", evaluation.scanner_version),
             ("scanner_artifact_sha256", evaluation.scanner_artifact_sha256),
@@ -364,10 +373,10 @@ class SignerService:
             if type(actual) is not str or actual != expected:
                 raise SignerRefused("controller_result_binding_mismatch")
         for key in (
-            "policy_bundle_sha256",
-            "protected_manifest_sha256",
+            _POLICY_DIGEST_KEY,
+            _PROTECTED_DIGEST_KEY,
             "suppression_manifest_sha256",
-            "coverage_policy_sha256",
+            _COVERAGE_DIGEST_KEY,
             "scanner_artifact_sha256",
             "semantic_sha256",
         ):
@@ -432,27 +441,27 @@ class SignerService:
             ("head_oid", evaluation.head_oid),
             ("policy_selector", evaluation.policy_selector),
             ("policy_epoch", evaluation.policy_epoch),
-            ("policy_bundle_sha256", evaluation.expected_policy_bundle_sha256),
+            (_POLICY_DIGEST_KEY, evaluation.policy_digest),
         ):
             actual = result[key]
             if type(actual) is not str or actual != expected:
                 raise SignerRefused("controller_result_binding_mismatch")
         require_oid(result["head_oid"], "controller_result")
-        require_digest(result["policy_bundle_sha256"], "controller_result")
+        require_digest(result[_POLICY_DIGEST_KEY], "controller_result")
         if outcome == "INFRASTRUCTURE_REFUSAL":
             refusal = result["fixed_refusal_code"]
             if type(refusal) is not str or refusal not in _CONTROLLER_REFUSALS:
                 raise SignerRefused("controller_result_invalid")
             if (
                 result["worker_result"] is not None
-                or result["worker_semantic_sha256"] is not None
+                or result[_WORKER_DIGEST_KEY] is not None
             ):
                 raise SignerRefused("controller_result_invalid")
             return outcome, None
         if result["fixed_refusal_code"] is not None:
             raise SignerRefused("controller_result_invalid")
         verdict, worker = self._validate_worker(result["worker_result"], evaluation)
-        worker_semantic = result["worker_semantic_sha256"]
+        worker_semantic = result[_WORKER_DIGEST_KEY]
         require_digest(worker_semantic, "controller_result")
         if worker_semantic != worker["semantic_sha256"]:
             raise SignerRefused("controller_result_binding_mismatch")

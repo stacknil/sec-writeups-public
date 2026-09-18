@@ -42,7 +42,7 @@ class RegistryRecordTests(unittest.TestCase):
             replace(first, revision=2, workflow_sha=oid("replacement-workflow"))
         )
 
-        self.assertEqual(first.policy_bundle_sha256, second.policy_bundle_sha256)
+        self.assertEqual(first.policy_digest, second.policy_digest)
         self.assertNotEqual(first.workflow_sha, second.workflow_sha)
 
     def test_same_repository_epoch_cannot_acquire_second_digest(self) -> None:
@@ -55,7 +55,7 @@ class RegistryRecordTests(unittest.TestCase):
                     first,
                     record_id="second-record",
                     revision=1,
-                    policy_bundle_sha256=digest("different-policy"),
+                    policy_digest=digest("different-policy"),
                 )
             )
 
@@ -67,12 +67,12 @@ class RegistryRecordTests(unittest.TestCase):
                 first,
                 record_id="second-record",
                 policy_epoch="synthetic-policy-v2",
-                policy_bundle_sha256=digest("different-policy"),
+                policy_digest=digest("different-policy"),
             )
         )
 
         self.assertNotEqual(first.policy_epoch, second.policy_epoch)
-        self.assertNotEqual(first.policy_bundle_sha256, second.policy_bundle_sha256)
+        self.assertNotEqual(first.policy_digest, second.policy_digest)
 
     def test_activation_is_explicit_and_latest_lookup_is_unsupported(self) -> None:
         registry = InMemoryRegistry()
@@ -178,8 +178,8 @@ class RegistryFreezeTests(unittest.TestCase):
         self.assertIn(evaluation.registry_key, {r1.key, r2.key})
         selected = harness.registry.get(evaluation.registry_key)
         self.assertEqual(
-            evaluation.expected_policy_bundle_sha256,
-            selected.policy_bundle_sha256,
+            evaluation.policy_digest,
+            selected.policy_digest,
         )
         self.assertEqual(evaluation.workflow_sha, selected.workflow_sha)
 

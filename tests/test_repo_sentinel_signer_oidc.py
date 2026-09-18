@@ -171,9 +171,7 @@ class AdmissionAuthorizationTests(unittest.TestCase):
             claims = verified_claims(harness.record, **changes)
             with (
                 self.subTest(changes=changes),
-                self.assertRaisesRegex(
-                    SignerRefused, "oidc_reusable_workflow_mismatch"
-                ),
+                self.assertRaisesRegex(SignerRefused, "oidc_reusable_mismatch"),
             ):
                 harness.service.issue_evaluation(claims, TicketRequest(22))
 
@@ -183,7 +181,7 @@ class AdmissionAuthorizationTests(unittest.TestCase):
         claims["job_workflow_ref"] = "stacknil/shared/.github/workflows/x.yml@v1"
         claims["job_workflow_sha"] = "f" * 40
 
-        with self.assertRaisesRegex(SignerRefused, "oidc_reusable_workflow_mismatch"):
+        with self.assertRaisesRegex(SignerRefused, "oidc_reusable_mismatch"):
             harness.service.issue_evaluation(
                 VerifiedOidcClaims.from_verified_mapping(claims), TicketRequest(22)
             )

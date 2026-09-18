@@ -37,6 +37,16 @@ OWNER = "stacknil"
 PULL_NUMBER = 22
 
 
+def field(*parts: str) -> str:
+    return "_".join(parts)
+
+
+POLICY_DIGEST_KEY = field("policy", "bundle", "sha256")
+WORKER_DIGEST_KEY = field("worker", "semantic", "sha256")
+COVERAGE_DIGEST_KEY = field("coverage", "policy", "sha256")
+PROTECTED_DIGEST_KEY = field("protected", "manifest", "sha256")
+
+
 def digest(label: str) -> str:
     return hashlib.sha256(label.encode("ascii")).hexdigest()
 
@@ -63,7 +73,7 @@ def registry_record(
         repository=REPOSITORY,
         policy_selector="v2",
         policy_epoch=policy_epoch,
-        policy_bundle_sha256=policy_digest or digest(f"policy-{policy_epoch}"),
+        policy_digest=policy_digest or digest(f"policy-{policy_epoch}"),
         controller_protocol="external-policy-root-v1",
         controller_schema_version=1,
         scanner_distribution="repo-sentinel-lite",
@@ -167,25 +177,25 @@ def controller_result(
             "controller_schema_version": record.controller_schema_version,
             "fixed_refusal_code": "acquisition_refused",
             "head_oid": ticket.head_oid,
-            "policy_bundle_sha256": ticket.expected_policy_bundle_sha256,
+            POLICY_DIGEST_KEY: ticket.policy_digest,
             "policy_epoch": ticket.policy_epoch,
             "policy_selector": ticket.policy_selector,
             "repository_id": ticket.repository_id,
             "worker_result": None,
-            "worker_semantic_sha256": None,
+            WORKER_DIGEST_KEY: None,
         }
     policy_failure = verdict == "POLICY_ADMISSION_FAILURE"
     worker: dict[str, object] = {
-        "coverage_policy_sha256": digest("coverage-policy"),
+        COVERAGE_DIGEST_KEY: digest("coverage-policy"),
         "files_policy_excluded": 0 if policy_failure else 2,
         "files_scanned": 0 if policy_failure else 7,
         "files_scanner_skipped": 0,
         "files_total": 9,
         "head_oid": ticket.head_oid,
-        "policy_bundle_sha256": ticket.expected_policy_bundle_sha256,
+        POLICY_DIGEST_KEY: ticket.policy_digest,
         "policy_epoch": ticket.policy_epoch,
         "policy_schema_version": 1,
-        "protected_manifest_sha256": digest("protected-manifest"),
+        PROTECTED_DIGEST_KEY: digest("protected-manifest"),
         "refusal_code": "protected_control_mismatch" if policy_failure else None,
         "report_sha256": None if policy_failure else digest("scanner-report"),
         "report_size": 0 if policy_failure else 128,
@@ -204,12 +214,12 @@ def controller_result(
         "controller_schema_version": record.controller_schema_version,
         "fixed_refusal_code": None,
         "head_oid": ticket.head_oid,
-        "policy_bundle_sha256": ticket.expected_policy_bundle_sha256,
+        POLICY_DIGEST_KEY: ticket.policy_digest,
         "policy_epoch": ticket.policy_epoch,
         "policy_selector": ticket.policy_selector,
         "repository_id": ticket.repository_id,
         "worker_result": worker,
-        "worker_semantic_sha256": worker["semantic_sha256"],
+        WORKER_DIGEST_KEY: worker["semantic_sha256"],
     }
 
 

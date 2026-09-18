@@ -40,13 +40,10 @@ class InMemoryRegistry:
                     raise SignerRefused("registry_record_identity_conflict")
             epoch_key = record.repository_id, record.policy_epoch
             approved_digest = self._epoch_digests.get(epoch_key)
-            if (
-                approved_digest is not None
-                and approved_digest != record.policy_bundle_sha256
-            ):
+            if approved_digest is not None and approved_digest != record.policy_digest:
                 raise SignerRefused("registry_epoch_digest_conflict")
             self._records[record.key] = record
-            self._epoch_digests.setdefault(epoch_key, record.policy_bundle_sha256)
+            self._epoch_digests.setdefault(epoch_key, record.policy_digest)
             return record
 
     def get(self, key: RegistryKey) -> RegistryRecord:

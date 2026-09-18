@@ -79,7 +79,7 @@ class MockPublisher:
         existing = self._visible.get(key)
         if existing is not None:
             if existing.payload_sha256 != digest:
-                raise SignerRefused("mock_publisher_payload_conflict")
+                raise SignerRefused("publisher_payload_conflict")
             return existing
         self._counter += 1
         receipt = PublicationReceipt(f"mock-status-{self._counter}", digest)

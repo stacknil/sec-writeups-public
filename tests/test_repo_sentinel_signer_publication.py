@@ -79,7 +79,7 @@ class VerdictMappingTests(unittest.TestCase):
     def test_mismatched_publisher_identity_fails_before_publisher_call(self) -> None:
         harness = Harness()
         ticket = harness.issue()
-        harness.publisher._identity = "different-mock-publisher"  # noqa: SLF001
+        harness.publisher._identity = "mock-other"  # noqa: SLF001
 
         with self.assertRaisesRegex(SignerRefused, "publisher_identity_mismatch"):
             harness.service.finalize_evaluation(

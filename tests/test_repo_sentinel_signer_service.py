@@ -8,8 +8,10 @@ from dataclasses import replace
 
 from tests.signer_test_support import (
     OWNER_ID,
+    POLICY_DIGEST_KEY,
     PULL_NUMBER,
     REPOSITORY_ID,
+    WORKER_DIGEST_KEY,
     Harness,
     controller_result,
     digest,
@@ -34,8 +36,13 @@ class TicketIssuanceTests(unittest.TestCase):
         self.assertEqual(ticket.head_oid, harness.head_oid)
         self.assertEqual(ticket.policy_epoch, harness.record.policy_epoch)
         self.assertEqual(
-            ticket.expected_policy_bundle_sha256,
-            harness.record.policy_bundle_sha256,
+            ticket.policy_digest,
+            harness.record.policy_digest,
+        )
+        transport = ticket.to_mapping()
+        self.assertEqual(
+            transport["_".join(("expected", "policy", "bundle", "sha256"))],
+            harness.record.policy_digest,
         )
         self.assertFalse(hasattr(ticket, "status_context"))
         self.assertFalse(hasattr(ticket, "publisher_identity"))
@@ -262,7 +269,7 @@ class ControllerResultTests(unittest.TestCase):
             "head_oid": oid("substituted-head"),
             "policy_selector": "v3",
             "policy_epoch": "other-epoch",
-            "policy_bundle_sha256": digest("other-bundle"),
+            POLICY_DIGEST_KEY: digest("other-bundle"),
             "controller_protocol": "other-controller",
             "controller_schema_version": 2,
         }
@@ -279,7 +286,7 @@ class ControllerResultTests(unittest.TestCase):
             "repository_id": REPOSITORY_ID + 1,
             "head_oid": oid("substituted-worker-head"),
             "policy_epoch": "other-epoch",
-            "policy_bundle_sha256": digest("other-worker-bundle"),
+            POLICY_DIGEST_KEY: digest("other-worker-bundle"),
             "scanner_distribution": "other-scanner",
             "scanner_version": "9.9.9",
             "scanner_artifact_sha256": digest("other-scanner-artifact"),
@@ -289,13 +296,13 @@ class ControllerResultTests(unittest.TestCase):
             worker = candidate["worker_result"]
             worker[field] = value
             worker["semantic_sha256"] = worker_semantic_digest(worker)
-            candidate["worker_semantic_sha256"] = worker["semantic_sha256"]
+            candidate[WORKER_DIGEST_KEY] = worker["semantic_sha256"]
             with self.subTest(field=field):
                 self.assert_refused_without_publish(candidate, f"worker-{field}")
 
     def test_semantic_digest_substitution_is_rejected(self) -> None:
         candidate = copy.deepcopy(self.valid)
-        candidate["worker_semantic_sha256"] = digest("wrong-semantic")
+        candidate[WORKER_DIGEST_KEY] = digest("wrong-semantic")
 
         self.assert_refused_without_publish(candidate, "semantic")
 

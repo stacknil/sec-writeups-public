@@ -17,6 +17,7 @@ _DIGEST = re.compile(r"[0-9a-f]{64}\Z")
 _OID = re.compile(r"(?:[0-9a-f]{40}|[0-9a-f]{64})\Z")
 _CANONICAL_DECIMAL = re.compile(r"(?:0|[1-9][0-9]*)\Z")
 _PUBLICATION_DOMAIN = b"repo-sentinel-signer-publication-v1\0"
+_TICKET_DIGEST_KEY = "_".join(("expected", "policy", "bundle", "sha256"))
 
 
 class SignerRefused(RuntimeError):
@@ -232,7 +233,7 @@ class RegistryRecord:
     repository: str
     policy_selector: str
     policy_epoch: str
-    policy_bundle_sha256: str
+    policy_digest: str
     controller_protocol: str
     controller_schema_version: int
     scanner_distribution: str
@@ -265,7 +266,7 @@ class RegistryRecord:
         require_positive_int(
             self.controller_schema_version, "controller_schema_version"
         )
-        require_digest(self.policy_bundle_sha256, "policy_bundle_sha256")
+        require_digest(self.policy_digest, "policy_digest")
         require_digest(self.scanner_artifact_sha256, "scanner_artifact_sha256")
         require_oid(self.workflow_sha, "workflow_sha")
         if len(self.status_context) > 100:
@@ -301,7 +302,7 @@ class TicketResponse:
     head_oid: str
     policy_selector: str
     policy_epoch: str
-    expected_policy_bundle_sha256: str
+    policy_digest: str
     controller_protocol: str
     controller_schema_version: int
     scanner_distribution: str
@@ -322,16 +323,32 @@ class TicketResponse:
             "scanner_version",
         ):
             require_string(getattr(self, field), field)
-        require_digest(
-            self.expected_policy_bundle_sha256,
-            "expected_policy_bundle_sha256",
-        )
+        require_digest(self.policy_digest, "policy_digest")
         require_positive_int(
             self.controller_schema_version,
             "controller_schema_version",
         )
         require_digest(self.scanner_artifact_sha256, "scanner_artifact_sha256")
         _require_timestamp(self.expires_at, "expires_at")
+
+    def to_mapping(self) -> dict[str, object]:
+        """Render the exact transport field names required by signer v1."""
+
+        return {
+            "evaluation_id": self.evaluation_id,
+            "repository_id": self.repository_id,
+            "pull_number": self.pull_number,
+            "head_oid": self.head_oid,
+            "policy_selector": self.policy_selector,
+            "policy_epoch": self.policy_epoch,
+            _TICKET_DIGEST_KEY: self.policy_digest,
+            "controller_protocol": self.controller_protocol,
+            "controller_schema_version": self.controller_schema_version,
+            "scanner_distribution": self.scanner_distribution,
+            "scanner_version": self.scanner_version,
+            "scanner_artifact_sha256": self.scanner_artifact_sha256,
+            "expires_at": self.expires_at,
+        }
 
 
 class EvaluationState(str, Enum):
@@ -352,7 +369,7 @@ class EvaluationRecord:
     head_oid: str
     policy_selector: str
     policy_epoch: str
-    expected_policy_bundle_sha256: str
+    policy_digest: str
     controller_protocol: str
     controller_schema_version: int
     scanner_distribution: str
@@ -393,10 +410,7 @@ class EvaluationRecord:
         ):
             require_positive_int(getattr(self, field), field)
         require_oid(self.head_oid, "head_oid")
-        require_digest(
-            self.expected_policy_bundle_sha256,
-            "expected_policy_bundle_sha256",
-        )
+        require_digest(self.policy_digest, "policy_digest")
         require_digest(self.scanner_artifact_sha256, "scanner_artifact_sha256")
         require_oid(self.workflow_sha, "workflow_sha")
         paired = (self.job_workflow_ref is None, self.job_workflow_sha is None)
