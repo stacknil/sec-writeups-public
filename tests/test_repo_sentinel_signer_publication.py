@@ -76,7 +76,7 @@ class VerdictMappingTests(unittest.TestCase):
         self.assertEqual(payload.context, harness.record.status_context)
         self.assertEqual(harness.publisher.identity, harness.record.publisher_identity)
 
-    def test_mismatched_publisher_identity_fails_before_publisher_call(self) -> None:
+    def test_wrong_publisher_fails_before_call(self) -> None:
         harness = Harness()
         ticket = harness.issue()
         harness.publisher._identity = "mock-other"  # noqa: SLF001
@@ -162,7 +162,7 @@ class UnknownPublicationTests(unittest.TestCase):
         self.assertEqual(len(harness.publisher.calls), 2)
         self.assertEqual(harness.publisher.calls[0], harness.publisher.calls[1])
 
-    def test_opposite_payload_after_unknown_is_rejected_before_publisher(self) -> None:
+    def test_opposite_payload_after_unknown_is_rejected(self) -> None:
         for first, second in (
             ("PASS", "SCANNER_FINDING"),
             ("SCANNER_FINDING", "PASS"),
@@ -209,7 +209,7 @@ class UnknownPublicationTests(unittest.TestCase):
         self.assertTrue(second.retryable)
         self.assertEqual(len(harness.publisher.calls), 1)
 
-    def test_unknown_is_not_downgraded_by_definite_publish_failure(self) -> None:
+    def test_definite_failure_does_not_downgrade_unknown(self) -> None:
         harness = Harness(
             outcomes=[
                 MockPublishMode.UNKNOWN_BEFORE_WRITE,
@@ -370,7 +370,7 @@ class OrderingAndSharingTests(unittest.TestCase):
         self.assertEqual(len({ticket.evaluation_id for ticket in tickets}), 1)
         self.assertEqual(harness.store.evaluation_count(), 1)
 
-    def test_concurrent_same_payload_finalizers_publish_once(self) -> None:
+    def test_concurrent_matching_finalizers_publish_once(self) -> None:
         harness = Harness()
         first, second = self.two_pr_tickets(harness)
         barrier = threading.Barrier(2)

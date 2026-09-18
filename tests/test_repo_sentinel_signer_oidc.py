@@ -93,7 +93,7 @@ class ClaimModelTests(unittest.TestCase):
                 with self.assertRaisesRegex(SignerRefused, "invalid_oidc_claims"):
                     VerifiedOidcClaims.from_verified_mapping(candidate)
 
-    def test_empty_jti_and_noncanonical_workflow_sha_are_rejected(self) -> None:
+    def test_empty_jti_and_bad_workflow_sha_are_rejected(self) -> None:
         record = registry_record()
         for field, value in (("jti", ""), ("workflow_sha", "A" * 40)):
             claims = raw_claims(record)
@@ -161,7 +161,7 @@ class AdmissionAuthorizationTests(unittest.TestCase):
             with self.subTest(name=name), self.assertRaises(SignerRefused):
                 harness.service.issue_evaluation(claims, TicketRequest(22))
 
-    def test_reusable_workflow_identity_is_exactly_bound(self) -> None:
+    def test_reusable_workflow_is_exactly_bound(self) -> None:
         harness = Harness(record=registry_record(reusable=True))
         cases = (
             {"job_workflow_ref": "stacknil/other/.github/workflows/x.yml@v1"},
