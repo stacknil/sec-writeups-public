@@ -37,6 +37,7 @@ registry             establishes policy authorization
 evaluation record    freezes registry revision and H
 controller result    establishes bounded P_v(H) evidence
 publication slot     establishes one immutable verdict payload for R/H/v
+                     and one immutable publisher source
 ```
 
 The publisher is only an output adapter. It does not select policy or reinterpret
@@ -116,15 +117,37 @@ does not invalidate `P_v(H)`.
 `RegistryRecord` is a frozen value. A new operational configuration creates a
 new revision. Existing keys cannot be overwritten with changed content.
 
-The registry enforces:
+The registry freezes one publication-authority identity per epoch:
 
 ```text
 (repository_id, full_policy_epoch)
-  -> exactly one policy bundle digest
+  -> exactly one (
+       policy bundle digest,
+       exact status context,
+       publisher identity
+     )
 ```
 
-An operational revision may retain an existing epoch and digest. A changed
-bundle digest requires a changed epoch.
+An operational revision may retain an existing epoch while changing reviewed
+execution-only fields such as workflow SHA, but it must preserve that complete
+authority identity. A digest, context, or publisher change is an explicit
+authority migration rather than an operational revision.
+
+Commit Status context names are a physical provider namespace. Signer v1 admits
+only non-empty printable ASCII contexts up to GitHub's 100-character limit and
+uses ASCII lowercase for namespace comparison while preserving the exact context
+in the registry record and provider payload. The registry also preserves this
+historical mapping:
+
+```text
+(repository_id, normalized_status_context)
+  -> exactly one policy_epoch
+```
+
+Revocation does not release an epoch identity or context reservation. A new
+epoch, including one introduced for publisher/App rotation, must use a distinct
+normalized context. This prevents old statuses under one physical context from
+acquiring a new authority meaning.
 
 Storage and activation are separate. Admission resolves exactly:
 
@@ -183,6 +206,11 @@ owner, workflow, optional reusable workflow, run ID, and run attempt. Admission
 token IDs cannot finalize. A finalization token ID is consumed globally and
 cannot be replayed against another evaluation.
 
+The finalization token ID is consumed immediately after authenticated OIDC and
+exact execution-tuple validation, before expiry, pull-request freshness, or
+controller-evidence parsing. Later malformed or stale evidence does not make the
+authenticated token reusable.
+
 Expired evaluations fail closed and require new authenticated admission.
 
 ### Independent controller-result parsing
@@ -225,7 +253,15 @@ The logical publication slot is:
 Different pull requests containing the same H intentionally share the slot.
 The first semantic finalization reserves one canonical payload digest containing
 only repository ID, H, registry status context, mapped state, fixed description,
-and null target URL.
+and null target URL. Publisher identity remains internal authority provenance;
+it is stored in the immutable slot but is not encoded into a provider payload
+field or its canonical digest.
+
+An existing slot is reusable only when payload, payload digest, and publisher
+identity all match. A different source is rejected before any existing-published
+shortcut or provider access. Publication receipts bind provider record ID,
+payload digest, and publisher identity; matching payload bytes alone are not
+sufficient provenance.
 
 Slot state is monotonic:
 
@@ -261,7 +297,11 @@ without another publish call. An unknown-before-write result may retry the same
 payload. A definite failure remains retryable but cannot downgrade an already
 unknown or published state.
 
-The mock publisher identity is synthetic. It is not a GitHub App ID.
+The mock publisher identity is synthetic. It is not a GitHub App ID. Its
+physical status key uses the same case-insensitive ASCII context normalization
+as the registry, and both direct publication and lookup produce or return only
+receipts attributable to that mock identity. Namespace safety is also tested
+against a separate permissive test provider that accepts repeated writes.
 
 ### Transaction model
 
@@ -275,6 +315,13 @@ The lock-held mock publisher call is intentional for this reference core. A
 production durable service will need a database transaction plus outbox or an
 equivalent reconciliation design; it must preserve the same slot and uncertainty
 invariants without relying on a process-local lock.
+
+Finalization-JTI consumption is a durable security side effect. A production
+store must commit that single-use claim independently of later
+controller-evidence refusal, for example through a committed compare-and-set
+boundary. It
+must not place token consumption and evidence parsing in a transaction that
+rolls back the consumed token when parsing or freshness validation raises.
 
 ## Threat and Failure Model
 
@@ -290,6 +337,9 @@ The core is designed to reject these classes:
 - infrastructure failures converted into semantic statuses;
 - opposite verdicts racing for one R/H/v slot;
 - replay of admission or finalization token IDs;
+- reinterpretation of one epoch through a new context or publisher identity;
+- reuse of a case-insensitive physical context by a different epoch;
+- reuse of a publication slot or receipt across publisher identities;
 - uncertain publication followed by a different payload;
 - state rollback from `UNKNOWN` or `PUBLISHED`.
 
@@ -329,6 +379,12 @@ Those are later adapters and deployment gates, not hidden behavior in this PR.
    Rejected because candidate evidence is not approved production policy.
 10. **Add a production-looking non-cryptographic OIDC verifier.**
     Rejected because its name would conceal an unimplemented trust boundary.
+11. **Treat publisher identity as part of the provider payload.**
+    Rejected because signer provenance is not a GitHub Commit Status field and
+    must not change the canonical provider request.
+12. **Allow a new epoch to reuse an old context after revocation.**
+    Rejected because historical statuses remain in the provider namespace and
+    could be reinterpreted under the new authority.
 
 ## Compatibility
 
@@ -347,14 +403,20 @@ The contract suite covers:
 
 - exact OIDC claim shape, numeric parsing, identity mutation, and time windows;
 - mock verifier behavior and absence of a production-looking verifier;
-- immutable registry records, epoch/digest uniqueness, explicit activation,
+- immutable registry records, epoch-authority uniqueness, explicit activation,
+  frozen epoch authority, case-insensitive historical context reservation,
   revocation, and concurrent activation;
 - evaluation revision freeze, admission idempotency, token replay, and expiry;
 - PR head movement, closure, base-only movement, and same-H cross-PR sharing;
 - exact controller and worker schema parsing and binding substitutions;
 - all three semantic verdict mappings and infrastructure no-publish behavior;
 - payload conflicts, late finalizers, unknown-before-write,
-  unknown-after-write, reconciliation, and monotonic state;
+  unknown-after-write, publisher-bound reconciliation, receipt provenance,
+  and monotonic state;
+- authenticated malformed evidence consuming its finalization token before
+  parser refusal, while a new token can still complete valid finalization;
+- a permissive provider control proving cross-epoch context conflicts are
+  rejected before a second provider write;
 - concurrent admission and concurrent identical finalization.
 
 Repository validation also runs the complete unit suite, Ruff, formatting,
