@@ -44,7 +44,7 @@ def publication_payload(*, context: str = "Repo Sentinel / authoritative gate"):
     )
 
 
-class ForeignReceiptLookupPublisher:
+class WrongSourcePublisher:
     """Return uncertainty first, then a receipt attributable to another source."""
 
     def __init__(self, identity: str, foreign_identity: str) -> None:
@@ -143,9 +143,7 @@ class VerdictMappingTests(unittest.TestCase):
 class UnknownPublicationTests(unittest.TestCase):
     def test_unknown_lookup_rejects_receipt_from_other_publisher(self) -> None:
         record = registry_record()
-        publisher = ForeignReceiptLookupPublisher(
-            record.publisher_identity, "mock-publisher-b"
-        )
+        publisher = WrongSourcePublisher(record.publisher_identity, "mock-publisher-b")
         harness = Harness(record=record, publisher=publisher)
         ticket = harness.issue()
         first = harness.service.finalize_evaluation(
