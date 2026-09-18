@@ -22,6 +22,11 @@ from repo_sentinel_signer import (  # noqa: E402
     MockPublisher,
     MockPublishMode,
     MockPullRequestReader,
+    PublicationPayload,
+    PublicationReceipt,
+    Publisher,
+    PublishDisposition,
+    PublishOutcome,
     PullRequestSnapshot,
     RegistryRecord,
     SignerService,
@@ -62,6 +67,7 @@ def registry_record(
     policy_epoch: str = "synthetic-policy-v1",
     policy_digest: str | None = None,
     workflow_sha: str | None = None,
+    status_context: str = "Repo Sentinel / authoritative gate",
     publisher_identity: str | None = None,
     reusable: bool = False,
 ) -> RegistryRecord:
@@ -81,7 +87,7 @@ def registry_record(
         scanner_artifact_sha256=digest("synthetic-scanner-wheel"),
         workflow_ref="stacknil/sec-writeups-public/.github/workflows/authority.yml@main",
         workflow_sha=workflow_sha or oid("trusted-workflow"),
-        status_context="Repo Sentinel / authoritative gate",
+        status_context=status_context,
         publisher_identity=(
             publisher_identity or f"mock-publisher-{digest('publisher-identity')[:12]}"
         ),
@@ -231,6 +237,47 @@ class MutableClock:
         return self.now
 
 
+class PermissivePublisher:
+    """Test-only provider that accepts repeated writes to one physical context."""
+
+    def __init__(self, identity: str) -> None:
+        self._identity = identity
+        self._lock = threading.Lock()
+        self._calls: list[PublicationPayload] = []
+        self._visible: dict[tuple[int, str, str], PublicationReceipt] = {}
+        self._counter = 0
+
+    @property
+    def identity(self) -> str:
+        return self._identity
+
+    @property
+    def calls(self) -> tuple[PublicationPayload, ...]:
+        with self._lock:
+            return tuple(self._calls)
+
+    def publish(self, payload: PublicationPayload) -> PublishOutcome:
+        with self._lock:
+            self._calls.append(payload)
+            self._counter += 1
+            receipt = PublicationReceipt(
+                f"permissive-status-{self._counter}",
+                payload.canonical_digest(),
+                self.identity,
+            )
+            key = payload.repository_id, payload.head_oid, payload.context.lower()
+            self._visible[key] = receipt
+            return PublishOutcome(PublishDisposition.PUBLISHED, receipt)
+
+    def lookup(self, payload: PublicationPayload) -> PublicationReceipt | None:
+        with self._lock:
+            key = payload.repository_id, payload.head_oid, payload.context.lower()
+            receipt = self._visible.get(key)
+            if receipt is None or receipt.payload_sha256 != payload.canonical_digest():
+                return None
+            return receipt
+
+
 class Harness:
     def __init__(
         self,
@@ -238,6 +285,7 @@ class Harness:
         record: RegistryRecord | None = None,
         outcomes: list[MockPublishMode] | None = None,
         head_oid: str | None = None,
+        publisher: Publisher | None = None,
     ) -> None:
         self.lock = threading.RLock()
         self.record = record or registry_record()
@@ -259,7 +307,11 @@ class Harness:
                 )
             ]
         )
-        self.publisher = MockPublisher(self.record.publisher_identity, outcomes)
+        if publisher is not None and outcomes is not None:
+            raise ValueError("publisher and outcomes are mutually exclusive")
+        self.publisher = publisher or MockPublisher(
+            self.record.publisher_identity, outcomes
+        )
         self.clock = MutableClock()
         self._ids = itertools.count(1)
         self.service = SignerService(

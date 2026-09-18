@@ -185,6 +185,34 @@ class FinalizationIdentityTests(unittest.TestCase):
         with self.assertRaisesRegex(SignerRefused, "finalization_jti_reused"):
             harness.service.finalize_evaluation(claims, ticket.evaluation_id, refusal)
 
+    def test_malformed_evidence_consumes_authenticated_finalization_jti(self) -> None:
+        harness = Harness()
+        ticket = harness.issue()
+        malformed = controller_result(ticket, harness.record)
+        malformed["extra"] = "not-allowed"
+        reused = harness.final_claims("malformed-evidence-jti")
+
+        with self.assertRaisesRegex(SignerRefused, "controller_result_invalid"):
+            harness.service.finalize_evaluation(
+                reused,
+                ticket.evaluation_id,
+                malformed,
+            )
+        with self.assertRaisesRegex(SignerRefused, "finalization_jti_reused"):
+            harness.service.finalize_evaluation(
+                reused,
+                ticket.evaluation_id,
+                controller_result(ticket, harness.record),
+            )
+
+        result = harness.service.finalize_evaluation(
+            harness.final_claims("fresh-after-malformed"),
+            ticket.evaluation_id,
+            controller_result(ticket, harness.record),
+        )
+
+        self.assertEqual(result.evaluation_state.value, "PUBLISHED")
+
     def test_expired_evaluation_requires_new_admission(self) -> None:
         harness = Harness()
         ticket = harness.issue()

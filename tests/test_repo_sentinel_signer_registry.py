@@ -49,7 +49,7 @@ class RegistryRecordTests(unittest.TestCase):
         registry = InMemoryRegistry()
         first = registry.add(registry_record())
 
-        with self.assertRaisesRegex(SignerRefused, "registry_epoch_digest_conflict"):
+        with self.assertRaisesRegex(SignerRefused, "registry_epoch_authority_conflict"):
             registry.add(
                 replace(
                     first,
@@ -68,11 +68,96 @@ class RegistryRecordTests(unittest.TestCase):
                 record_id="second-record",
                 policy_epoch="synthetic-policy-v2",
                 policy_digest=digest("different-policy"),
+                status_context="Repo Sentinel / authoritative gate v2",
             )
         )
 
         self.assertNotEqual(first.policy_epoch, second.policy_epoch)
         self.assertNotEqual(first.policy_digest, second.policy_digest)
+
+    def test_same_epoch_freezes_context_and_publisher(self) -> None:
+        for field, value in (
+            ("status_context", "Repo Sentinel / replacement gate"),
+            ("publisher_identity", "mock-publisher-b"),
+        ):
+            registry = InMemoryRegistry()
+            first = registry.add(registry_record())
+            with (
+                self.subTest(field=field),
+                self.assertRaisesRegex(
+                    SignerRefused, "registry_epoch_authority_conflict"
+                ),
+            ):
+                registry.add(
+                    replace(
+                        first,
+                        record_id=f"second-{field}",
+                        **{field: value},
+                    )
+                )
+
+    def test_status_context_is_reserved_across_epochs_case_insensitively(self) -> None:
+        for context in (
+            "Repo Sentinel / authoritative gate",
+            "repo sentinel / AUTHORITATIVE GATE",
+        ):
+            registry = InMemoryRegistry()
+            first = registry.add(registry_record())
+            with (
+                self.subTest(context=context),
+                self.assertRaisesRegex(
+                    SignerRefused, "registry_status_context_conflict"
+                ),
+            ):
+                registry.add(
+                    replace(
+                        first,
+                        record_id="second-record",
+                        policy_epoch="synthetic-policy-v2",
+                        policy_digest=digest("different-policy"),
+                        status_context=context,
+                    )
+                )
+
+    def test_revocation_does_not_release_context_namespace(self) -> None:
+        registry = InMemoryRegistry()
+        first = registry.add(registry_record())
+        registry.revoke(first.key)
+
+        with self.assertRaisesRegex(SignerRefused, "registry_status_context_conflict"):
+            registry.add(
+                replace(
+                    first,
+                    record_id="replacement-record",
+                    policy_epoch="synthetic-policy-v2",
+                    policy_digest=digest("replacement-policy"),
+                )
+            )
+
+    def test_new_epoch_with_distinct_context_is_allowed(self) -> None:
+        registry = InMemoryRegistry()
+        first = registry.add(registry_record())
+
+        second = registry.add(
+            replace(
+                first,
+                record_id="second-record",
+                policy_epoch="synthetic-policy-v2",
+                policy_digest=digest("different-policy"),
+                status_context="Repo Sentinel / authoritative gate v2",
+            )
+        )
+
+        self.assertNotEqual(first.policy_epoch, second.policy_epoch)
+        self.assertNotEqual(first.status_context, second.status_context)
+
+    def test_status_context_requires_printable_ascii(self) -> None:
+        for context in ("Repo Sentinel / gaté", "Repo Sentinel / gate\x7f"):
+            with (
+                self.subTest(context=context),
+                self.assertRaisesRegex(SignerRefused, "invalid_status_context"),
+            ):
+                registry_record(status_context=context)
 
     def test_activation_is_explicit_and_latest_lookup_is_unsupported(self) -> None:
         registry = InMemoryRegistry()
