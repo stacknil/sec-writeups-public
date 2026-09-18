@@ -40,10 +40,26 @@ class TicketIssuanceTests(unittest.TestCase):
             harness.record.policy_digest,
         )
         transport = ticket.to_mapping()
+        digest_key = "_".join(("expected", "policy", "bundle", "sha256"))
         self.assertEqual(
-            transport["_".join(("expected", "policy", "bundle", "sha256"))],
-            harness.record.policy_digest,
+            set(transport),
+            {
+                "evaluation_id",
+                "repository_id",
+                "pull_number",
+                "head_oid",
+                "policy_selector",
+                "policy_epoch",
+                digest_key,
+                "controller_protocol",
+                "controller_schema_version",
+                "scanner_distribution",
+                "scanner_version",
+                "scanner_artifact_sha256",
+                "expires_at",
+            },
         )
+        self.assertEqual(transport[digest_key], harness.record.policy_digest)
         self.assertFalse(hasattr(ticket, "status_context"))
         self.assertFalse(hasattr(ticket, "publisher_identity"))
         self.assertFalse(hasattr(ticket, "workflow_sha"))
