@@ -36,6 +36,15 @@ def require_string(value: object, field: str, *, maximum: int = 512) -> str:
     return value
 
 
+def normalize_status_context(value: object) -> str:
+    """Return the portable physical namespace key for a Commit Status context."""
+
+    context = require_string(value, "status_context", maximum=100)
+    if any(not 0x20 <= ord(character) <= 0x7E for character in context):
+        raise SignerRefused("invalid_status_context")
+    return context.lower()
+
+
 def require_digest(value: object, field: str) -> str:
     if type(value) is not str or _DIGEST.fullmatch(value) is None:
         raise SignerRefused(f"invalid_{field}")
@@ -256,7 +265,6 @@ class RegistryRecord:
             "scanner_distribution",
             "scanner_version",
             "workflow_ref",
-            "status_context",
             "publisher_identity",
         ):
             require_string(getattr(self, field), field)
@@ -269,8 +277,7 @@ class RegistryRecord:
         require_digest(self.policy_digest, "policy_digest")
         require_digest(self.scanner_artifact_sha256, "scanner_artifact_sha256")
         require_oid(self.workflow_sha, "workflow_sha")
-        if len(self.status_context) > 100:
-            raise SignerRefused("invalid_status_context")
+        normalize_status_context(self.status_context)
         owner, separator, name = self.repository.partition("/")
         if not separator or not owner or not name or "/" in name:
             raise SignerRefused("invalid_repository")
@@ -456,7 +463,7 @@ class PublicationPayload:
     def __post_init__(self) -> None:
         require_positive_int(self.repository_id, "repository_id")
         require_oid(self.head_oid, "head_oid")
-        require_string(self.context, "status_context", maximum=100)
+        normalize_status_context(self.context)
         if type(self.state) is not str or self.state not in {"success", "failure"}:
             raise SignerRefused("invalid_publication_state")
         require_string(self.description, "description", maximum=140)
@@ -486,10 +493,12 @@ class PublicationPayload:
 class PublicationReceipt:
     provider_record_id: str
     payload_sha256: str
+    publisher_identity: str
 
     def __post_init__(self) -> None:
         require_string(self.provider_record_id, "provider_record_id")
         require_digest(self.payload_sha256, "payload_sha256")
+        require_string(self.publisher_identity, "publisher_identity")
 
 
 class PublicationSlotState(str, Enum):
@@ -505,6 +514,7 @@ class PublicationSlot:
     policy_epoch: str
     payload: PublicationPayload
     payload_sha256: str
+    publisher_identity: str
     state: PublicationSlotState
     receipt: PublicationReceipt | None = None
 
@@ -522,6 +532,7 @@ class PublicationSlot:
         require_digest(self.payload_sha256, "payload_sha256")
         if self.payload_sha256 != self.payload.canonical_digest():
             raise SignerRefused("publication_slot_digest_mismatch")
+        require_string(self.publisher_identity, "publisher_identity")
         if type(self.state) is not PublicationSlotState:
             raise SignerRefused("invalid_publication_slot_state")
         if self.state is PublicationSlotState.PUBLISHED:
@@ -529,6 +540,8 @@ class PublicationSlot:
                 raise SignerRefused("invalid_publication_receipt")
             if self.receipt.payload_sha256 != self.payload_sha256:
                 raise SignerRefused("publication_receipt_mismatch")
+            if self.receipt.publisher_identity != self.publisher_identity:
+                raise SignerRefused("publication_receipt_source_mismatch")
         elif self.receipt is not None:
             raise SignerRefused("unexpected_publication_receipt")
 

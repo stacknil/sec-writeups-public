@@ -115,11 +115,15 @@ class InMemoryEvaluationStore:
             self._finalization_jtis[token_id] = evaluation_id
 
     def reserve_slot(
-        self, payload: PublicationPayload, policy_epoch: str
+        self,
+        payload: PublicationPayload,
+        policy_epoch: str,
+        publisher_identity: str,
     ) -> PublicationSlot:
         if type(payload) is not PublicationPayload:
             raise SignerRefused("invalid_publication_payload")
         epoch = require_string(policy_epoch, "policy_epoch")
+        source = require_string(publisher_identity, "publisher_identity")
         key = payload.repository_id, payload.head_oid, epoch
         digest = payload.canonical_digest()
         with self._lock:
@@ -127,6 +131,8 @@ class InMemoryEvaluationStore:
             if existing is not None:
                 if existing.payload_sha256 != digest or existing.payload != payload:
                     raise SignerRefused("publication_slot_conflict")
+                if existing.publisher_identity != source:
+                    raise SignerRefused("publication_source_conflict")
                 return existing
             slot = PublicationSlot(
                 repository_id=payload.repository_id,
@@ -134,6 +140,7 @@ class InMemoryEvaluationStore:
                 policy_epoch=epoch,
                 payload=payload,
                 payload_sha256=digest,
+                publisher_identity=source,
                 state=PublicationSlotState.RESERVED,
             )
             self._slots[key] = slot
@@ -175,6 +182,8 @@ class InMemoryEvaluationStore:
                     raise SignerRefused("invalid_publication_receipt")
                 if receipt.payload_sha256 != current.payload_sha256:
                     raise SignerRefused("publication_receipt_mismatch")
+                if receipt.publisher_identity != current.publisher_identity:
+                    raise SignerRefused("publication_receipt_source_mismatch")
             elif receipt is not None:
                 raise SignerRefused("unexpected_publication_receipt")
             updated = replace(current, state=state, receipt=receipt)

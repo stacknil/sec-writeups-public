@@ -500,6 +500,7 @@ class SignerService:
                 raise SignerRefused("finalization_execution_mismatch")
             if verified_oidc.jti == evaluation.admission_jti:
                 raise SignerRefused("fresh_oidc_required")
+            self._store.consume_finalization_jti(evaluation_id, verified_oidc.jti)
             if now > evaluation.expires_at:
                 raise SignerRefused("evaluation_expired")
             snapshot = self._read_open_pull(
@@ -510,7 +511,6 @@ class SignerService:
             outcome, verdict = self._parse_controller_result(
                 controller_result, evaluation, record
             )
-            self._store.consume_finalization_jti(evaluation_id, verified_oidc.jti)
             if outcome == "INFRASTRUCTURE_REFUSAL":
                 if evaluation.finalization_state is EvaluationState.PUBLISHED:
                     raise SignerRefused("evaluation_already_published")
@@ -535,7 +535,11 @@ class SignerService:
             ):
                 raise SignerRefused("publisher_identity_mismatch")
             payload = self._payload(evaluation, record, verdict)
-            slot = self._store.reserve_slot(payload, evaluation.policy_epoch)
+            slot = self._store.reserve_slot(
+                payload,
+                evaluation.policy_epoch,
+                record.publisher_identity,
+            )
             if slot.state is PublicationSlotState.PUBLISHED:
                 updated = self._store.set_state(
                     evaluation_id, EvaluationState.PUBLISHED

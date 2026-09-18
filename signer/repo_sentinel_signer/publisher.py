@@ -7,7 +7,13 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Protocol
 
-from .model import PublicationPayload, PublicationReceipt, SignerRefused, require_string
+from .model import (
+    PublicationPayload,
+    PublicationReceipt,
+    SignerRefused,
+    normalize_status_context,
+    require_string,
+)
 
 
 class PublishDisposition(str, Enum):
@@ -74,15 +80,23 @@ class MockPublisher:
             return tuple(self._calls)
 
     def _receipt(self, payload: PublicationPayload) -> PublicationReceipt:
-        key = payload.repository_id, payload.head_oid, payload.context
+        key = (
+            payload.repository_id,
+            payload.head_oid,
+            normalize_status_context(payload.context),
+        )
         digest = payload.canonical_digest()
         existing = self._visible.get(key)
         if existing is not None:
             if existing.payload_sha256 != digest:
                 raise SignerRefused("payload_conflict")
+            if existing.publisher_identity != self.identity:
+                raise SignerRefused("publication_receipt_source_mismatch")
             return existing
         self._counter += 1
-        receipt = PublicationReceipt(f"mock-status-{self._counter}", digest)
+        receipt = PublicationReceipt(
+            f"mock-status-{self._counter}", digest, self.identity
+        )
         self._visible[key] = receipt
         return receipt
 
@@ -108,8 +122,14 @@ class MockPublisher:
         if type(payload) is not PublicationPayload:
             raise SignerRefused("invalid_publication_payload")
         with self._lock:
-            key = payload.repository_id, payload.head_oid, payload.context
+            key = (
+                payload.repository_id,
+                payload.head_oid,
+                normalize_status_context(payload.context),
+            )
             receipt = self._visible.get(key)
             if receipt is None or receipt.payload_sha256 != payload.canonical_digest():
                 return None
+            if receipt.publisher_identity != self.identity:
+                raise SignerRefused("publication_receipt_source_mismatch")
             return receipt

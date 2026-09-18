@@ -3,10 +3,32 @@
 from __future__ import annotations
 
 import threading
+from dataclasses import dataclass
 
-from .model import RegistryRecord, SignerRefused, require_positive_int, require_string
+from .model import (
+    RegistryRecord,
+    SignerRefused,
+    normalize_status_context,
+    require_positive_int,
+    require_string,
+)
 
 RegistryKey = tuple[str, int]
+
+
+@dataclass(frozen=True, slots=True)
+class EpochAuthorityIdentity:
+    policy_digest: str
+    status_context: str
+    publisher_identity: str
+
+    @classmethod
+    def from_record(cls, record: RegistryRecord) -> EpochAuthorityIdentity:
+        return cls(
+            record.policy_digest,
+            record.status_context,
+            record.publisher_identity,
+        )
 
 
 class InMemoryRegistry:
@@ -15,7 +37,8 @@ class InMemoryRegistry:
     def __init__(self, *, lock: threading.RLock | None = None) -> None:
         self._lock = lock or threading.RLock()
         self._records: dict[RegistryKey, RegistryRecord] = {}
-        self._epoch_digests: dict[tuple[int, str], str] = {}
+        self._epoch_authorities: dict[tuple[int, str], EpochAuthorityIdentity] = {}
+        self._context_epochs: dict[tuple[int, str], str] = {}
         self._active: dict[tuple[int, str], object] = {}
         self._revoked: set[RegistryKey] = set()
 
@@ -39,11 +62,20 @@ class InMemoryRegistry:
                 ):
                     raise SignerRefused("registry_record_identity_conflict")
             epoch_key = record.repository_id, record.policy_epoch
-            approved_digest = self._epoch_digests.get(epoch_key)
-            if approved_digest is not None and approved_digest != record.policy_digest:
-                raise SignerRefused("registry_epoch_digest_conflict")
+            authority = EpochAuthorityIdentity.from_record(record)
+            approved_authority = self._epoch_authorities.get(epoch_key)
+            if approved_authority is not None and approved_authority != authority:
+                raise SignerRefused("registry_epoch_authority_conflict")
+            context_key = (
+                record.repository_id,
+                normalize_status_context(record.status_context),
+            )
+            reserved_epoch = self._context_epochs.get(context_key)
+            if reserved_epoch is not None and reserved_epoch != record.policy_epoch:
+                raise SignerRefused("registry_status_context_conflict")
             self._records[record.key] = record
-            self._epoch_digests.setdefault(epoch_key, record.policy_digest)
+            self._epoch_authorities.setdefault(epoch_key, authority)
+            self._context_epochs.setdefault(context_key, record.policy_epoch)
             return record
 
     def get(self, key: RegistryKey) -> RegistryRecord:
