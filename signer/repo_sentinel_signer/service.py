@@ -281,8 +281,8 @@ class SignerService:
     ) -> TicketResponse:
         if type(request) is not TicketRequest:
             raise SignerRefused("invalid_ticket_request")
-        now = self._now()
         with self._store.transaction():
+            now = self._now()
             if type(verified_oidc) is not VerifiedOidcClaims:
                 raise SignerRefused("unverified_oidc_claims")
             record = self._registry.resolve_active(
@@ -489,8 +489,8 @@ class SignerService:
         evaluation_id: str,
         controller_result: object,
     ) -> FinalizationResult:
-        now = self._now()
         with self._store.transaction():
+            now = self._now()
             evaluation = self._store.get(evaluation_id)
             record = self._registry.get(evaluation.registry_key)
             if self._registry.is_revoked(record.key):
