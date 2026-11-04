@@ -254,13 +254,15 @@ class TrustedContractTests(unittest.TestCase):
                 RUNTIME,
                 policy_selector="v2",
             )
+            self.assertEqual(
+                {item.name for item in root.iterdir()}, set(policy.BUNDLE_FILENAMES)
+            )
         after = {path: (ROOT / path).read_bytes() for path in RUNTIME_SOURCES}
 
         self.assertEqual(before, after)
         self.assertTrue(
             all(digest.encode("ascii") not in data for data in after.values())
         )
-        self.assertFalse((ROOT / "policy/repo-sentinel-authority/v2").exists())
 
     def test_runtime_has_no_policy_bundle_digest_back_edge_symbol(self) -> None:
         for path in RUNTIME_SOURCES:

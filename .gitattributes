@@ -3,3 +3,4 @@
 .reposentinel.toml -text whitespace=cr-at-eol
 .reposentinel-baseline.json -text whitespace=cr-at-eol
 policy/repo-sentinel-authority/v1/* -text whitespace=cr-at-eol
+policy/repo-sentinel-authority/v2/* -text whitespace=cr-at-eol

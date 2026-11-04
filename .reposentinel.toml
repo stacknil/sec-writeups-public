@@ -2,4 +2,6 @@ ignore_globs = [
     ".reposentinel-baseline.json",
     "reports/markdownlint-debt.txt",
     "reports/placeholder-audit.txt",
+    "policy/repo-sentinel-authority/v1/**",
+    "policy/repo-sentinel-authority/v2/**",
 ]

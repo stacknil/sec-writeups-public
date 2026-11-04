@@ -1,0 +1,94 @@
+{
+  "entries": [
+    {
+      "mode": "100644",
+      "path": ".gitattributes",
+      "sha256": "69c12dff31af0dd49817c0f38898cfc0304fb33d95f0bcf093f0208c0c849a59"
+    },
+    {
+      "mode": "100644",
+      "path": ".github/workflows/markdown-lint.yml",
+      "sha256": "d9a175b811a904f7b4e9da79e356980f557c8656cfa4ea81744bc86ecb241175"
+    },
+    {
+      "mode": "100644",
+      "path": ".github/workflows/markdownlint-debt.yml",
+      "sha256": "286c57901506054dfcdd5ba5425c3e851a6201ee43ffec95db765b579d99a64a"
+    },
+    {
+      "mode": "100644",
+      "path": ".github/workflows/placeholder-audit.yml",
+      "sha256": "71fffc8b84e38ab3bf95b6497dafb32a3f3ec563fef8e5894a234123989c495c"
+    },
+    {
+      "mode": "100644",
+      "path": ".github/workflows/repo-sentinel-gate.yml",
+      "sha256": "bff70a88960b96d445be7149258a4b2c5d8fef1126ecce6bb6520b794efd1931"
+    },
+    {
+      "mode": "100644",
+      "path": ".reposentinel-baseline.json",
+      "sha256": "8eff61c98f62d54b7280517967e6f9f8e66ffb2d18f5d4acbb9de63565a01669"
+    },
+    {
+      "mode": "100644",
+      "path": ".reposentinel.toml",
+      "sha256": "296b51421202609a4b770d868cd1026a2aa26e884e66dff759516679e63b73e4"
+    },
+    {
+      "mode": "100644",
+      "path": "scripts/repo_sentinel_acquire.py",
+      "sha256": "6133a969ccad41394113775c872d35403b94f1d80926fab95948a123ad8f54e9"
+    },
+    {
+      "mode": "100644",
+      "path": "scripts/repo_sentinel_authoritative.py",
+      "sha256": "33b7fe73fa798b212177e9f4a5064ee0845aa19f50a8df29d0fcd85451b95220"
+    },
+    {
+      "mode": "100755",
+      "path": "scripts/repo_sentinel_authority_bootstrap.sh",
+      "sha256": "cdeb5b89adb4005ff1c9ab4bae5f113ffb9a725164a18b4af05a1325c0e69f30"
+    },
+    {
+      "mode": "100644",
+      "path": "scripts/repo_sentinel_authority_controller.py",
+      "sha256": "52fd52bab5a6f821e874c39c6cf28298610a7854b07468c854158a0f41a032d7"
+    },
+    {
+      "mode": "100644",
+      "path": "scripts/repo_sentinel_commit_authoritative.py",
+      "sha256": "4743536cfc55b777afd06b4dc1d50c5c0bfe7dcc3bd7a80849ad0cdf4a18ed67"
+    },
+    {
+      "mode": "100644",
+      "path": "scripts/repo_sentinel_gate.py",
+      "sha256": "79be642d1aa1b464b377115ef8d02175f82a793f7f242b714efe35e4f97a190f"
+    },
+    {
+      "mode": "100644",
+      "path": "scripts/repo_sentinel_materialize.py",
+      "sha256": "05fd0b6448fdb3b6c52969700d6a9a19e4790c7c78343af09aebb37d0bc5c0ed"
+    },
+    {
+      "mode": "100644",
+      "path": "scripts/repo_sentinel_policy_bundle.py",
+      "sha256": "0b8ef28aeba391dac366f38bb5ce4903132acfcb89359f01067a773b12ad4386"
+    },
+    {
+      "mode": "100644",
+      "path": "scripts/repo_sentinel_reader.py",
+      "sha256": "3fc587a12847d58bd78d4168a3a959293c76928f60a6ccfcae5d1fb5d8e36ef0"
+    },
+    {
+      "mode": "100644",
+      "path": "scripts/test_repo_sentinel_integration.py",
+      "sha256": "ae67bd08f03c0a0877c5c078f32ec2e91b72fb0ad768cdadcf3688e8afe142a2"
+    }
+  ],
+  "namespaces": [
+    ".github/actions/",
+    ".github/workflows/"
+  ],
+  "schema_version": 1
+}
