@@ -43,19 +43,9 @@ Best fit for readers who want:
 
 ## Why This Repo Exists
 
-This repository is built to make security notes easier to:
-
-- read in public
-- publish safely
-- reuse as patterns
-- maintain over time
-
-The emphasis is on:
-
-- **methodology over one-liners**
-- **defensive takeaways alongside findings**
-- **sanitized publishing by default**
-- **structured, reviewable notes instead of raw dump logs**
+Use a pattern card to review a recurring security decision. Each card points
+back to the sanitized notes that supplied its evidence. The track index below
+organizes those notes by subject.
 
 ## What You Will Find
 
